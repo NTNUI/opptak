@@ -1,21 +1,20 @@
-import express from 'express';
-import cors from 'cors';
-import connectDB from './config/db';
+import express from 'express'
+import cors from 'cors'
+import connectDB from './config/db'
 // routes
 import testRoute from './routes/api/test'
 
-const app = express();
-connectDB();
+const app = express()
+connectDB()
 
 // Use cors
-app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(cors({ origin: 'http://localhost:3000' }))
 // Connect Database
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
 
-app.use('/test', testRoute);
+app.use('/test', testRoute)
 
-const port = 8082;
+const port = 8082
 
-app.listen(port, () => console.log(`✨ Server running on port ${port}`));
-
+app.listen(port, () => console.log(`✨ Server running on port ${port}`))
