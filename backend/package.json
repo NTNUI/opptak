@@ -22,7 +22,7 @@
     "mongoose": "^6.2.3",
     "validation": "^0.0.1"
   },
-  "main": "app.js",
+  "main": "app.ts",
   "scripts": {
     "start": "node app.ts",
     "app": "nodemon app.ts",

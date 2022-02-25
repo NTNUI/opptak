@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import config from 'config';
+
 const db = "mongodb+srv://bolle:bolle@kanelbolle.yopil.mongodb.net/wienerbread"
 
 const connectDB = async () => {
