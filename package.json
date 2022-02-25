@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "description": "NTNUI Admin application form wrapper",
   "scripts": {
-    "start": "cd backend && nodemon app.ts && cd ../frontend && npm run start",
+    "frontend": "cd frontend && npm install && npm run start",
+    "backend": "cd backend && npm install && nodemon app.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint . --ext ts --ext tsx"
   },
