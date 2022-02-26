@@ -1,0 +1,30 @@
+[
+	{
+		"name": "Bolle Bollesen",
+		"phone_number": "+6969696969",
+		"email": "bolle@bolle.no",
+		"text": "Jeg forsøker å søke til Sprint og Blits",
+		"committees": ["6", "44"]
+	},
+	{
+		"name": "Navn Navnesen",
+		"phone_number": "+420420420",
+		"email": "Navn@Navnesen.no",
+		"text": "Jeg forsøker å søke til Event",
+		"committees": ["74"]
+	},
+	{
+		"name": "Cris P Bacon",
+		"phone_number": "+123456789",
+		"email": "Bacon@IsGoodForMe.no",
+		"text": "Jeg forsøker å søke til Event og Blits",
+		"committees": ["74", "44"]
+	},
+	{
+		"name": "Olle Bolle",
+		"phone_number": "+987654321",
+		"email": "Olle@Bolle.no",
+		"text": "Jeg forsøker å søke til Event, Blits og Sprint",
+		"committees": ["74", "44", "6"]
+	}
+]
