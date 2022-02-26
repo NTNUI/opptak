@@ -6,6 +6,8 @@ Proof of concept application form app for development of an npm package for easi
 
 ## Development
 
+The project requires Node version 16.14.0.
+
 ### Environment variables
 
 The project requires a set of environment variables added to an `.env` file in the /backend folder.

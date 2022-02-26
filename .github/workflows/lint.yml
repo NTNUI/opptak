@@ -1,0 +1,39 @@
+name: Lint
+
+on:
+ push:
+  branches:
+   - 'dev'
+ pull_request:
+
+jobs:
+ main:
+  runs-on: ubuntu-latest
+
+  strategy:
+   matrix:
+    os: [ubuntu-latest]
+    node-version: [16.14.0]
+
+  steps:
+   - uses: actions/checkout@v2
+
+   - uses: actions/setup-node@v2
+     with:
+      node-version: ${{ matrix.node-version }}
+
+   - name: Cache node_modules
+     id: cache-node_modules
+     uses: actions/cache@v2
+     with:
+      path: node_modules
+      key: node_modules-${{ matrix.os }}-${{ matrix.node-version }}-${{ hashFiles('package-lock.json') }}
+
+   - name: Install
+     run: npm run install-all
+
+   - name: ESLint
+     run: npm run eslint
+
+   - name: Prettier
+     run: npm run prettier
