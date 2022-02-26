@@ -17,4 +17,5 @@ app.use('/test', testRoute)
 
 const port = 8082
 
-app.listen(port, () => console.log(`✨ Server running on port ${port}`))
+// eslint-disable-next-line no-console
+app.listen(port, () => console.log(`Server running on port ${port}`))
