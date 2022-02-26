@@ -6,8 +6,8 @@
 		"frontend": "cd frontend && npm install && npm run start",
 		"backend": "cd backend && npm install && npx nodemon --exec npx ts-node app.ts",
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"lint": "eslint . --ext ts --ext tsx",
-		"fix": "npx prettier --write . && eslint . --ext .ts,.tsx --fix"
+		"lint": "npm install && eslint . --ext ts --ext tsx",
+		"fix": "npm install && npx prettier --write . && eslint . --ext .ts,.tsx --fix"
 	},
 	"repository": {
 		"type": "git",
