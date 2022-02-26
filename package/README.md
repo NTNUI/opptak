@@ -8,7 +8,7 @@ An npm package with a collection of useful tools for using NTNUI API.
 
 ## Installation
 
-<!-- 
+<!--
 ```sh
 npm install ntnui-tools
 ```
@@ -17,9 +17,9 @@ npm install ntnui-tools
 ## Usage
 
 ```js
-import unicornFun from 'ntnui-tools';
+import unicornFun from 'ntnui-tools'
 
-unicornFun('unicorns');
+unicornFun('unicorns')
 //=> 'unicorns & rainbows'
 ```
 
