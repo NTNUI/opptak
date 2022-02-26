@@ -6,13 +6,17 @@ Proof of concept application form app for development of an npm package for easi
 
 ## Development
 
+The project requires Node version 16.14.0.
+
+To lint and check code style, run `npm run check`. Fix linting and styling issues by running `npm run fix`.
+
 ### Environment variables
 
 The project requires a set of environment variables added to an `.env` file in the /backend folder.
 
 ```sh
 # .env
-DB_URI="CREDENTIALS"
+DB_URI="CONNECTION STRING HERE"
 ```
 
 #### ☁ Set up MongoDB Atlas
@@ -27,7 +31,7 @@ Set up a cluster and database on [MongoDB Atlas](https://docs.atlas.mongodb.com/
 6. Click "Connect"
 7. "Connect using MongoDB Compass"
 8. Ignore step 1, copy the connection string
-9. Make a copy of the file `.template.env` and change it to `.env`
+9. Make a copy of the file `.env.example` and change it to `.env`
 10. Put in the connection string for `DB_URI`
 11. Change `<password>` to the database password you set in Part 4 of the [MongoDB Atlas guide](https://docs.atlas.mongodb.com/getting-started/)
 
