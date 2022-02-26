@@ -4,7 +4,7 @@ import { CommitteeModel } from '../../models/Committee'
 const committeeRouter = express.Router()
 
 // @route GET committees
-// @description Get all committees in the application database
+// @description Get all committees
 // @access Public
 committeeRouter.get('/', (_req, res) => {
 	CommitteeModel.find()

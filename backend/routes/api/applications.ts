@@ -18,7 +18,7 @@ applicationRouter.get('/', async (_req, res) => {
 })
 
 // @route POST applications
-// @description add application
+// @description Add application
 // @access Public
 applicationRouter.post('/', (req, res) => {
 	const application = new ApplicationModel(req.body)
