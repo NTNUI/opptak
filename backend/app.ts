@@ -1,19 +1,23 @@
 import express from 'express'
 import cors from 'cors'
 import connectDB from './config/db'
-// routes
-import testRoute from './routes/api/test'
+import testRoute from './routes/test'
+import committeeRouter from './routes/committees'
+import applicationRouter from './routes/applications'
 
 const app = express()
+// Connect Database
 connectDB()
 
-// Use cors
+// Set up middleware
 app.use(cors({ origin: 'http://localhost:3000' }))
-// Connect Database
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
+// Set up routes
 app.use('/test', testRoute)
+app.use('/applications', applicationRouter)
+app.use('/committees', committeeRouter)
 
 const port = 8082
 
