@@ -1,9 +1,9 @@
 import express from 'express'
 import cors from 'cors'
 import connectDB from './config/db'
-import testRoute from './routes/api/test'
-import committeeRouter from './routes/api/committees'
-import applicationRouter from './routes/api/applications'
+import testRoute from './routes/test'
+import committeeRouter from './routes/committees'
+import applicationRouter from './routes/applications'
 
 const app = express()
 // Connect Database
