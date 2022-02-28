@@ -29,7 +29,7 @@ Set up a cluster and database on [MongoDB Atlas](https://docs.atlas.mongodb.com/
 4. Click "Add IP Address"
 5. Open for all IPs or click "Add current IP address"
 6. Click "Connect"
-7. "Connect using MongoDB Compass"
+7. Click "Connect using MongoDB Compass"
 8. Ignore step 1, copy the connection string
 9. Make a copy of the file `.env.example` and change it to `.env`
 10. Put in the connection string for `DB_URI`
