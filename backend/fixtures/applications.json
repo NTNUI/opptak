@@ -3,8 +3,8 @@
 		"name": "Bolle Bollesen",
 		"phone_number": "+6969696969",
 		"email": "bolle@bolle.no",
-		"text": "Jeg forsøker å søke til Sprint og Blits",
-		"committees": ["6", "44"],
+		"text": "Jeg forsøker å søke til Sprint",
+		"committees": [6],
 		"submitted_date": "2022-02-26T16:49:27.005Z"
 	},
 	{
@@ -12,15 +12,15 @@
 		"phone_number": "+420420420",
 		"email": "Navn@Navnesen.no",
 		"text": "Jeg forsøker å søke til Event",
-		"committees": ["74"],
+		"committees": [74],
 		"submitted_date": "2022-02-23T16:49:27.005Z"
 	},
 	{
 		"name": "Cris P Bacon",
 		"phone_number": "+123456789",
 		"email": "Bacon@IsGoodForMe.no",
-		"text": "Jeg forsøker å søke til Event og Blits",
-		"committees": ["74", "44"],
+		"text": "Jeg forsøker å søke til Blits",
+		"committees": [44],
 		"submitted_date": "2022-02-19T16:49:27.005Z"
 	},
 	{
@@ -28,7 +28,7 @@
 		"phone_number": "+987654321",
 		"email": "Olle@Bolle.no",
 		"text": "Jeg forsøker å søke til Event, Blits og Sprint",
-		"committees": ["74", "44", "6"],
+		"committees": [74, 44, 6],
 		"submitted_date": "2022-02-22T16:49:27.005Z"
 	}
 ]
