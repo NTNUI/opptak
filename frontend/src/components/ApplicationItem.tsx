@@ -11,7 +11,6 @@ const ApplicationItem = ({name, committees} : IApplication) => (
     color: theme.colors.gray[2],
     border: "2px solid #F8F082",
     textAlign: 'center',
-    width: "100%",
     padding: theme.spacing.md,
     borderRadius: theme.radius.sm,
     cursor: 'pointer',
@@ -21,7 +20,7 @@ const ApplicationItem = ({name, committees} : IApplication) => (
     },
   })}
 >
-  {name}
+  {name} | committee-name
 </Box>
 );
 
