@@ -1,21 +1,18 @@
-import mongoose, { ObjectId } from 'mongoose'
+import mongoose from 'mongoose'
 
 interface CommitteeI {
-	_id: ObjectId
+	_id: Number
 	name: string
 	slug: string
 }
 
 const CommitteeModel = mongoose.model<CommitteeI>(
 	'Committee',
-	new mongoose.Schema<CommitteeI>(
-		{
-			_id: { type: mongoose.Schema.Types.Number, required: true },
-			name: { type: String, required: true },
-			slug: { type: String, required: true },
-		},
-		{ _id: false }
-	)
+	new mongoose.Schema<CommitteeI>({
+		_id: { type: Number, required: true },
+		name: { type: String, required: true },
+		slug: { type: String, required: true },
+	})
 )
 
 export { CommitteeModel }
