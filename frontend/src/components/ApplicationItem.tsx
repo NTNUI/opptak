@@ -31,6 +31,7 @@ const ApplicationItem = ({
 				textOverflow: 'ellipsis',
 				whiteSpace: 'nowrap',
 				overflow: 'hidden',
+				fontWeight: '300',
 			}}
 		>
 			{name} | committee-name
