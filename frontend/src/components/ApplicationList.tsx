@@ -1,6 +1,4 @@
 import { Container, createStyles } from "@mantine/core";
-import axios from "axios";
-import { useState } from "react";
 import ApplicationItem from "./ApplicationItem";
 import ApplicationI from "../types/application";
 
