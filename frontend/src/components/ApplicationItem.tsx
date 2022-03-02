@@ -49,7 +49,6 @@ function ApplicationItem({ name, committees, submitted_date }: IApplication) {
 	const { classes } = useStyles()
 
 	const date = new Date(submitted_date)
-	const date_string = date.getDay() + '.' + date.getMonth() + 1
 
 	const result = date.toLocaleDateString('en-GB', {
 		// you can use undefined as first argument

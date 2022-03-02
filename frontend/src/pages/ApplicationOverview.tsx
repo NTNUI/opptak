@@ -9,11 +9,11 @@ const useStyles = createStyles((theme) => ({
 		padding: '0',
 		flexDirection: 'column',
 		margin: 'auto',
-		'@media (max-width: 415px)': {
+		'@media (max-width: 500px)': {
 			fontSize: 'small',
 			width: '90%',
 		},
-		'@media (min-width: 415px)': {
+		'@media (min-width: 500px)': {
 			width: '80%',
 		},
 	},
