@@ -26,7 +26,8 @@
 	"main": "app.ts",
 	"scripts": {
 		"start": "node app.ts",
-		"app": "nodemon app.ts",
+		"app": "npx nodemon --exec npx ts-node app.ts",
+		"postinstall": "npm link ../package",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"devDependencies": {

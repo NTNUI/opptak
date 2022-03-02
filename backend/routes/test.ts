@@ -1,4 +1,7 @@
 import express from 'express'
+import testConnection from 'ntnui-tools'
+
+testConnection()
 
 const testRouter = express.Router()
 
