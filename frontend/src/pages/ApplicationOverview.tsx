@@ -1,17 +1,9 @@
+import { MediaQuery } from '@mantine/core'
 import ApplicationList from '../components/ApplicationList'
+import '../pages/ApplicationOverviewStyle.css'
 
 const ApplicationOverview = () => (
-	<div
-		style={{
-			display: 'flex',
-			flexDirection: 'column',
-			width: '80%',
-			alignItems: 'center',
-			margin: 'auto',
-			color: 'white',
-			padding: '0',
-		}}
-	>
+	<div id='wrapper'>
 		<h1>Søknadsoversikt</h1>
 		<ApplicationList />
 	</div>
