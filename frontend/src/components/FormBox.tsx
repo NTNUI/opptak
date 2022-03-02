@@ -5,19 +5,17 @@ import { Form } from './Form'
 const FormBox = () => (
 	<Box
 		sx={(theme) => ({
-			backgroundColor: 'white',
-			textAlign: 'center',
+			backgroundColor: 'black',
+			textAlign: 'left',
 			padding: theme.spacing.xl,
 			borderRadius: theme.radius.md,
 			cursor: 'pointer',
-
-			'&:hover': {
-				backgroundColor: 'white',
-			},
+			color: 'white'
 		})}
 	>
 		Søknad til NTNUI admin
         <Form />
+		
 	</Box>
 )
 

@@ -15,7 +15,7 @@ const data = [
     return (
       <MultiSelect
         data={data}
-        label="Hva ønsker du å søke?"
+        required label="Hva ønsker du å søke?"
         searchable
         placeholder="Pick all that you like"
       />
