@@ -6,7 +6,7 @@ interface ApplicationI {
 	email: string
 	text: string
 	submitted_date: Date
-	committees: [{ type: mongoose.Schema.Types.Number; ref: 'Committee' }]
+	committees: number[]
 }
 
 const ApplicationModel = mongoose.model<ApplicationI>(
@@ -32,7 +32,7 @@ const ApplicationModel = mongoose.model<ApplicationI>(
 			committees: {
 				type: [
 					{
-						type: mongoose.Schema.Types.Number,
+						type: Number,
 						ref: 'Committee',
 						required: true,
 					},
