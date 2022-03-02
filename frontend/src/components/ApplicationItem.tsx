@@ -12,7 +12,7 @@ const ApplicationItem = ({
 		sx={(theme) => ({
 			color: theme.colors.gray[2],
 			border: '2px solid #F8F082',
-			padding: theme.spacing.md,
+			padding: theme.spacing.sm,
 			borderRadius: theme.radius.sm,
 			cursor: 'pointer',
 			display: 'flex',
@@ -27,13 +27,23 @@ const ApplicationItem = ({
 			style={{
 				marginLeft: '0',
 				flexGrow: '3',
-				textOverflow: 'ellipsis',
 				whiteSpace: 'nowrap',
-				overflow: 'hidden',
 				fontWeight: '300',
+				display: 'grid',
+				gridTemplateColumns: '3fr 4fr',
 			}}
 		>
-			{name} | committee-name
+			<div style={{ paddingRight: '1rem' }}>{name}</div>
+			<div
+				style={{
+					borderLeft: '1px solid #F8F082',
+					paddingLeft: '1rem',
+					textOverflow: 'ellipsis',
+					overflow: 'hidden',
+				}}
+			>
+				committee-name
+			</div>
 		</div>
 
 		<MantineProvider
