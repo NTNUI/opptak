@@ -10,10 +10,9 @@ let formatted = applications.map((item: ApplicationI, idx: number) => {
 
 const useStyles = createStyles((theme) => ({
 	container: {
-		maxWidth: '600px',
-		minWidth: '250px',
+		width: '100%',
 		display: 'flex',
-		justifyContent: 'space-between',
+		padding: '0',
 		flexDirection: 'column',
 		gap: '1rem',
 		margin: 'auto',

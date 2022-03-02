@@ -16,6 +16,7 @@ const ApplicationItem = ({
 			borderRadius: theme.radius.sm,
 			cursor: 'pointer',
 			display: 'flex',
+			alignItems: 'center',
 			flexDirection: 'row',
 			gap: '0.5rem',
 			'&:hover': {
