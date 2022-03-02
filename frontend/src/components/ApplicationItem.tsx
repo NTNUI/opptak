@@ -12,7 +12,6 @@ const ApplicationItem = ({
 		sx={(theme) => ({
 			color: theme.colors.gray[2],
 			border: '2px solid #F8F082',
-			textAlign: 'center',
 			padding: theme.spacing.md,
 			borderRadius: theme.radius.sm,
 			cursor: 'pointer',
@@ -26,8 +25,8 @@ const ApplicationItem = ({
 	>
 		<div
 			style={{
+				marginLeft: '0',
 				flexGrow: '3',
-				display: 'inline-block',
 				textOverflow: 'ellipsis',
 				whiteSpace: 'nowrap',
 				overflow: 'hidden',
@@ -55,8 +54,17 @@ const ApplicationItem = ({
 				},
 			}}
 		>
-			<div>
-				<Badge radius='sm' variant='outline' color='ntnui-yellow'>
+			<div
+				style={{
+					display: 'flex',
+				}}
+			>
+				<Badge
+					style={{ margin: 'auto' }}
+					radius='sm'
+					variant='outline'
+					color='ntnui-yellow'
+				>
 					{submitted_date.toString().substring(0, 10)}
 				</Badge>
 			</div>
