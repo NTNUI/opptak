@@ -8,7 +8,7 @@ interface IRoleInCommittee {
 
 interface IUser {
 	_id: ObjectId
-	committees: [{ type: IRoleInCommittee }]
+	committees: IRoleInCommittee[]
 }
 
 const RoleInSchema = new mongoose.Schema<IRoleInCommittee>(
