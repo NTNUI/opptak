@@ -36,11 +36,28 @@ const useStyles = createStyles((theme) => ({
 	},
 	badgeDiv: {
 		display: 'flex',
+		color: theme.colors.ntnui_yellow[9],
+	},
+	badge: {
+		color: theme.colors.ntnui_yellow[9],
+		borderColor: theme.colors.ntnui_yellow[9],
+		margin: 'auto',
 	},
 }))
 
 function ApplicationItem({ name, committees, submitted_date }: IApplication) {
 	const { classes } = useStyles()
+
+	const date = new Date(submitted_date)
+	const date_string = date.getDay() + '.' + date.getMonth() + 1
+
+	const result = date.toLocaleDateString('en-GB', {
+		// you can use undefined as first argument
+		// year: '2-digit',
+		month: 'short',
+		day: '2-digit',
+	})
+
 	return (
 		<Box className={classes.box}>
 			<div className={classes.grid}>
@@ -48,13 +65,8 @@ function ApplicationItem({ name, committees, submitted_date }: IApplication) {
 				<div className={classes.committeeDiv}>committee-name</div>
 			</div>
 			<div className={classes.badgeDiv}>
-				<Badge
-					style={{ margin: 'auto' }}
-					radius='sm'
-					variant='outline'
-					color='yellow'
-				>
-					{submitted_date.toString().substring(0, 10)}
+				<Badge className={classes.badge} radius='sm' variant='outline'>
+					{result}
 				</Badge>
 			</div>
 		</Box>
