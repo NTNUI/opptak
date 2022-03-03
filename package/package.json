@@ -1,7 +1,7 @@
 {
 	"name": "ntnui-tools",
 	"version": "0.1.0",
-	"description": "An npm module with collection of tools for utilizing NTNUIs API.",
+	"description": "An npm module with collection of tools for utilizing NTNUI API.",
 	"license": "MIT",
 	"repository": "NTNUI/ntnui-tools",
 	"author": {
@@ -9,27 +9,29 @@
 		"email": "sprint@ntnui.no",
 		"url": "https://ntnui.no"
 	},
-	"type": "module",
-	"exports": "./index.js",
+	"exports": "./index.ts",
 	"engines": {
-		"node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+		"node": ">=14.0.0"
 	},
 	"scripts": {
-		"test": "xo && ava"
+		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"files": [
-		"index.js"
+		"index.ts"
 	],
 	"keywords": [
-		"unicorn",
-		"fun"
+		"ntnui",
+		"ntnui-tools",
+		"ntnui-client",
+		"ntnui-api",
+		"ntnui-api-tools",
+		"ntnui-api-client"
 	],
 	"dependencies": {
 		"axios": "^0.26.0"
 	},
 	"devDependencies": {
 		"ava": "^3.15.0",
-		"typescript": "^4.5.5",
-		"xo": "^0.46.3"
+		"typescript": "^4.5.5"
 	}
 }
