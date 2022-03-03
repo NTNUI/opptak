@@ -1,7 +1,10 @@
 import express from 'express'
-import testConnection from 'ntnui-tools'
+import printSlug from 'ntnui-tools'
 
-testConnection()
+const group69 = { _id: 69, name: 'Group 69', slug: 'group-69' }
+
+printSlug(group69)
+console.log(group69.slug)
 
 const testRouter = express.Router()
 

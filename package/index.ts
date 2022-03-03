@@ -1,5 +1,11 @@
-function testConnection() {
-	console.log('ntnui-tools is connected!') // eslint-disable-line no-console
+interface GroupI {
+	_id: Number
+	name: string
+	slug: string
 }
 
-export = testConnection
+function printSlug(committee: GroupI) {
+	console.log(committee.slug) // eslint-disable-line no-console
+}
+
+export = printSlug

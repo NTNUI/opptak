@@ -19,9 +19,7 @@
 		"project": "./tsconfig.json"
 	},
 	"plugins": ["react", "@typescript-eslint"],
-	"rules": {
-		"import/no-extraneous-dependencies": "off"
-	},
+	"rules": {},
 	"settings": {
 		"react": {
 			"version": "^17.0.2"

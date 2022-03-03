@@ -11,7 +11,7 @@
 	},
 	"exports": "./index.ts",
 	"engines": {
-		"node": "^14.13.1 || >=16.0.0"
+		"node": ">=14.0.0"
 	},
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
