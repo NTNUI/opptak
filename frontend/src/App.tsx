@@ -1,5 +1,4 @@
-import { ThemeProvider } from '@emotion/react'
-import { Button, Container, MantineProvider } from '@mantine/core'
+import { Container, MantineProvider } from '@mantine/core'
 import './App.css'
 import ApplicationOverview from './pages/ApplicationOverview'
 

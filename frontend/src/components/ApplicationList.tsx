@@ -1,12 +1,10 @@
 import { Container, createStyles } from '@mantine/core'
 import ApplicationItem from './ApplicationItem'
 import ApplicationI from '../types/application'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
 
-let applications = require('../fixtures/applications.json')
-
-let formatted = applications.map((item: ApplicationI, idx: number) => {
-	return <ApplicationItem key={idx} {...item} />
-})
+// let applications = require('../fixtures/applications.json')
 
 const useStyles = createStyles((theme) => ({
 	container: {
@@ -20,8 +18,25 @@ const useStyles = createStyles((theme) => ({
 }))
 
 function ApplicationList() {
+	const [applications, setApplications] = useState<ApplicationI[]>([])
+
+	useEffect(() => {
+		axios
+			.get('http://localhost:8082/applications/')
+			.then((res) => setApplications(res.data.applications))
+			.catch((err) => console.log(err))
+	}, [])
+
 	const { classes } = useStyles()
-	return <Container className={classes.container}>{formatted}</Container>
+	return (
+		<Container className={classes.container}>
+			{applications
+				? applications.map((item: ApplicationI, idx: number) => (
+						<ApplicationItem key={idx} {...item} />
+				  ))
+				: 'No applications found'}
+		</Container>
+	)
 }
 
 export default ApplicationList
