@@ -1,10 +1,13 @@
-interface ApplicationI {
+interface IApplication {
 	name: string
 	phoneNumber: string
 	email: string
 	text: string
-	committees: Array<string>
+	committees: ICommittee[]
 	submitted_date: Date
 }
+interface ICommittee {
+	name: string
+}
 
-export default ApplicationI
+export type { IApplication, ICommittee }

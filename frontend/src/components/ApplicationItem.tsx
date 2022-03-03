@@ -1,5 +1,5 @@
 import { Badge, Box, createStyles } from '@mantine/core'
-import IApplication from '../types/application'
+import { IApplication, ICommittee } from '../types/application'
 
 const useStyles = createStyles((theme) => ({
 	box: {
@@ -50,22 +50,31 @@ function ApplicationItem({ name, committees, submitted_date }: IApplication) {
 
 	const date = new Date(submitted_date)
 
-	const result = date.toLocaleDateString('en-GB', {
+	const submittedDate = date.toLocaleDateString('en-GB', {
 		// you can use undefined as first argument
 		// year: '2-digit',
 		month: 'short',
 		day: '2-digit',
 	})
 
+	const stringifyCommittees = (committees: ICommittee[]) => {
+		const committeeNames = committees.map((committee) => committee.name)
+		return committeeNames.reduce((left, right) => {
+			return left + ', ' + right
+		})
+	}
+
 	return (
 		<Box className={classes.box}>
 			<div className={classes.grid}>
 				<div className={classes.nameDiv}>{name}</div>
-				<div className={classes.committeeDiv}>committee-name</div>
+				<div className={classes.committeeDiv}>
+					{stringifyCommittees(committees)}
+				</div>
 			</div>
 			<div className={classes.badgeDiv}>
 				<Badge className={classes.badge} radius='sm' variant='outline'>
-					{result}
+					{submittedDate}
 				</Badge>
 			</div>
 		</Box>

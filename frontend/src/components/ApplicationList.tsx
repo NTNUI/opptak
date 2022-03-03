@@ -1,6 +1,6 @@
 import { Container, createStyles } from '@mantine/core'
 import ApplicationItem from './ApplicationItem'
-import ApplicationI from '../types/application'
+import { IApplication } from '../types/application'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
@@ -18,7 +18,7 @@ const useStyles = createStyles((theme) => ({
 }))
 
 function ApplicationList() {
-	const [applications, setApplications] = useState<ApplicationI[]>([])
+	const [applications, setApplications] = useState<IApplication[]>([])
 
 	useEffect(() => {
 		axios
@@ -31,7 +31,7 @@ function ApplicationList() {
 	return (
 		<Container className={classes.container}>
 			{applications
-				? applications.map((item: ApplicationI, idx: number) => (
+				? applications.map((item: IApplication, idx: number) => (
 						<ApplicationItem key={idx} {...item} />
 				  ))
 				: 'No applications found'}
