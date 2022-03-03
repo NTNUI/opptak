@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-interface ApplicationI {
+interface IApplication {
 	name: string
 	phone_number: string
 	email: string
@@ -9,9 +9,9 @@ interface ApplicationI {
 	committees: number[]
 }
 
-const ApplicationModel = mongoose.model<ApplicationI>(
+const ApplicationModel = mongoose.model<IApplication>(
 	'Application',
-	new mongoose.Schema<ApplicationI>(
+	new mongoose.Schema<IApplication>(
 		{
 			name: {
 				type: String,
@@ -48,4 +48,4 @@ const ApplicationModel = mongoose.model<ApplicationI>(
 )
 
 export { ApplicationModel }
-export type { ApplicationI }
+export type { IApplication }
