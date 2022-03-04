@@ -1,5 +1,14 @@
-import { MultiSelect } from "@mantine/core";
-import React from "react";
+import { createStyles, MultiSelect } from "@mantine/core";
+import axios from "axios";
+
+import React, { useEffect, useState } from "react";
+
+const useStyles = createStyles((theme) => ({
+	select: {
+    color: "white",
+	},
+}))
+
 
 const data = [
     { value: 'react', label: 'React' },
@@ -12,14 +21,15 @@ const data = [
   ];
 
   function Committees() {
+    const { classes } = useStyles()
     return (
       <MultiSelect
         data={data}
-        required label="Hva ønsker du å søke?"
+        label={<span className={classes.select}>Hva ønsker du å søke?</span>}
         searchable
-        placeholder="Pick all that you like"
       />
     );
   }
 
   export default Committees
+
