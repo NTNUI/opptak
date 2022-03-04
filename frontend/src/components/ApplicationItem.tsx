@@ -1,4 +1,4 @@
-import { Badge, Box, createStyles, Tooltip } from '@mantine/core'
+import { Badge, Box, createStyles } from '@mantine/core'
 import { useMemo } from 'react'
 import { IApplication, ICommittee } from '../types/application'
 
@@ -89,7 +89,7 @@ function ApplicationItem({ name, committees, submitted_date }: IApplication) {
 				</div>
 			</div>
 			<div className={classes.badgeDiv}>
-				<Badge className={classes.badge} radius='sm' variant='outline'>
+				<Badge className={classes.badge} size='lg' radius='sm' variant='outline'>
 					{submittedDate}
 				</Badge>
 			</div>
