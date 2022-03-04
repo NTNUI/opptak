@@ -22,6 +22,7 @@ const useStyles = createStyles((theme) => ({
 		flexGrow: '3',
 		whiteSpace: 'nowrap',
 		fontWeight: '300',
+		fontSize: 'medium',
 		display: 'grid',
 		gridTemplateColumns: '3fr 4fr',
 	},
@@ -41,8 +42,15 @@ const useStyles = createStyles((theme) => ({
 	},
 	badge: {
 		color: theme.colors.ntnui_yellow[9],
-		borderColor: theme.colors.ntnui_yellow[9],
+		// borderColor: theme.colors.ntnui_yellow[9],
+		whiteSpace: 'nowrap',
 		margin: 'auto',
+		'@media (max-width: 500px)': {
+			fontSize: 'medium',
+		},
+		'@media (min-width: 500px)': {
+			fontSize: 'medium',
+		},
 	},
 }))
 
@@ -89,9 +97,11 @@ function ApplicationItem({ name, committees, submitted_date }: IApplication) {
 				</div>
 			</div>
 			<div className={classes.badgeDiv}>
-				<Badge className={classes.badge} size='lg' radius='sm' variant='outline'>
+				<span className={classes.badge}>{submittedDate.toUpperCase()}</span>
+
+				{/* <Badge className={classes.badge} size='lg' radius='sm' variant='outline'>
 					{submittedDate}
-				</Badge>
+				</Badge> */}
 			</div>
 		</Box>
 	)

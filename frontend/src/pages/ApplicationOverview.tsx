@@ -11,7 +11,7 @@ const useStyles = createStyles((theme) => ({
 		margin: 'auto',
 		'@media (max-width: 500px)': {
 			fontSize: 'small',
-			width: '90%',
+			width: '100%',
 		},
 		'@media (min-width: 500px)': {
 			width: '80%',
