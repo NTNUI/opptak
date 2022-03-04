@@ -1,4 +1,5 @@
-import { Badge, Box, createStyles } from '@mantine/core'
+import { Badge, Box, createStyles, Tooltip } from '@mantine/core'
+import { useMemo } from 'react'
 import { IApplication, ICommittee } from '../types/application'
 
 const useStyles = createStyles((theme) => ({
@@ -31,8 +32,8 @@ const useStyles = createStyles((theme) => ({
 	committeeDiv: {
 		borderLeft: '1px solid #F8F082',
 		paddingLeft: '1rem',
-		textOverflow: 'ellipsis',
 		overflow: 'hidden',
+		textOverflow: 'ellipsis',
 	},
 	badgeDiv: {
 		display: 'flex',
@@ -64,12 +65,27 @@ function ApplicationItem({ name, committees, submitted_date }: IApplication) {
 		})
 	}
 
+	const stringifiedCommittees = useMemo(
+		() => stringifyCommittees(committees),
+		[committees]
+	)
+
 	return (
 		<Box className={classes.box}>
 			<div className={classes.grid}>
 				<div className={classes.nameDiv}>{name}</div>
 				<div className={classes.committeeDiv}>
-					{stringifyCommittees(committees)}
+					{/* Tooltip is incompatible with ellipsis */}
+					{/* <Tooltip
+						label={stringifiedCommittees}
+						transition='pop'
+						transitionDuration={300}
+						placement='start'
+						transitionTimingFunction='ease'
+						className='tooltip'
+					> */}
+					{stringifiedCommittees}
+					{/* </Tooltip> */}
 				</div>
 			</div>
 			<div className={classes.badgeDiv}>
