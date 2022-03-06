@@ -2,71 +2,85 @@
 	{
 		"_id": 79,
 		"name": "Baneutvalget",
-		"slug": "baneutvalget"
+		"slug": "baneutvalget",
+		"access_roles": ["deputy_leader"]
 	},
 	{
-		"_id": 44,
+		"_id": 9,
 		"name": "Blits",
-		"slug": "blits"
+		"slug": "blits",
+		"access_roles": ["deputy_leader"]
 	},
 	{
 		"_id": 74,
 		"name": "Event",
-		"slug": "event"
+		"slug": "event",
+		"access_roles": ["deputy_leader"]
 	},
 	{
 		"_id": 52,
 		"name": "Hovedstyret",
-		"slug": "hovedstyret"
+		"slug": "hovedstyret",
+		"access_roles": ["deputy_leader"]
 	},
 	{
 		"_id": 78,
 		"name": "Interimstyret",
-		"slug": "interimstyret"
+		"slug": "interimstyret",
+		"access_roles": ["deputy_leader"]
 	},
 	{
 		"_id": 73,
 		"name": "Kontrollutvalget",
-		"slug": "kontrollutvalget"
+		"slug": "kontrollutvalget",
+		"access_roles": ["deputy_leader"]
 	},
 	{
 		"_id": 72,
 		"name": "Lovutvalget",
-		"slug": "lovutvalget"
+		"slug": "lovutvalget",
+		"access_roles": ["deputy_leader"]
 	},
 	{
 		"_id": 93,
 		"name": "Moment",
-		"slug": "moment"
+		"slug": "moment",
+		"access_roles": ["deputy_leader"]
 	},
 	{
 		"_id": 76,
 		"name": "Økonomiutvalget",
-		"slug": "okonomiutvalget"
+		"slug": "okonomiutvalget",
+		"access_roles": []
 	},
 	{
 		"_id": 75,
 		"name": "Paraidrett",
-		"slug": "paraidrett"
+		"slug": "paraidrett",
+		"access_roles": []
 	},
 	{
 		"_id": 6,
 		"name": "Sprint",
-		"slug": "sprint"
+		"slug": "sprint",
+		"access_roles": []
 	},
 	{
 		"_id": 80,
 		"name": "Studentlekene",
-		"slug": "studentlekene"
+		"slug": "studentlekene",
+		"access_roles": []
 	},
 	{
 		"_id": 71,
 		"name": "Valgkomiteen",
-		"slug": "valgkomiteen"
+		"slug": "valgkomiteen",
+		"access_roles": []
 	},
 	{
 		"_id": 97,
 		"name": "Vedtektskomiteen",
-		"slug": "vedtektskomiteen"
+		"slug": "vedtektskomiteen",
+		"access_roles": []
 	}
 ]
