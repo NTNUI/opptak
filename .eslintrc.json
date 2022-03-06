@@ -19,7 +19,9 @@
 		"project": "./tsconfig.json"
 	},
 	"plugins": ["react", "@typescript-eslint"],
-	"rules": {},
+	"rules": {
+		"no-underscore-dangle": ["error", { "allow": ["_id"] }]
+	},
 	"settings": {
 		"react": {
 			"version": "^17.0.2"
