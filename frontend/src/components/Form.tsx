@@ -1,6 +1,13 @@
-import { TextInput, Button, Textarea, createStyles } from '@mantine/core'
+import { TextInput, Button, Textarea, createStyles, MultiSelect } from '@mantine/core'
 import { useForm } from '@mantine/hooks'
-import Committees from './Committees-select'
+import axios from 'axios'
+import { useEffect, useState } from 'react'
+import { ICommittee } from '../types/committee'
+
+interface ICommitteeInSelect {
+	value: string
+	label: string
+}
 
 const useStyles = createStyles((theme) => ({
 	writtenText: {
@@ -17,18 +24,36 @@ const useStyles = createStyles((theme) => ({
 		margin: 'auto',
 	},
 	blackground: {
-		backgroundColor: "black",
+		backgroundColor: 'black',
+	},
+	select: {
+		color: 'white',
 	},
 }))
 
 export function Form() {
 	const { classes } = useStyles()
+	const [committees, setCommittees] = useState<ICommitteeInSelect[]>([])
+
+	useEffect(() => {
+		axios
+			.get('http://localhost:8082/committees/')
+			.then((res) => setCommittees(mapCommitteeToSelect(res.data)))
+			.catch((err) => console.log(err))
+	}, [])
+
+	const mapCommitteeToSelect = (committees: ICommittee[]) => {
+		return committees.map((committee: ICommittee) => {
+			return { value: committee._id.toString(), label: committee.name }
+		})
+	}
 	const form = useForm({
 		initialValues: {
 			email: '',
 			name: '',
 			phonenumber: '',
 			textarea: '',
+			committees: [],
 		},
 
 		validationRules: {
@@ -36,7 +61,7 @@ export function Form() {
 			name: (value) => value.trim().length >= 2,
 			phonenumber: (value) => /^[0-9]+$/.test(value),
 			textarea: (value) => value.trim().length >= 2,
-
+			committees: (value) => value.length > 0,
 		},
 	})
 
@@ -46,25 +71,29 @@ export function Form() {
 			onSubmit={form.onSubmit((values) => console.log(values))}
 		>
 			<TextInput
-				label={<span className={classes.writtenText}>Fullt navn</span>}
+				required label={<span className={classes.writtenText}>Fullt navn</span>}
 				{...form.getInputProps('name')}
 			/>
 			<TextInput
-				label={<span className={classes.writtenText}>E-post</span>}
+				required label={<span className={classes.writtenText}>E-post</span>}
 				{...form.getInputProps('email')}
 			/>
 			<TextInput
-				label={<span className={classes.writtenText}>Telefonnummer</span>}
+				required label={<span className={classes.writtenText}>Telefonnummer</span>}
 				{...form.getInputProps('phonenumber')}
 			/>
-			<Committees  />
+			<MultiSelect
+				data={committees}
+				required label={<span className={classes.select}>Hva ønsker du å søke?</span>}
+				searchable
+				{...form.getInputProps('committees')}
+			/>
 			<Textarea
 				className={classes.blackground}
-				label={<span className={classes.writtenText}>Søknadstekst</span>}
+				required label={<span className={classes.writtenText}>Søknadstekst</span>}
 				autosize
 				minRows={3}
 				{...form.getInputProps('textarea')}
-				
 			/>
 
 			<Button type='submit'> ✓ Send søknad</Button>
