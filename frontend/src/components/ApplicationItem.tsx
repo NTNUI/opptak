@@ -24,10 +24,10 @@ const useStyles = createStyles((theme) => ({
 		fontWeight: '300',
 		fontSize: 'medium',
 		display: 'grid',
-		gridTemplateColumns: '3fr 4fr',
+		gap: '1em',
+		gridTemplateColumns: '6fr 10fr 2fr',
 	},
 	nameDiv: {
-		paddingRight: '1rem',
 		minWidth: '8em',
 		overflow: 'hidden',
 		textOverflow: 'ellipsis',
@@ -40,12 +40,13 @@ const useStyles = createStyles((theme) => ({
 	},
 	badgeDiv: {
 		display: 'flex',
+		alignContent: 'center',
 		color: theme.colors.ntnui_yellow[9],
 	},
-	badge: {
+	date: {
 		color: theme.colors.ntnui_yellow[9],
-		// borderColor: theme.colors.ntnui_yellow[9],
 		whiteSpace: 'nowrap',
+
 		margin: 'auto',
 		'@media (max-width: 500px)': {
 			fontSize: 'medium',
@@ -97,13 +98,9 @@ function ApplicationItem({ name, committees, submitted_date }: IApplication) {
 					{stringifiedCommittees}
 					{/* </Tooltip> */}
 				</div>
-			</div>
-			<div className={classes.badgeDiv}>
-				<span className={classes.badge}>{submittedDate.toUpperCase()}</span>
-
-				{/* <Badge className={classes.badge} size='lg' radius='sm' variant='outline'>
-					{submittedDate}
-				</Badge> */}
+				<div className={classes.badgeDiv}>
+					<span className={classes.date}>{submittedDate.toUpperCase()}</span>
+				</div>
 			</div>
 		</Box>
 	)
