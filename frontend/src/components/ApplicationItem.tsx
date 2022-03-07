@@ -1,4 +1,4 @@
-import { Badge, Box, createStyles } from '@mantine/core'
+import { Box, createStyles } from '@mantine/core'
 import { useMemo } from 'react'
 import { IApplication, ICommittee } from '../types/application'
 
@@ -29,6 +29,8 @@ const useStyles = createStyles((theme) => ({
 	nameDiv: {
 		paddingRight: '1rem',
 		minWidth: '8em',
+		overflow: 'hidden',
+		textOverflow: 'ellipsis',
 	},
 	committeeDiv: {
 		borderLeft: '1px solid #F8F082',
