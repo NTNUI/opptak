@@ -21,6 +21,7 @@ const useStyles = createStyles((theme) => ({
 
 function ApplicationOverview() {
 	const { classes } = useStyles()
+
 	return (
 		<div className={classes.overview}>
 			<h1>Søknadsoversikt</h1>
