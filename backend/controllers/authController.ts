@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express'
 import jsonwebtoken, { JwtPayload } from 'jsonwebtoken'
-import { UnauthorizedUser, CustomError } from '../utils/errorHandler'
+import { getRoleInGroup, getNtnuiToken, isValidNtnuiToken } from 'ntnui-tools'
+import { CustomError, UnauthorizedUser } from 'ntnui-tools/customError'
 import { CommitteeModel } from '../models/Committee'
-import { getRoleInGroup, getNtnuiToken } from '../utils/package'
 import MembershipType from '../utils/enums'
 import { IRoleInCommittee, UserModel } from '../models/User'
 
@@ -38,6 +38,21 @@ function isRoleInAccessRoles(role: string, access_roles: string[]) {
 		return true
 	}
 	return false
+}
+
+export async function verify(req: Request, res: Response) {
+	if (!req.headers.authorization) {
+		return res.status(403).json({ error: 'No credentials sent!' });
+	}
+	const authHeader = req.headers.authorization
+	const token = authHeader && authHeader.split(' ')[1]
+	if(token){
+		const isValidToken = await isValidNtnuiToken(token)
+		if(isValidToken) {
+			return res.status(200).json({message: "Token is valid"})
+		}
+	}
+	return res.status(401).json({error: "Token is invalid or expired"})
 }
 
 async function login(req: Request, res: Response, next: NextFunction) {
@@ -89,8 +104,10 @@ async function login(req: Request, res: Response, next: NextFunction) {
 		}
 		throw UnauthorizedUser
 	} catch (error) {
+		console.log(error)
 		next(error)
 	}
+	throw UnauthorizedUser
 }
 
 export default login
