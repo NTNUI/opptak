@@ -8,9 +8,9 @@ const useStyles = createStyles((theme) => ({
 		margin: 'auto',
 	},
 	imagewrapper: {
-        display: "flex",
-        padding: "1rem",
-    },
+		display: 'flex',
+		padding: '1rem',
+	},
 }))
 
 export interface ImageProp {
@@ -21,7 +21,8 @@ export function DisplayLogo(props: ImageProp) {
 	const { classes } = useStyles()
 	return (
 		<div className={classes.imagewrapper}>
-			<img alt='NTNUIlogo'
+			<img
+				alt='NTNUIlogo'
 				className={classes.logo}
 				src='https://photos.smugmug.com/photos/i-DTr3wpH/0/X4/i-DTr3wpH-X4.png'
 			/>

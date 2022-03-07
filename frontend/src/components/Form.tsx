@@ -17,7 +17,7 @@ const useStyles = createStyles((theme) => ({
 		margin: 'auto',
 	},
 	blackground: {
-		backgroundColor: 'black',
+		backgroundColor: "black",
 	},
 }))
 
