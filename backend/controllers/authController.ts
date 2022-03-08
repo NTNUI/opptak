@@ -7,19 +7,23 @@ import MembershipType from '../utils/enums'
 import { IRoleInCommittee, UserModel } from '../models/User'
 
 async function updateOrCreateUserModel(
-	ntnui_no: string,
+	ntnui_no: number,
 	rolesInCommittees: IRoleInCommittee[]
 ) {
-	const user = {
-		_id: ntnui_no,
-		committees: rolesInCommittees,
-	}
-	await UserModel.updateOne({ _id: ntnui_no }, user, {
-		upsert: true,
-	}).catch((err) => {
+	return UserModel.updateOne(
+		{ _id: ntnui_no },
+		{
+			_id: ntnui_no,
+			committees: rolesInCommittees,
+		},
+		{
+			upsert: true,
+			runValidators: true,
+		}
+	).catch((err) => {
 		throw new CustomError(
 			`Could not update or create user model.`,
-			err.status,
+			500,
 			`${err.message}`
 		)
 	})
@@ -42,17 +46,17 @@ function isRoleInAccessRoles(role: string, access_roles: string[]) {
 
 export async function verify(req: Request, res: Response) {
 	if (!req.headers.authorization) {
-		return res.status(403).json({ error: 'No credentials sent!' });
+		return res.status(403).json({ error: 'No credentials sent!' })
 	}
 	const authHeader = req.headers.authorization
 	const token = authHeader && authHeader.split(' ')[1]
-	if(token){
+	if (token) {
 		const isValidToken = await isValidNtnuiToken(token)
-		if(isValidToken) {
-			return res.status(200).json({message: "Token is valid"})
+		if (isValidToken) {
+			return res.status(200).json({ message: 'Token is valid' })
 		}
 	}
-	return res.status(401).json({error: "Token is invalid or expired"})
+	return res.status(401).json({ error: 'Token is invalid or expired' })
 }
 
 async function login(req: Request, res: Response, next: NextFunction) {
@@ -73,7 +77,6 @@ async function login(req: Request, res: Response, next: NextFunction) {
 		const decodedToken: JwtPayload | null | string = jsonwebtoken.decode(
 			tokens.access
 		)
-		// Check if user exists in local database
 		if (decodedToken && typeof decodedToken !== 'string') {
 			// Get all committees from local db
 			const committees = await getCommittees()
@@ -104,10 +107,8 @@ async function login(req: Request, res: Response, next: NextFunction) {
 		}
 		throw UnauthorizedUser
 	} catch (error) {
-		console.log(error)
-		next(error)
+		return next(error)
 	}
-	throw UnauthorizedUser
 }
 
 export default login

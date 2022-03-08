@@ -1,4 +1,4 @@
-import mongoose, { ObjectId } from 'mongoose'
+import mongoose from 'mongoose'
 import MembershipType from '../utils/enums'
 
 interface IRoleInCommittee {
@@ -7,7 +7,7 @@ interface IRoleInCommittee {
 }
 
 interface IUser {
-	_id: ObjectId
+	_id: number
 	committees: IRoleInCommittee[]
 }
 
@@ -21,7 +21,13 @@ const RoleInSchema = new mongoose.Schema<IRoleInCommittee>(
 
 const UserSchema = new mongoose.Schema<IUser>({
 	_id: { type: Number, required: true },
-	committees: [RoleInSchema],
+	committees: {
+		type: [RoleInSchema],
+		validate: [
+			(val: []) => val.length > 0,
+			'There must be at least one committee',
+		],
+	},
 })
 
 const UserModel = mongoose.model<IUser>('User', UserSchema)

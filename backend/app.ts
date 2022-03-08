@@ -17,7 +17,6 @@ connectDB()
 app.use(cors({ origin: 'http://localhost:3000' }))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
-app.use(errorHandler)
 
 // Set up routes
 app.use('/auth', authRouter)
@@ -25,6 +24,8 @@ app.use('/test', testRoute)
 app.use('/applications', applicationRouter)
 app.use('/committees', committeeRouter)
 
+// Error handling middleware
+app.use(errorHandler)
 
 const port = 8082
 

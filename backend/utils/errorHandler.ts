@@ -18,16 +18,14 @@ function handleError(
 	next: NextFunction
 ) {
 	let customError = err
-	console.log(`Halloo ${err}`)
-	
+
 	if (!(err instanceof CustomError)) {
 		customError = new CustomError(
 			'Oh no, something went wrong that we did not handle'
 		)
 	}
-	
 
-	return res.status((customError as CustomError).status).send(customError)
+	res.status((customError as CustomError).status).send(customError)
 }
 
 export default handleError

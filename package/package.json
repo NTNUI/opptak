@@ -9,7 +9,7 @@
 		"email": "sprint@ntnui.no",
 		"url": "https://ntnui.no"
 	},
-	"exports":{ 
+	"exports": {
 		".": "./index.ts",
 		"./customError": "./customError.ts"
 	},
