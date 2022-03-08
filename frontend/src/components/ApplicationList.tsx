@@ -37,7 +37,6 @@ function ApplicationList() {
 	const [numberOfPages, setNumberOfPages] = useState(1)
 
 	useEffect(() => {
-		console.log(`Current page ${currentPage}`)
 		axios
 			.get(`http://localhost:8082/applications/?page=${currentPage}`)
 			.then((res) => {
@@ -66,7 +65,6 @@ function ApplicationList() {
 				total={numberOfPages}
 				page={currentPage}
 				onChange={setCurrentPage}
-				//color='ntnui_blue[9]'
 			/>
 		</Container>
 	)

@@ -63,8 +63,6 @@ function ApplicationItem({ name, committees, submitted_date }: IApplication) {
 	const date = new Date(submitted_date)
 
 	const submittedDate = date.toLocaleDateString('en-GB', {
-		// you can use undefined as first argument
-		// year: '2-digit',
 		month: 'short',
 		day: '2-digit',
 	})
