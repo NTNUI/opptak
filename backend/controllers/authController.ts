@@ -1,6 +1,11 @@
 import { NextFunction, Request, Response } from 'express'
 import jsonwebtoken, { JwtPayload } from 'jsonwebtoken'
-import { getRoleInGroup, getNtnuiToken, isValidNtnuiToken } from 'ntnui-tools'
+import {
+	getRoleInGroup,
+	getNtnuiToken,
+	isValidNtnuiToken,
+	refreshNtnuiToken,
+} from 'ntnui-tools'
 import { CustomError, UnauthorizedUser } from 'ntnui-tools/customError'
 import { CommitteeModel } from '../models/Committee'
 import MembershipType from '../utils/enums'
@@ -44,22 +49,35 @@ function isRoleInAccessRoles(role: string, access_roles: string[]) {
 	return false
 }
 
-export async function verify(req: Request, res: Response) {
-	if (!req.headers.authorization) {
-		return res.status(403).json({ error: 'No credentials sent!' })
-	}
-	const authHeader = req.headers.authorization
-	const token = authHeader && authHeader.split(' ')[1]
-	if (token) {
-		const isValidToken = await isValidNtnuiToken(token)
-		if (isValidToken) {
-			return res.status(200).json({ message: 'Token is valid' })
+export async function refresh(req: Request, res: Response, next: NextFunction) {
+	try {
+		if (!req.body.refresh) {
+			return res.status(403).json({ error: 'No refresh-token sent!' })
 		}
+		const token = req.body.refresh
+		const tokens = await refreshNtnuiToken(token)
+		if (tokens) {
+			return res.status(200).json({ access: tokens.access })
+		}
+		return res.status(401).json({ error: 'Token is invalid or expired' })
+	} catch (error) {
+		return next(error)
+	}
+}
+
+export async function verify(req: Request, res: Response) {
+	if (!req.body.token) {
+		return res.status(403).json({ error: 'No token sent!' })
+	}
+	const { token } = req.body
+	const isValidToken = await isValidNtnuiToken(token)
+	if (isValidToken) {
+		return res.status(200).json({ message: 'Token is valid' })
 	}
 	return res.status(401).json({ error: 'Token is invalid or expired' })
 }
 
-async function login(req: Request, res: Response, next: NextFunction) {
+export async function login(req: Request, res: Response, next: NextFunction) {
 	// 1. Send request to NTNUI and retrieve tokens
 	// 2. Decode token and get ntnui_no
 	// 3. Check users role in each committee in NTNUI membership system
@@ -110,5 +128,3 @@ async function login(req: Request, res: Response, next: NextFunction) {
 		return next(error)
 	}
 }
-
-export default login

@@ -89,4 +89,29 @@ async function isValidNtnuiToken(token: string): Promise<boolean> {
 		.catch(() => false)
 }
 
-export { printSlug, getRoleInGroup, getNtnuiToken, isValidNtnuiToken }
+async function refreshNtnuiToken(token: string): Promise<INtnuiToken> {
+	return axios
+		.post('token/refresh/', {
+			refresh: token,
+		})
+		.then((tokenRes: ITokenResponse) => ({
+			access: tokenRes.data.access,
+			refresh: tokenRes.data.refresh,
+		}))
+		.catch((err) => {
+			if (err.response.status === 401) {
+				throw new CustomError('Invalid token.', 401)
+			} else if (err.response.status === 400) {
+				throw BadRequest
+			}
+			throw new CustomError('Unexpected error.', 500)
+		})
+}
+
+export {
+	printSlug,
+	getRoleInGroup,
+	getNtnuiToken,
+	isValidNtnuiToken,
+	refreshNtnuiToken,
+}
