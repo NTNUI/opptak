@@ -1,4 +1,4 @@
 export interface ICommittee {
-	name: string,
+	name: string
 	_id: number
 }

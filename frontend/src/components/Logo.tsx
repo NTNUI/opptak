@@ -1,5 +1,4 @@
 import { createStyles } from '@mantine/core'
-import { render } from '@testing-library/react'
 import React from 'react'
 
 const useStyles = createStyles((theme) => ({

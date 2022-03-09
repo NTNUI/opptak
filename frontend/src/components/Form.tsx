@@ -1,4 +1,10 @@
-import { TextInput, Button, Textarea, createStyles, MultiSelect } from '@mantine/core'
+import {
+	TextInput,
+	Button,
+	Textarea,
+	createStyles,
+	MultiSelect,
+} from '@mantine/core'
 import { useForm } from '@mantine/hooks'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
@@ -19,7 +25,7 @@ const useStyles = createStyles((theme) => ({
 		display: 'flex',
 		flexDirection: 'column',
 		justifyContent: 'center',
-		width: '40%',
+		width: '50%',
 		gap: '1rem',
 		margin: 'auto',
 	},
@@ -51,16 +57,16 @@ export function Form() {
 		initialValues: {
 			email: '',
 			name: '',
-			phonenumber: '',
-			textarea: '',
+			phone_number: '',
+			text: '',
 			committees: [],
 		},
 
 		validationRules: {
 			email: (value) => /^\S+@\S+$/.test(value),
 			name: (value) => value.trim().length >= 2,
-			phonenumber: (value) => /^[0-9]+$/.test(value),
-			textarea: (value) => value.trim().length >= 2,
+			phone_number: (value) => /^[0-9]+$/.test(value),
+			text: (value) => value.trim().length >= 2,
 			committees: (value) => value.length > 0,
 		},
 	})
@@ -71,29 +77,34 @@ export function Form() {
 			onSubmit={form.onSubmit((values) => console.log(values))}
 		>
 			<TextInput
-				required label={<span className={classes.writtenText}>Fullt navn</span>}
+				required
+				label={<span className={classes.writtenText}>Fullt navn</span>}
 				{...form.getInputProps('name')}
 			/>
 			<TextInput
-				required label={<span className={classes.writtenText}>E-post</span>}
+				required
+				label={<span className={classes.writtenText}>E-post</span>}
 				{...form.getInputProps('email')}
 			/>
 			<TextInput
-				required label={<span className={classes.writtenText}>Telefonnummer</span>}
-				{...form.getInputProps('phonenumber')}
+				required
+				label={<span className={classes.writtenText}>Telefonnummer</span>}
+				{...form.getInputProps('phone_number')}
 			/>
 			<MultiSelect
 				data={committees}
-				required label={<span className={classes.select}>Hva ønsker du å søke?</span>}
+				required
+				label={<span className={classes.select}>Hva ønsker du å søke?</span>}
 				searchable
 				{...form.getInputProps('committees')}
 			/>
 			<Textarea
 				className={classes.blackground}
-				required label={<span className={classes.writtenText}>Søknadstekst</span>}
+				required
+				label={<span className={classes.writtenText}>Søknadstekst</span>}
 				autosize
 				minRows={3}
-				{...form.getInputProps('textarea')}
+				{...form.getInputProps('text')}
 			/>
 
 			<Button type='submit'> ✓ Send søknad</Button>

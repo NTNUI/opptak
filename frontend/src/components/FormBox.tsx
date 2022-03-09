@@ -1,4 +1,4 @@
-import { Box, createStyles, JsonInput } from '@mantine/core'
+import { Box, createStyles } from '@mantine/core'
 import React from 'react'
 import { Form } from './Form'
 
