@@ -9,21 +9,22 @@ const useStyles = createStyles((theme) => ({
 		width: '100%',
 		display: 'flex',
 		padding: '0',
-		paddingBottom: '2rem',
 		flexDirection: 'column',
 		gap: '1rem',
 		margin: 'auto',
 	},
 	pagination: {
-		paddingTop: '1rem',
-		paddingBottom: '1rem',
-		margin: 'auto',
+		margin: '1rem auto 1rem auto',
 		active: { color: 'red' },
 	},
 	pagintaionItems: {
 		color: 'white',
 		border: theme.colors.ntnui_background[9],
 		backgroundColor: theme.colors.ntnui_background[9],
+		'@media (max-width: 500px)': {
+			fontSize: theme.fontSizes.md,
+			minWidth: '1rem',
+		},
 	},
 	paginationDots: {},
 	pagintationActive: {
@@ -61,6 +62,7 @@ function ApplicationList() {
 					active: classes.pagintationActive,
 				}}
 				total={numberOfPages}
+				noWrap
 				page={currentPage}
 				onChange={setCurrentPage}
 			/>
