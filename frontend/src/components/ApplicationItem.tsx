@@ -68,10 +68,14 @@ function ApplicationItem({ name, committees, submitted_date }: IApplication) {
 	})
 
 	const stringifyCommittees = (committees: ICommittee[]) => {
-		const committeeNames = committees.map((committee) => committee.name)
-		return committeeNames.reduce((left, right) => {
-			return left + ', ' + right
-		})
+		if (committees.length) {
+			const committeeNames = committees.map((committee) => committee.name)
+			return committeeNames.reduce((left, right) => {
+				return left + ', ' + right
+			})
+		} else {
+			return 'N/A'
+		}
 	}
 
 	const stringifiedCommittees = useMemo(
