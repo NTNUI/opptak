@@ -21,7 +21,6 @@ interface ICommitteeInSelect {
 	value: string
 	label: string
 }
-
 const useStyles = createStyles((theme) => ({
 	writtenText: {
 		fontWeight: 'italic',
@@ -36,8 +35,14 @@ const useStyles = createStyles((theme) => ({
 		gap: '1rem',
 		margin: 'auto',
 	},
-	select: {
+	commiteeSelectText: {
 		color: 'white',
+	},
+	submitButton: {
+		'&:hover': {
+			backgroundColor: 'green',
+			transition: '0.3s',
+		},
 	},
 }))
 
@@ -86,7 +91,6 @@ export function Form() {
 			committees: (value) => value.length > 0,
 		},
 	})
-
 	return (
 		<form
 			className={classes.form}
@@ -110,7 +114,9 @@ export function Form() {
 			<MultiSelect
 				data={committees}
 				required
-				label={<span className={classes.select}>Hva ønsker du å søke?</span>}
+				label={
+					<span className={classes.commiteeSelectText}>Hva ønsker du å søke?</span>
+				}
 				searchable
 				{...form.getInputProps('committees')}
 			/>
@@ -122,7 +128,7 @@ export function Form() {
 				{...form.getInputProps('text')}
 			/>
 
-			<Button id='submitButton' type='submit'>
+			<Button className={classes.submitButton} type='submit'>
 				{' '}
 				✓ Send søknad
 			</Button>

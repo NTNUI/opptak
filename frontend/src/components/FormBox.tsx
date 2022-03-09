@@ -7,7 +7,6 @@ const useStyles = createStyles((theme) => ({
 		backgroundColor: 'black',
 		textAlign: 'left',
 		borderRadius: '20px',
-		cursor: 'pointer',
 		color: 'white',
 		borderColor: theme.colors.ntnui_yellow[9],
 		border: '2px solid' + theme.colors.ntnui_yellow[9],

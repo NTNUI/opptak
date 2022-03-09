@@ -7,6 +7,8 @@ const useStyles = createStyles((theme) => ({
 		position: 'absolute',
 		left: '90%',
 		top: '5%',
+		fontFamily: 'Poppins',
+		fontWeight: 'normal',
 	},
 }))
 
@@ -14,7 +16,7 @@ export function InternButton() {
 	const { classes } = useStyles()
 	return (
 		<Button className={classes.select} size='lg'>
-			Intern
+			INTERN
 		</Button>
 	)
 }
