@@ -3,6 +3,7 @@ import ApplicationItem from './ApplicationItem'
 import { IApplication } from '../types/types'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import { axiosBaseURL } from '../utils/axios'
 
 const useStyles = createStyles((theme) => ({
 	container: {
@@ -37,9 +38,11 @@ function ApplicationList() {
 	const [currentPage, setCurrentPage] = useState(1)
 	const [numberOfPages, setNumberOfPages] = useState(1)
 
+	const pageQuery = `/applications/?page=${currentPage}`
+
 	useEffect(() => {
 		axios
-			.get(`http://localhost:8082/applications/?page=${currentPage}`)
+			.get(axiosBaseURL + pageQuery)
 			.then((res) => {
 				setApplications(res.data.applications)
 				setCurrentPage(res.data.currentPage)
