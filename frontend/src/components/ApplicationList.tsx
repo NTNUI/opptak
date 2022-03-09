@@ -48,13 +48,11 @@ function ApplicationList() {
 	}, [currentPage])
 
 	const { classes } = useStyles()
-	return (
+	return applications.length ? (
 		<Container className={classes.container}>
-			{applications
-				? applications.map((item: IApplication, idx: number) => (
-						<ApplicationItem key={idx} {...item} />
-				  ))
-				: 'No applications found'}
+			{applications.map((item: IApplication, idx: number) => (
+				<ApplicationItem key={idx} {...item} />
+			))}
 			<Pagination
 				className={classes.pagination}
 				classNames={{
@@ -67,6 +65,8 @@ function ApplicationList() {
 				onChange={setCurrentPage}
 			/>
 		</Container>
+	) : (
+		<span>No applications found</span>
 	)
 }
 
