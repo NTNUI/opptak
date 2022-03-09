@@ -13,9 +13,23 @@ const useStyles = createStyles((theme) => ({
 		alignItems: 'center',
 		flexDirection: 'row',
 		gap: '0.5rem',
+		transition: 'ease-in-out 0.1s',
+
 		'&:hover': {
-			backgroundColor: '#282c34',
+			//backgroundColor: theme.colors.ntnui_yellow[9],
+			backgroundColor: theme.colors.ntnui_background[9],
+			boxShadow: '0rem 0.6rem 0.4rem ' + theme.colors.dark[7],
+			//color: theme.colors.ntnui_background[9],
+			fontWeight: 500,
+			transform: 'translateY(-0.2em)',
 		},
+		// '&:hover *': {
+		// 	color: theme.colors.ntnui_background[9],
+		// 	fontWeight: 600,
+		// },
+		// '&:hover #committee': {
+		// 	borderLeft: '2px solid ' + theme.colors.ntnui_background[9],
+		// },
 	},
 	grid: {
 		marginLeft: '0',
@@ -87,7 +101,7 @@ function ApplicationItem({ name, committees, submitted_date }: IApplication) {
 		<Box className={classes.box}>
 			<div className={classes.grid}>
 				<div className={classes.nameDiv}>{name}</div>
-				<div className={classes.committeeDiv}>
+				<div id='committee' className={classes.committeeDiv}>
 					{/* Tooltip is incompatible with ellipsis */}
 					{/* <Tooltip
 						label={stringifiedCommittees}

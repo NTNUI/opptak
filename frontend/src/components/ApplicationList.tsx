@@ -22,6 +22,12 @@ const useStyles = createStyles((theme) => ({
 		color: 'white',
 		border: theme.colors.ntnui_background[9],
 		backgroundColor: theme.colors.ntnui_background[9],
+		transition: 'ease-out 0.1s',
+		'&:hover': {
+			backgroundColor: theme.colors.ntnui_background[7],
+			boxShadow: '0rem 0.2rem 0.4rem ' + theme.colors.dark[7],
+			transform: 'translateY(-0.2em)',
+		},
 		'@media (max-width: 500px)': {
 			fontSize: theme.fontSizes.md,
 			minWidth: '1rem',
@@ -30,6 +36,9 @@ const useStyles = createStyles((theme) => ({
 	paginationDots: {},
 	pagintationActive: {
 		backgroundColor: theme.colors.ntnui_blue[9],
+		'&:hover': {
+			backgroundColor: theme.colors.ntnui_blue[9],
+		},
 	},
 }))
 
