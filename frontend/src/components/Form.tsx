@@ -53,6 +53,10 @@ export function Form() {
 	}, [])
 
 	const submitForm = (values: IApplication) => {
+		const toNumbers = () => committees.map(str => {
+			return Number(str)
+		})
+		toNumbers()
 		form.reset()
 		axios
 			.post('http://localhost:8082/applications/', values)
