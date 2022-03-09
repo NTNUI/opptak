@@ -1,6 +1,6 @@
 import { Box, createStyles } from '@mantine/core'
 import { useMemo } from 'react'
-import { IApplication, ICommittee } from '../types/application'
+import { IApplication, ICommittee } from '../types/types'
 
 const useStyles = createStyles((theme) => ({
 	box: {

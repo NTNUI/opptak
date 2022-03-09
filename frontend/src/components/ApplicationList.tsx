@@ -1,6 +1,6 @@
 import { Container, createStyles, Pagination } from '@mantine/core'
 import ApplicationItem from './ApplicationItem'
-import { IApplication } from '../types/application'
+import { IApplication } from '../types/types'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
