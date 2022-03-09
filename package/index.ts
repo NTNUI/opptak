@@ -1,5 +1,9 @@
 import axios from 'axios'
-import { BadRequestError, CustomError, UnauthorizedUserError } from './customError'
+import {
+	BadRequestError,
+	CustomError,
+	UnauthorizedUserError,
+} from './customError'
 
 interface IGroup {
 	_id: Number
@@ -11,7 +15,7 @@ function printSlug(committee: IGroup) {
 	console.log(committee.slug) // eslint-disable-line no-console
 }
 
-axios.defaults.baseURL = 'https://dev.api.ntnui.no/' // GET FROM ENV OR CONFIG
+axios.defaults.baseURL = 'https://dev.api.ntnui.no/' // TODO: GET FROM ENV OR CONFIG
 
 type IGroupPageResult = {
 	data: {
