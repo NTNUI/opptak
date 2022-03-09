@@ -1,8 +1,8 @@
 import { Request, Response } from 'express'
 import { ApplicationModel } from '../models/Application'
 
-const getApplications = async (_req: Request, res: Response) => {
-	const { page } = _req.query
+const getApplications = async (req: Request, res: Response) => {
+	const { page } = req.query
 	const LIMIT = 4
 	const startIndex = (Number(page) - 1) * LIMIT
 	const total = await ApplicationModel.countDocuments({})
