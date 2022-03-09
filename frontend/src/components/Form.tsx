@@ -36,9 +36,6 @@ const useStyles = createStyles((theme) => ({
 		gap: '1rem',
 		margin: 'auto',
 	},
-	blackground: {
-		backgroundColor: 'black',
-	},
 	select: {
 		color: 'white',
 	},
@@ -56,10 +53,9 @@ export function Form() {
 	}, [])
 
 	const submitForm = (values: IApplication) => {
-		// const parsedCommittees = values.committees.map(committee => parseInt(committee))
-		// const parsedValues = values.committees
+		form.reset()
 		axios
-			.post('http://localhost:8082/applications/', (values))
+			.post('http://localhost:8082/applications/', values)
 			.then((res) => console.log(res.data))
 			.catch((err) => console.log(err))
 	}
@@ -90,7 +86,7 @@ export function Form() {
 	return (
 		<form
 			className={classes.form}
-			onSubmit={form.onSubmit((values: IApplication) =>  submitForm(values))}
+			onSubmit={form.onSubmit((values: IApplication) => submitForm(values))}
 		>
 			<TextInput
 				required
@@ -115,7 +111,6 @@ export function Form() {
 				{...form.getInputProps('committees')}
 			/>
 			<Textarea
-				className={classes.blackground}
 				required
 				label={<span className={classes.writtenText}>Søknadstekst</span>}
 				autosize
@@ -123,7 +118,10 @@ export function Form() {
 				{...form.getInputProps('text')}
 			/>
 
-			<Button type='submit'> ✓ Send søknad</Button>
+			<Button id='submitButton' type='submit'>
+				{' '}
+				✓ Send søknad
+			</Button>
 		</form>
 	)
 }
