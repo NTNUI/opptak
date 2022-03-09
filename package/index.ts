@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { BadRequest, CustomError, UnauthorizedUser } from './customError'
+import { BadRequestError, CustomError, UnauthorizedUserError } from './customError'
 
 interface IGroup {
 	_id: Number
@@ -72,9 +72,9 @@ async function getNtnuiToken(
 		}))
 		.catch((err) => {
 			if (err.response.status === 401) {
-				throw UnauthorizedUser
+				throw UnauthorizedUserError
 			} else if (err.response.status === 400) {
-				throw BadRequest
+				throw BadRequestError
 			}
 			throw new CustomError('Unexpected error.', 500)
 		})
@@ -102,7 +102,7 @@ async function refreshNtnuiToken(token: string): Promise<INtnuiToken> {
 			if (err.response.status === 401) {
 				throw new CustomError('Invalid token.', 401)
 			} else if (err.response.status === 400) {
-				throw BadRequest
+				throw BadRequestError
 			}
 			throw new CustomError('Unexpected error.', 500)
 		})

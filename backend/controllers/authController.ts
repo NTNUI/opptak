@@ -6,7 +6,7 @@ import {
 	isValidNtnuiToken,
 	refreshNtnuiToken,
 } from 'ntnui-tools'
-import { CustomError, UnauthorizedUser } from 'ntnui-tools/customError'
+import { CustomError, UnauthorizedUserError } from 'ntnui-tools/customError'
 import { CommitteeModel } from '../models/Committee'
 import MembershipType from '../utils/enums'
 import { IRoleInCommittee, UserModel } from '../models/User'
@@ -43,10 +43,7 @@ async function getCommittees() {
 }
 
 function isRoleInAccessRoles(role: string, access_roles: string[]) {
-	if (role && (role === MembershipType.leader || access_roles.includes(role))) {
-		return true
-	}
-	return false
+	return role && (role === MembershipType.leader || access_roles.includes(role))
 }
 
 export async function refresh(req: Request, res: Response, next: NextFunction) {
@@ -77,17 +74,23 @@ export async function verify(req: Request, res: Response) {
 	return res.status(401).json({ error: 'Token is invalid or expired' })
 }
 
+/**
+ * The login process works as follows:
+ * 1. Send request to NTNUI and retrieve tokens
+ * 2. Decode token and get ntnui_no
+ * 3. Check users role in each committee in NTNUI membership system
+ *     - Get all committees from local db
+ * 	   - For each committee, check role in group in NTNUI membership system by slug
+ * 	   - Determine if role is in access roles of local committees OR is leader
+ * 	     * If true, push to array of role in committee
+ *     - Update user model in local database with roles in committees
+ * 4. If role in committees is empty, unauthorized user
+ * @param req express Request object
+ * @param res express Response object
+ * @param next express NextFunction method
+ * @returns tokens
+ */
 export async function login(req: Request, res: Response, next: NextFunction) {
-	// 1. Send request to NTNUI and retrieve tokens
-	// 2. Decode token and get ntnui_no
-	// 3. Check users role in each committee in NTNUI membership system
-	// 		- Get all committees from local db
-	//   	- For each committee, check role in group in NTNUI membership system by slug
-	//		- Determine if role is in access roles of local committees OR is leader
-	// 			* If yes, push to array of role in committee
-	//		- Update user model in local database with roles in committees
-	// 4. If role in committees is empty, unauthorized user
-
 	try {
 		// Use package to get tokens
 		const tokens = await getNtnuiToken(req.body.phone_number, req.body.password)
@@ -98,12 +101,12 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 		if (decodedToken && typeof decodedToken !== 'string') {
 			// Get all committees from local db
 			const committees = await getCommittees()
-			// Get what role user has in every committees
+			// Get what role user has in every committee
 			const rolesResults = committees.map((committee) =>
 				getRoleInGroup(committee.slug, tokens.access)
 			)
 			const roles = await Promise.all(rolesResults)
-			// Get role in committees
+			// Get roles in committees
 			const rolesInCommittees: IRoleInCommittee[] = []
 			for (let roleIdx = 0; roleIdx < roles.length; roleIdx += 1) {
 				const committee = committees[roleIdx]
@@ -123,7 +126,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 					.json({ access: tokens.access, refresh: tokens.refresh })
 			}
 		}
-		throw UnauthorizedUser
+		throw UnauthorizedUserError
 	} catch (error) {
 		return next(error)
 	}

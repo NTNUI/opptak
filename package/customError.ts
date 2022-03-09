@@ -14,8 +14,8 @@ export class CustomError extends Error {
 	}
 }
 
-export const UnauthorizedUser: CustomError = new CustomError(
+export const UnauthorizedUserError: CustomError = new CustomError(
 	'Unauthorized user',
 	401
 )
-export const BadRequest: CustomError = new CustomError('Bad request', 400)
+export const BadRequestError: CustomError = new CustomError('Bad request', 400)
