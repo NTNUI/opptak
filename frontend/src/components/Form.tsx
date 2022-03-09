@@ -10,6 +10,13 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { ICommittee } from '../types/committee'
 
+interface IApplication {
+	email: string
+	name: string
+	phone_number: string
+	text: string
+	committees: string[]
+}
 interface ICommitteeInSelect {
 	value: string
 	label: string
@@ -48,6 +55,15 @@ export function Form() {
 			.catch((err) => console.log(err))
 	}, [])
 
+	const submitForm = (values: IApplication) => {
+		// const parsedCommittees = values.committees.map(committee => parseInt(committee))
+		// const parsedValues = values.committees
+		axios
+			.post('http://localhost:8082/applications/', (values))
+			.then((res) => console.log(res.data))
+			.catch((err) => console.log(err))
+	}
+
 	const mapCommitteeToSelect = (committees: ICommittee[]) => {
 		return committees.map((committee: ICommittee) => {
 			return { value: committee._id.toString(), label: committee.name }
@@ -74,7 +90,7 @@ export function Form() {
 	return (
 		<form
 			className={classes.form}
-			onSubmit={form.onSubmit((values) => console.log(values))}
+			onSubmit={form.onSubmit((values: IApplication) =>  submitForm(values))}
 		>
 			<TextInput
 				required
