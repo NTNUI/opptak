@@ -8,6 +8,7 @@ Proof of concept application form app for development of an npm package for easi
 
 The project requires Node version 16.14.0.
 
+To lint and check code style, run `npm run check`. Fix linting and styling issues by running `npm run fix`.
 ### Environment variables
 
 The project requires a set of environment variables added to an `.env` file in the /backend folder.
