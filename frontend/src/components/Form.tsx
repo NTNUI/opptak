@@ -122,9 +122,8 @@ export function Form() {
 			<MultiSelect
 				data={committees}
 				required
-				label={
-					<span className={classes.commiteeSelectText}>Hva ønsker du å søke?</span>
-				}
+				classNames={{ label: classes.writtenText }}
+				label={'Hva ønsker du å søke?'}
 				searchable
 				{...form.getInputProps('committees')}
 			/>
