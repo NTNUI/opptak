@@ -9,6 +9,7 @@ import { useForm } from '@mantine/hooks'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { ICommittee } from '../types/committee'
+import { ErrorNotification, SuccessNotification } from './Notification'
 
 interface IApplication {
 	email: string
@@ -21,6 +22,7 @@ interface ICommitteeInSelect {
 	value: string
 	label: string
 }
+
 const useStyles = createStyles((theme) => ({
 	writtenText: {
 		fontWeight: 'italic',
@@ -54,6 +56,9 @@ export function Form() {
 		axios
 			.get('http://localhost:8082/committees/')
 			.then((res) => setCommittees(mapCommitteeToSelect(res.data)))
+			.then((res) => {
+				return SuccessNotification()
+			})
 			.catch((err) => console.log(err))
 	}, [])
 
@@ -63,9 +68,12 @@ export function Form() {
 				return Number(str)
 			})
 		toNumbers()
-		form.reset()
 		axios
 			.post('http://localhost:8082/applications/', values)
+			.then((response) => form.reset())
+			.then((response) => {
+				return SuccessNotification()
+			})
 			.catch((err) => console.log(err))
 	}
 
