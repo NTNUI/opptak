@@ -38,7 +38,7 @@ async function getCommittees() {
 	return CommitteeModel.find()
 		.then((committees) => committees)
 		.catch(() => {
-			throw new CustomError('Could not get committees from local db', 500)
+			throw new CustomError('Could not retrieve committees from local database', 500)
 		})
 }
 
@@ -56,7 +56,7 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
 		if (tokens) {
 			return res.status(200).json({ access: tokens.access })
 		}
-		return res.status(401).json({ message: 'Token is invalid or expired' })
+		return res.status(401).json({ message: 'Refresh token is invalid or expired' })
 	} catch (error) {
 		return next(error)
 	}
