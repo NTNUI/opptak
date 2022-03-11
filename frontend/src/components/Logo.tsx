@@ -20,11 +20,7 @@ export function DisplayLogo(props: ImageProp) {
 	const { classes } = useStyles()
 	return (
 		<div className={classes.imagewrapper}>
-			<img
-				alt='NTNUIlogo'
-				className={classes.logo}
-				src='https://photos.smugmug.com/photos/i-DTr3wpH/0/X4/i-DTr3wpH-X4.png'
-			/>
+			<img alt='NTNUIlogo' className={classes.logo} src='/images/ntnui.svg' />
 		</div>
 	)
 }

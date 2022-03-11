@@ -4,12 +4,14 @@ import {
 	Textarea,
 	createStyles,
 	MultiSelect,
+	Loader,
 } from '@mantine/core'
 import { useForm } from '@mantine/hooks'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { ICommittee } from '../types/committee'
-import { Check } from 'tabler-icons-react'
+import { useNotifications } from '@mantine/notifications'
+import { Check, ChevronDown, X } from 'tabler-icons-react'
 
 interface IApplication {
 	email: string
@@ -58,24 +60,62 @@ const useStyles = createStyles((theme) => ({
 export function Form() {
 	const { classes } = useStyles()
 	const [committees, setCommittees] = useState<ICommitteeInSelect[]>([])
+	const [committeesFailed, setCommitteesFailed] = useState<boolean>(false)
+	const [isLoading, setIsLoading] = useState<boolean>(false)
+	const notifications = useNotifications()
 
 	useEffect(() => {
 		axios
 			.get('http://localhost:8082/committees/')
-			.then((res) => setCommittees(mapCommitteeToSelect(res.data)))
-			.catch((err) => console.log(err))
+			.then((res) => {
+				setCommittees(mapCommitteeToSelect(res.data))
+			})
+			.catch((err) => {
+				setCommitteesFailed(true)
+				notifications.showNotification({
+					title: 'Kunne ikke laste inn kommitteer!',
+					message: 'Ta kontakt med sprint@ntnui.no dersom problemet vedvarer',
+					color: 'red',
+					autoClose: false,
+					icon: <X size={18} />,
+				})
+			})
 	}, [])
 
 	const submitForm = (values: IApplication) => {
-		const toNumbers = () =>
-			committees.map((str) => {
-				return Number(str)
-			})
-		toNumbers()
+		setIsLoading(true)
+		const id = notifications.showNotification({
+			id: 'form-notification',
+			title: 'Sender søknad',
+			message: '',
+			loading: true,
+		})
 		axios
 			.post('http://localhost:8082/applications/', values)
-			.then((response) => form.reset())
-			.catch((err) => console.log(err))
+			.then((response) => {
+				setIsLoading(false)
+				form.reset()
+				notifications.updateNotification(id, {
+					id,
+					loading: false,
+					color: 'green',
+					icon: <Check size={18} />,
+					title: 'Søknad sendt',
+					message: 'Ha en fin dag videre!',
+					autoClose: 2500,
+				})
+			})
+			.catch((err) => {
+				notifications.updateNotification(id, {
+					id,
+					loading: false,
+					color: 'red',
+					icon: <X size={18} />,
+					title: 'Noe gikk galt!',
+					message: `En feil oppstod! Dersom det vedvarer ta kontakt med sprint@ntnui.no`,
+					autoClose: 5000,
+				})
+			})
 	}
 
 	const mapCommitteeToSelect = (committees: ICommittee[]) => {
@@ -137,16 +177,29 @@ export function Form() {
 				onBlur={() => form.validateField('phone_number')}
 				{...form.getInputProps('phone_number')}
 			/>
-			<MultiSelect
-				data={committees}
-				required
-				classNames={{ label: classes.multiSelectInput, input: classes.formField }}
-				label={<span className={classes.writtenText}>Hva ønsker du å søke?</span>}
-				searchable
-				clearable
-				onBlur={() => form.validateField('committees')}
-				{...form.getInputProps('committees')}
-			/>
+			{!committeesFailed ? (
+				<MultiSelect
+					data={committees}
+					required
+					rightSection={<ChevronDown size={14} />}
+					rightSectionWidth={40}
+					nothingFound='Kunne ikke finne utvalget du søker etter'
+					classNames={{ label: classes.multiSelectInput, input: classes.formField }}
+					label={<span className={classes.writtenText}>Hva ønsker du å søke?</span>}
+					onBlur={() => form.validateField('committees')}
+					{...form.getInputProps('committees')}
+				/>
+			) : (
+				<MultiSelect
+					data={committees}
+					required
+					disabled
+					icon={<X size={18} />}
+					placeholder='Kunne ikke laste inn kommitteer'
+					classNames={{ label: classes.multiSelectInput, input: classes.formField }}
+					label={<span className={classes.writtenText}>Hva ønsker du å søke?</span>}
+				/>
+			)}
 			<Textarea
 				required
 				classNames={{ label: classes.writtenText, input: classes.formField }}
@@ -158,7 +211,7 @@ export function Form() {
 			/>
 
 			<Button
-				leftIcon={<Check size={18} />}
+				leftIcon={isLoading ? <Loader size={18} /> : <Check size={18} />}
 				className={classes.submitButton}
 				type='submit'
 			>
