@@ -35,6 +35,9 @@ const useStyles = createStyles((theme) => ({
 		flexDirection: 'column',
 		justifyContent: 'center',
 		width: '50%',
+		'@media (max-width: 700px)': {
+			width: '100%',
+		},
 		gap: '1rem',
 		margin: 'auto',
 	},
@@ -46,14 +49,18 @@ const useStyles = createStyles((theme) => ({
 		backgroundColor: 'transparent',
 		color: 'black',
 	},
-	commiteeSelectText: {
-		color: 'white',
-	},
 	submitButton: {
 		'&:hover': {
 			backgroundColor: 'green',
-			transition: '0.3s',
+			transition: '0.2s',
 		},
+	},
+	headerTitle: {
+		justifyContent: 'center',
+		fontWeight: 'lighter',
+		textAlign: 'center',
+		width: '60%',
+		margin: 'auto',
 	},
 }))
 
@@ -74,7 +81,8 @@ export function Form() {
 				setCommitteesFailed(true)
 				notifications.showNotification({
 					title: 'Kunne ikke laste inn kommitteer!',
-					message: 'Ta kontakt med sprint@ntnui.no dersom problemet vedvarer',
+					message:
+						'Reset nettsiden og prøv igjen. Ta kontakt med sprint@ntnui.no dersom problemet vedvarer',
 					color: 'red',
 					autoClose: false,
 					icon: <X size={18} />,
@@ -100,9 +108,9 @@ export function Form() {
 					loading: false,
 					color: 'green',
 					icon: <Check size={18} />,
-					title: 'Søknad sendt',
+					title: 'Søknad sendt til NTNUI!',
 					message: 'Ha en fin dag videre!',
-					autoClose: 2500,
+					autoClose: 3000,
 				})
 			})
 			.catch((err) => {
@@ -112,8 +120,8 @@ export function Form() {
 					color: 'red',
 					icon: <X size={18} />,
 					title: 'Noe gikk galt!',
-					message: `En feil oppstod! Dersom det vedvarer ta kontakt med sprint@ntnui.no`,
-					autoClose: 5000,
+					message: `En feil oppstod ved sending! Prøv igjen. Dersom det vedvarer ta kontakt med sprint@ntnui.no`,
+					autoClose: 6000,
 				})
 			})
 	}
@@ -134,89 +142,93 @@ export function Form() {
 
 		validationRules: {
 			email: (value) => /^\S+@\S+$/.test(value),
-			name: (value) => value.trim().length >= 2,
+			name: (value) => value.trim().length >= 1,
 			phone_number: (value) => /^\+{0,1}[0-9]+$/.test(value),
-			text: (value) => value.trim().length >= 2,
+			text: (value) => value.trim().length >= 1,
 			committees: (value) => value.length > 0,
 		},
 
 		errorMessages: {
-			email: 'Ugyldig format. E-post må inneholde @',
-			name: 'Navn må inneholde minst 2 bokstaver',
+			email: 'Ugyldig format på e-post; prøv igjen med dittnavn@eksempel.no',
+			name: 'Navnefeltet kan ikke være tom',
 			phone_number: 'Telefonnummer kan kun inneholde tall',
 			text: 'Søknadsfeltet kan ikke være tom',
 			committees: 'Velg minst 1 komité',
 		},
 	})
 	return (
-		<form
-			className={classes.form}
-			onSubmit={form.onSubmit((values: IApplication) => submitForm(values))}
-		>
-			<TextInput
-				required
-				autoComplete='name'
-				classNames={{ label: classes.writtenText, input: classes.formField }}
-				label={'Fullt navn'}
-				onBlur={() => form.validateField('name')}
-				{...form.getInputProps('name')}
-			/>
-			<TextInput
-				required
-				autoComplete='email'
-				classNames={{ label: classes.writtenText, input: classes.formField }}
-				label={'E-post'}
-				onBlur={() => form.validateField('email')}
-				{...form.getInputProps('email')}
-			/>
-			<TextInput
-				required
-				autoComplete='tel'
-				classNames={{ label: classes.writtenText, input: classes.formField }}
-				label={'Telefonnummer'}
-				onBlur={() => form.validateField('phone_number')}
-				{...form.getInputProps('phone_number')}
-			/>
-			{!committeesFailed ? (
-				<MultiSelect
-					data={committees}
-					required
-					rightSection={<ChevronDown size={14} />}
-					rightSectionWidth={40}
-					nothingFound='Kunne ikke finne utvalget du søker etter'
-					classNames={{ label: classes.multiSelectInput, input: classes.formField }}
-					label={<span className={classes.writtenText}>Hva ønsker du å søke?</span>}
-					onBlur={() => form.validateField('committees')}
-					{...form.getInputProps('committees')}
-				/>
-			) : (
-				<MultiSelect
-					data={committees}
-					required
-					disabled
-					icon={<X size={18} />}
-					placeholder='Kunne ikke laste inn kommitteer'
-					classNames={{ label: classes.multiSelectInput, input: classes.formField }}
-					label={<span className={classes.writtenText}>Hva ønsker du å søke?</span>}
-				/>
-			)}
-			<Textarea
-				required
-				classNames={{ label: classes.writtenText, input: classes.formField }}
-				label={'Søknadstekst'}
-				autosize
-				minRows={3}
-				onBlur={() => form.validateField('text')}
-				{...form.getInputProps('text')}
-			/>
+		<>
+			<h1 className={classes.headerTitle}>Søknad til NTNUI Admin</h1>
 
-			<Button
-				leftIcon={isLoading ? <Loader size={18} /> : <Check size={18} />}
-				className={classes.submitButton}
-				type='submit'
+			<form
+				className={classes.form}
+				onSubmit={form.onSubmit((values: IApplication) => submitForm(values))}
 			>
-				Send søknad
-			</Button>
-		</form>
+				<TextInput
+					required
+					autoComplete='name'
+					classNames={{ label: classes.writtenText, input: classes.formField }}
+					label={'Fullt navn'}
+					onBlur={() => form.validateField('name')}
+					{...form.getInputProps('name')}
+				/>
+				<TextInput
+					required
+					autoComplete='email'
+					classNames={{ label: classes.writtenText, input: classes.formField }}
+					label={'E-post'}
+					onBlur={() => form.validateField('email')}
+					{...form.getInputProps('email')}
+				/>
+				<TextInput
+					required
+					autoComplete='tel'
+					classNames={{ label: classes.writtenText, input: classes.formField }}
+					label={'Telefonnummer'}
+					onBlur={() => form.validateField('phone_number')}
+					{...form.getInputProps('phone_number')}
+				/>
+				{!committeesFailed ? (
+					<MultiSelect
+						data={committees}
+						required
+						rightSection={<ChevronDown size={14} />}
+						rightSectionWidth={40}
+						nothingFound='Kunne ikke finne utvalget du søker etter'
+						classNames={{ label: classes.multiSelectInput, input: classes.formField }}
+						label={<span className={classes.writtenText}>Hva ønsker du å søke?</span>}
+						onBlur={() => form.validateField('committees')}
+						{...form.getInputProps('committees')}
+					/>
+				) : (
+					<MultiSelect
+						data={committees}
+						required
+						disabled
+						icon={<X size={18} />}
+						placeholder='Kunne ikke laste inn kommitteer'
+						classNames={{ label: classes.multiSelectInput, input: classes.formField }}
+						label={<span className={classes.writtenText}>Hva ønsker du å søke?</span>}
+					/>
+				)}
+				<Textarea
+					required
+					classNames={{ label: classes.writtenText, input: classes.formField }}
+					label={'Søknadstekst'}
+					autosize
+					minRows={3}
+					onBlur={() => form.validateField('text')}
+					{...form.getInputProps('text')}
+				/>
+
+				<Button
+					leftIcon={isLoading ? <Loader size={18} /> : <Check size={18} />}
+					className={classes.submitButton}
+					type='submit'
+				>
+					Send søknad
+				</Button>
+			</form>
+		</>
 	)
 }
