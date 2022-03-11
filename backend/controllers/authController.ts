@@ -49,14 +49,14 @@ function isRoleInAccessRoles(role: string, access_roles: string[]) {
 export async function refresh(req: Request, res: Response, next: NextFunction) {
 	try {
 		if (!req.body.refresh) {
-			return res.status(403).json({ error: 'No refresh-token sent!' })
+			return res.status(403).json({ message: 'No refresh-token sent!' })
 		}
 		const token = req.body.refresh
 		const tokens = await refreshNtnuiToken(token)
 		if (tokens) {
 			return res.status(200).json({ access: tokens.access })
 		}
-		return res.status(401).json({ error: 'Token is invalid or expired' })
+		return res.status(401).json({ message: 'Token is invalid or expired' })
 	} catch (error) {
 		return next(error)
 	}
@@ -64,14 +64,14 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
 
 export async function verify(req: Request, res: Response) {
 	if (!req.body.token) {
-		return res.status(403).json({ error: 'No token sent!' })
+		return res.status(403).json({ message: 'No token sent!' })
 	}
 	const { token } = req.body
 	const isValidToken = await isValidNtnuiToken(token)
 	if (isValidToken) {
 		return res.status(200).json({ message: 'Token is valid' })
 	}
-	return res.status(401).json({ error: 'Token is invalid or expired' })
+	return res.status(401).json({ message: 'Token is invalid or expired' })
 }
 
 /**
