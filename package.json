@@ -3,9 +3,10 @@
 	"version": "0.1.0",
 	"description": "NTNUI Admin application form wrapper",
 	"scripts": {
-		"install-all": "npm install && cd backend && npm install && cd ../frontend && npm install",
-		"frontend": "cd frontend && npm install && npm run start",
-		"backend": "cd backend && npm install && npx nodemon --exec npx ts-node app.ts",
+		"prefrontend": "cd frontend && npm install",
+		"frontend": "cd frontend && npm run start",
+		"prebackend": "cd package && npm install && cd ../backend && npm install",
+		"backend": "cd backend && npx nodemon --exec npx ts-node app.ts",
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"prettier": "npm install && prettier --check .",
 		"eslint": "npm install && eslint . --ext ts --ext tsx",
