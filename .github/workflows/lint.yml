@@ -1,9 +1,6 @@
 name: Lint
 
 on:
- push:
-  branches:
-   - 'dev'
  pull_request:
 
 jobs:
@@ -30,7 +27,7 @@ jobs:
       key: node_modules-${{ matrix.os }}-${{ matrix.node-version }}-${{ hashFiles('package-lock.json') }}
 
    - name: Install
-     run: npm run install-all
+     run: npm run prefrontend && npm run prebackend
 
    - name: ESLint
      run: npm run eslint
