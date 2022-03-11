@@ -9,7 +9,7 @@ import { useForm } from '@mantine/hooks'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { ICommittee } from '../types/committee'
-import { ErrorNotification, SuccessNotification } from './Notification'
+import { Check } from 'tabler-icons-react'
 
 interface IApplication {
 	email: string
@@ -27,7 +27,6 @@ const useStyles = createStyles((theme) => ({
 	writtenText: {
 		fontWeight: 'italic',
 		color: 'white',
-		backgroundColor: 'black',
 	},
 	form: {
 		display: 'flex',
@@ -36,6 +35,14 @@ const useStyles = createStyles((theme) => ({
 		width: '50%',
 		gap: '1rem',
 		margin: 'auto',
+	},
+	formField: {
+		backgroundColor: 'transparent',
+		color: 'white',
+	},
+	multiSelectInput: {
+		backgroundColor: 'transparent',
+		color: 'black',
 	},
 	commiteeSelectText: {
 		color: 'white',
@@ -56,9 +63,6 @@ export function Form() {
 		axios
 			.get('http://localhost:8082/committees/')
 			.then((res) => setCommittees(mapCommitteeToSelect(res.data)))
-			.then((res) => {
-				return SuccessNotification()
-			})
 			.catch((err) => console.log(err))
 	}, [])
 
@@ -71,9 +75,6 @@ export function Form() {
 		axios
 			.post('http://localhost:8082/applications/', values)
 			.then((response) => form.reset())
-			.then((response) => {
-				return SuccessNotification()
-			})
 			.catch((err) => console.log(err))
 	}
 
@@ -94,9 +95,17 @@ export function Form() {
 		validationRules: {
 			email: (value) => /^\S+@\S+$/.test(value),
 			name: (value) => value.trim().length >= 2,
-			phone_number: (value) => /^[0-9]+$/.test(value),
+			phone_number: (value) => /^\+{0,1}[0-9]+$/.test(value),
 			text: (value) => value.trim().length >= 2,
 			committees: (value) => value.length > 0,
+		},
+
+		errorMessages: {
+			email: 'Ugyldig format. E-post må inneholde @',
+			name: 'Navn må inneholde minst 2 bokstaver',
+			phone_number: 'Telefonnummer kan kun inneholde tall',
+			text: 'Søknadsfeltet kan ikke være tom',
+			committees: 'Velg minst 1 komité',
 		},
 	})
 	return (
@@ -106,38 +115,54 @@ export function Form() {
 		>
 			<TextInput
 				required
-				label={<span className={classes.writtenText}>Fullt navn</span>}
+				autoComplete='name'
+				classNames={{ label: classes.writtenText, input: classes.formField }}
+				label={'Fullt navn'}
+				onBlur={() => form.validateField('name')}
 				{...form.getInputProps('name')}
 			/>
 			<TextInput
 				required
-				label={<span className={classes.writtenText}>E-post</span>}
+				autoComplete='email'
+				classNames={{ label: classes.writtenText, input: classes.formField }}
+				label={'E-post'}
+				onBlur={() => form.validateField('email')}
 				{...form.getInputProps('email')}
 			/>
 			<TextInput
 				required
-				label={<span className={classes.writtenText}>Telefonnummer</span>}
+				autoComplete='tel'
+				classNames={{ label: classes.writtenText, input: classes.formField }}
+				label={'Telefonnummer'}
+				onBlur={() => form.validateField('phone_number')}
 				{...form.getInputProps('phone_number')}
 			/>
 			<MultiSelect
 				data={committees}
 				required
-				classNames={{ label: classes.writtenText }}
-				label={'Hva ønsker du å søke?'}
+				classNames={{ label: classes.multiSelectInput, input: classes.formField }}
+				label={<span className={classes.writtenText}>Hva ønsker du å søke?</span>}
 				searchable
+				clearable
+				onBlur={() => form.validateField('committees')}
 				{...form.getInputProps('committees')}
 			/>
 			<Textarea
 				required
-				label={<span className={classes.writtenText}>Søknadstekst</span>}
+				classNames={{ label: classes.writtenText, input: classes.formField }}
+				label={'Søknadstekst'}
 				autosize
 				minRows={3}
+				onBlur={() => form.validateField('text')}
 				{...form.getInputProps('text')}
 			/>
 
-			<Button className={classes.submitButton} type='submit'>
-				{' '}
-				✓ Send søknad
+			<Button
+				leftIcon={<Check size={18} />}
+				className={classes.submitButton}
+				type='submit'
+			>
+				Send søknad
 			</Button>
 		</form>
 	)

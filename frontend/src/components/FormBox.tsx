@@ -1,6 +1,6 @@
 import { Box, createStyles } from '@mantine/core'
 import React from 'react'
-import { Form } from './Form'
+import { Form } from '../pages/ApplicationForm'
 
 const useStyles = createStyles((theme) => ({
 	box: {
