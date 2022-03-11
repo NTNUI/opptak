@@ -21,7 +21,7 @@ function handleError(
 
 	if (!(err instanceof CustomError)) {
 		customError = new CustomError(
-			'Oh no, something went wrong that we did not handle'
+			'Oh no, something went wrong that we did not expect'
 		)
 	}
 
