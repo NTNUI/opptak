@@ -3,7 +3,6 @@ import ApplicationItem from './ApplicationItem'
 import { IApplication } from '../types/types'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import { axiosBaseURL } from '../utils/axios'
 
 const useStyles = createStyles((theme) => ({
 	container: {
@@ -33,7 +32,6 @@ const useStyles = createStyles((theme) => ({
 			minWidth: '1rem',
 		},
 	},
-	paginationDots: {},
 	pagintationActive: {
 		backgroundColor: theme.colors.ntnui_blue[9],
 		'&:hover': {
@@ -47,11 +45,9 @@ function ApplicationList() {
 	const [currentPage, setCurrentPage] = useState(1)
 	const [numberOfPages, setNumberOfPages] = useState(1)
 
-	const pageQuery = `/applications/?page=${currentPage}`
-
 	useEffect(() => {
 		axios
-			.get(axiosBaseURL + pageQuery)
+			.get(`/applications/?page=${currentPage}`)
 			.then((res) => {
 				setApplications(res.data.applications)
 				setCurrentPage(res.data.currentPage)
@@ -70,7 +66,6 @@ function ApplicationList() {
 				className={classes.pagination}
 				classNames={{
 					item: classes.pagintaionItems,
-					dots: classes.paginationDots,
 					active: classes.pagintationActive,
 				}}
 				total={numberOfPages}

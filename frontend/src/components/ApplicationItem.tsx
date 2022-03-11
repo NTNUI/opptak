@@ -16,20 +16,11 @@ const useStyles = createStyles((theme) => ({
 		transition: 'ease-in-out 0.1s',
 
 		'&:hover': {
-			//backgroundColor: theme.colors.ntnui_yellow[9],
 			backgroundColor: theme.colors.ntnui_background[9],
 			boxShadow: '0rem 0.6rem 0.4rem ' + theme.colors.dark[7],
-			//color: theme.colors.ntnui_background[9],
 			fontWeight: 500,
 			transform: 'translateY(-0.2em)',
 		},
-		// '&:hover *': {
-		// 	color: theme.colors.ntnui_background[9],
-		// 	fontWeight: 600,
-		// },
-		// '&:hover #committee': {
-		// 	borderLeft: '2px solid ' + theme.colors.ntnui_background[9],
-		// },
 	},
 	grid: {
 		marginLeft: '0',
@@ -102,17 +93,7 @@ function ApplicationItem({ name, committees, submitted_date }: IApplication) {
 			<div className={classes.grid}>
 				<div className={classes.nameDiv}>{name}</div>
 				<div id='committee' className={classes.committeeDiv}>
-					{/* Tooltip is incompatible with ellipsis */}
-					{/* <Tooltip
-						label={stringifiedCommittees}
-						transition='pop'
-						transitionDuration={300}
-						placement='start'
-						transitionTimingFunction='ease'
-						className='tooltip'
-					> */}
 					{stringifiedCommittees}
-					{/* </Tooltip> */}
 				</div>
 				<div className={classes.badgeDiv}>
 					<span className={classes.date}>{submittedDate.toUpperCase()}</span>
