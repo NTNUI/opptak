@@ -1,9 +1,11 @@
 import mongoose from 'mongoose'
+import MembershipType from '../utils/enums'
 
 interface CommitteeI {
-	_id: Number
+	_id: number
 	name: string
 	slug: string
+	access_roles: string[]
 }
 
 const CommitteeModel = mongoose.model<CommitteeI>(
@@ -12,6 +14,7 @@ const CommitteeModel = mongoose.model<CommitteeI>(
 		_id: { type: Number, required: true },
 		name: { type: String, required: true },
 		slug: { type: String, required: true },
+		access_roles: [{ type: String, enum: MembershipType, required: true }],
 	})
 )
 

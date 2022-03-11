@@ -1,5 +1,5 @@
 import express from 'express'
-import printSlug from 'ntnui-tools'
+import { printSlug } from 'ntnui-tools'
 
 const group69 = { _id: 69, name: 'Group 69', slug: 'group-69' }
 
