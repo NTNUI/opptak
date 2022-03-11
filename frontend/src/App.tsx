@@ -1,14 +1,22 @@
-import { Container } from '@mantine/core'
+import { Container, MantineProvider } from '@mantine/core'
 import axios from 'axios'
-import React, { useState } from 'react'
+import './App.css'
+import ApplicationOverview from './pages/ApplicationOverview'
+import colors from './utils/theme'
 
 function App() {
-	const [test, setTest] = useState()
-	axios.get('http://localhost:8082/test').then((res) => setTest(res.data.msg))
+	axios.defaults.baseURL = 'http://localhost:8082'
 	return (
-		<Container>
-			<p>{test}</p>
-		</Container>
+		<MantineProvider
+			theme={{
+				colors: colors,
+			}}
+			children={
+				<Container>
+					<ApplicationOverview />
+				</Container>
+			}
+		/>
 	)
 }
 
