@@ -11,6 +11,7 @@
 	"dependencies": {
 		"@emotion/react": "^11.8.1",
 		"@mantine/core": "^4.0.0",
+		"@mantine/form": "^4.0.1",
 		"@mantine/hooks": "^4.0.0",
 		"@mantine/notifications": "^4.0.4",
 		"@testing-library/jest-dom": "^5.16.2",
