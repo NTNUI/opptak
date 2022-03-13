@@ -26,20 +26,19 @@ interface ICommitteeInSelect {
 }
 
 const useStyles = createStyles((theme) => ({
-	writtenText: {
+	labelText: {
 		fontWeight: 'italic',
 		color: 'white',
 	},
 	form: {
+		margin: '1rem 7rem 4rem 7rem',
 		display: 'flex',
 		flexDirection: 'column',
-		justifyContent: 'center',
-		width: '50%',
+		gap: '0.5rem',
 		'@media (max-width: 700px)': {
 			width: '100%',
+			margin: 0,
 		},
-		gap: '1rem',
-		margin: 'auto',
 	},
 	formField: {
 		backgroundColor: 'transparent',
@@ -50,17 +49,11 @@ const useStyles = createStyles((theme) => ({
 		color: 'black',
 	},
 	submitButton: {
+		width: '100%',
 		'&:hover': {
 			backgroundColor: 'green',
 			transition: '0.2s',
 		},
-	},
-	headerTitle: {
-		justifyContent: 'center',
-		fontWeight: 'lighter',
-		textAlign: 'center',
-		width: '60%',
-		margin: 'auto',
 	},
 }))
 
@@ -82,7 +75,7 @@ export function Form() {
 				notifications.showNotification({
 					title: 'Kunne ikke laste inn kommitteer!',
 					message:
-						'Reset nettsiden og prøv igjen. Ta kontakt med sprint@ntnui.no dersom problemet vedvarer',
+						'Last inn siden på nytt og prøv igjen. Ta kontakt med sprint@ntnui.no dersom problemet vedvarer',
 					color: 'red',
 					autoClose: false,
 					icon: <X size={18} />,
@@ -110,17 +103,18 @@ export function Form() {
 					icon: <Check size={18} />,
 					title: 'Søknad sendt til NTNUI!',
 					message: 'Ha en fin dag videre!',
-					autoClose: 3000,
+					autoClose: 7000,
 				})
 			})
 			.catch((err) => {
+				setIsLoading(false)
 				notifications.updateNotification(id, {
 					id,
 					loading: false,
 					color: 'red',
 					icon: <X size={18} />,
 					title: 'Noe gikk galt!',
-					message: `En feil oppstod ved sending! Prøv igjen. Dersom det vedvarer ta kontakt med sprint@ntnui.no`,
+					message: `En feil oppstod ved sending. Prøv igjen. Dersom det vedvarer ta kontakt med sprint@ntnui.no`,
 					autoClose: 6000,
 				})
 			})
@@ -149,17 +143,14 @@ export function Form() {
 		},
 
 		errorMessages: {
-			email: 'Ugyldig format på e-post; prøv igjen med dittnavn@eksempel.no',
-			name: 'Navnefeltet kan ikke være tom',
+			email: 'Ugyldig format på e-post; prøv igjen med formatet navn@domene.no',
+			name: 'Feltet kan ikke være tomt',
 			phone_number: 'Telefonnummer kan kun inneholde tall',
-			text: 'Søknadsfeltet kan ikke være tom',
+			text: 'Søknadsfeltet kan ikke være tomt',
 			committees: 'Velg minst 1 komité',
 		},
 	})
 	return (
-		<>
-			<h1 className={classes.headerTitle}>Søknad til NTNUI Admin</h1>
-
 			<form
 				className={classes.form}
 				onSubmit={form.onSubmit((values: IApplication) => submitForm(values))}
@@ -167,7 +158,7 @@ export function Form() {
 				<TextInput
 					required
 					autoComplete='name'
-					classNames={{ label: classes.writtenText, input: classes.formField }}
+					classNames={{ label: classes.labelText, input: classes.formField }}
 					label={'Fullt navn'}
 					onBlur={() => form.validateField('name')}
 					{...form.getInputProps('name')}
@@ -175,7 +166,7 @@ export function Form() {
 				<TextInput
 					required
 					autoComplete='email'
-					classNames={{ label: classes.writtenText, input: classes.formField }}
+					classNames={{ label: classes.labelText, input: classes.formField }}
 					label={'E-post'}
 					onBlur={() => form.validateField('email')}
 					{...form.getInputProps('email')}
@@ -183,7 +174,7 @@ export function Form() {
 				<TextInput
 					required
 					autoComplete='tel'
-					classNames={{ label: classes.writtenText, input: classes.formField }}
+					classNames={{ label: classes.labelText, input: classes.formField }}
 					label={'Telefonnummer'}
 					onBlur={() => form.validateField('phone_number')}
 					{...form.getInputProps('phone_number')}
@@ -192,11 +183,12 @@ export function Form() {
 					<MultiSelect
 						data={committees}
 						required
+						searchable
 						rightSection={<ChevronDown size={14} />}
 						rightSectionWidth={40}
 						nothingFound='Kunne ikke finne utvalget du søker etter'
 						classNames={{ label: classes.multiSelectInput, input: classes.formField }}
-						label={<span className={classes.writtenText}>Hva ønsker du å søke?</span>}
+						label={<span className={classes.labelText}>Hva ønsker du å søke?</span>}
 						onBlur={() => form.validateField('committees')}
 						{...form.getInputProps('committees')}
 					/>
@@ -208,12 +200,12 @@ export function Form() {
 						icon={<X size={18} />}
 						placeholder='Kunne ikke laste inn kommitteer'
 						classNames={{ label: classes.multiSelectInput, input: classes.formField }}
-						label={<span className={classes.writtenText}>Hva ønsker du å søke?</span>}
+						label={<span className={classes.labelText}>Hva ønsker du å søke?</span>}
 					/>
 				)}
 				<Textarea
 					required
-					classNames={{ label: classes.writtenText, input: classes.formField }}
+					classNames={{ label: classes.labelText, input: classes.formField }}
 					label={'Søknadstekst'}
 					autosize
 					minRows={3}
@@ -229,6 +221,5 @@ export function Form() {
 					Send søknad
 				</Button>
 			</form>
-		</>
 	)
 }

@@ -1,41 +1,78 @@
 import { Box, Button, createStyles } from '@mantine/core'
 import React from 'react'
+import { FileText } from 'tabler-icons-react'
 import { Form } from '../components/ApplicationForm'
 
 const useStyles = createStyles((theme) => ({
-	formWrapper: {
-		backgroundColor: 'black',
-		textAlign: 'left',
-		borderRadius: '20px',
-		color: 'white',
-		border: '2px solid' + theme.colors.ntnui_yellow[9],
-		width: '50%',
-		margin: 'auto auto 4rem auto',
+	formTitleAndBodyWrapper: {
+		backgroundColor: '#0a0a0a',
+		width: '40%',
 		justifyContent: 'center',
-		padding: '2rem 0 2rem 0',
+		margin: 'auto',
+		border: '2px solid ' + theme.colors.ntnui_yellow[9],
+		borderRadius: '20px',
+		textAlign: 'left',
+		color: 'white',
+		'@media (max-width: 1200px)': {
+			width: '70%',
+		},
 		'@media (max-width: 700px)': {
-			padding: '2rem',
-			margin: 0,
+			width: '85%',
+			border: 'none',
+			backgroundColor: 'transparent',
+			padding: '1rem',
 		},
 	},
 	header: {
-		width: '100%',
-		margin: '2rem 0 2rem 0',
+		width: 'auto',
+		margin: '2rem 0',
+		padding: '0 2rem',
 		display: 'grid',
-		gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr',
+		gridTemplateColumns: '1fr 1fr 3fr 1fr 1fr',
+		'@media (max-width: 700px)': {
+			gridTemplateColumns: '1fr',
+			gridTemplateRows: 'auto 1fr',
+			gap: '20px',
+		},
+	},
+	formTitle: {
+		fontWeight: 'lighter',
+		fontSize: 'x-large',
+		textAlign: 'center',
+		margin: '1rem auto 0 auto',
+		"*":{ // Icon
+			margin: '0 0 -3px 0',
+		},
+		'@media (max-width: 700px)': {
+			fontSize: 'large',
+		},
 	},
 	logo: {
-		height: '100px',
-		justifySelf: 'center',
 		gridColumn: 3,
+		justifySelf: 'center',
+		h1: {
+			textAlign: 'center',
+			color: 'white',
+			fontWeight: 'lighter',
+			fontSize: 'x-large',
+			margin: '-10px 0 0 0',
+		},
+		img: {
+			height: '100px',
+		},
+		'@media (max-width: 700px)': {
+			gridColumn: 1,
+			gridRow: 2,
+		},
 	},
 	internButton: {
-		width: '40%',
 		justifySelf: 'end',
-		margin: '0 2rem 0 0',
-		fontFamily: 'Poppins',
 		fontWeight: 'normal',
 		gridColumn: 5,
+		'@media (max-width: 700px)': {
+			gridColumn: 1,
+			gridRow: 1,
+		},
 	},
 }))
 
@@ -44,10 +81,14 @@ function FormBox() {
 	return (
 		<>
 			<Box className={classes.header}>
-				<img alt='NTNUI logo' className={classes.logo} src='/images/ntnui.svg' />
-				<Button className={classes.internButton}>INTERN</Button>
+				<Box className={classes.logo}>
+					<img alt='NTNUI logo' src='/images/ntnui.svg' />
+					<h1>OPPTAK</h1>
+				</Box>
+				<Button uppercase className={classes.internButton}>Intern innlogging</Button>
 			</Box>
-			<Box className={classes.formWrapper}>
+			<Box className={classes.formTitleAndBodyWrapper}>
+				<h2 className={classes.formTitle}><FileText/>Søknad til NTNUI Admin</h2>
 				<Form />
 			</Box>
 		</>
