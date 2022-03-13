@@ -9,11 +9,11 @@ import {
 import { useForm } from '@mantine/hooks'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
-import { ICommittee } from '../types/committee'
 import { useNotifications } from '@mantine/notifications'
 import { Check, ChevronDown, X } from 'tabler-icons-react'
+import { ICommittee } from '../types/types'
 
-interface IApplication {
+interface ISubmissionApplication {
 	email: string
 	name: string
 	phone_number: string
@@ -63,27 +63,30 @@ export function Form() {
 	const [committeesFailed, setCommitteesFailed] = useState<boolean>(false)
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const notifications = useNotifications()
+	const committeeNotification = useNotifications()
 
 	useEffect(() => {
-		axios
-			.get('http://localhost:8082/committees/')
-			.then((res) => {
-				setCommittees(mapCommitteeToSelect(res.data))
-			})
-			.catch((err) => {
-				setCommitteesFailed(true)
-				notifications.showNotification({
-					title: 'Kunne ikke laste inn kommitteer!',
-					message:
-						'Last inn siden på nytt og prøv igjen. Ta kontakt med sprint@ntnui.no dersom problemet vedvarer',
-					color: 'red',
-					autoClose: false,
-					icon: <X size={18} />,
+		if (!committeesFailed) {
+			axios
+				.get('/committees')
+				.then((res) => {
+					setCommittees(mapCommitteeToSelect(res.data))
 				})
-			})
-	}, [])
+				.catch((err) => {
+					setCommitteesFailed(true)
+					committeeNotification.showNotification({
+						title: 'Kunne ikke laste inn kommitteer!',
+						message:
+							'Last inn siden på nytt og prøv igjen. Ta kontakt med sprint@ntnui.no dersom problemet vedvarer',
+						color: 'red',
+						autoClose: false,
+						icon: <X size={18} />,
+					})
+				})
+		}
+	}, [committeeNotification, committeesFailed])
 
-	const submitForm = (values: IApplication) => {
+	const submitForm = (values: ISubmissionApplication) => {
 		setIsLoading(true)
 		const id = notifications.showNotification({
 			id: 'form-notification',
@@ -92,7 +95,7 @@ export function Form() {
 			loading: true,
 		})
 		axios
-			.post('http://localhost:8082/applications/', values)
+			.post('/applications', values)
 			.then((response) => {
 				setIsLoading(false)
 				form.reset()
@@ -151,75 +154,77 @@ export function Form() {
 		},
 	})
 	return (
-			<form
-				className={classes.form}
-				onSubmit={form.onSubmit((values: IApplication) => submitForm(values))}
-			>
-				<TextInput
+		<form
+			className={classes.form}
+			onSubmit={form.onSubmit((values: ISubmissionApplication) =>
+				submitForm(values)
+			)}
+		>
+			<TextInput
+				required
+				autoComplete='name'
+				classNames={{ label: classes.labelText, input: classes.formField }}
+				label={'Fullt navn'}
+				onBlur={() => form.validateField('name')}
+				{...form.getInputProps('name')}
+			/>
+			<TextInput
+				required
+				autoComplete='email'
+				classNames={{ label: classes.labelText, input: classes.formField }}
+				label={'E-post'}
+				onBlur={() => form.validateField('email')}
+				{...form.getInputProps('email')}
+			/>
+			<TextInput
+				required
+				autoComplete='tel'
+				classNames={{ label: classes.labelText, input: classes.formField }}
+				label={'Telefonnummer'}
+				onBlur={() => form.validateField('phone_number')}
+				{...form.getInputProps('phone_number')}
+			/>
+			{!committeesFailed ? (
+				<MultiSelect
+					data={committees}
 					required
-					autoComplete='name'
-					classNames={{ label: classes.labelText, input: classes.formField }}
-					label={'Fullt navn'}
-					onBlur={() => form.validateField('name')}
-					{...form.getInputProps('name')}
+					searchable
+					rightSection={<ChevronDown size={14} />}
+					rightSectionWidth={40}
+					nothingFound='Kunne ikke finne utvalget du søker etter'
+					classNames={{ label: classes.multiSelectInput, input: classes.formField }}
+					label={<span className={classes.labelText}>Hva ønsker du å søke?</span>}
+					onBlur={() => form.validateField('committees')}
+					{...form.getInputProps('committees')}
 				/>
-				<TextInput
+			) : (
+				<MultiSelect
+					data={committees}
 					required
-					autoComplete='email'
-					classNames={{ label: classes.labelText, input: classes.formField }}
-					label={'E-post'}
-					onBlur={() => form.validateField('email')}
-					{...form.getInputProps('email')}
+					disabled
+					icon={<X size={18} />}
+					placeholder='Kunne ikke laste inn kommitteer'
+					classNames={{ label: classes.multiSelectInput, input: classes.formField }}
+					label={<span className={classes.labelText}>Hva ønsker du å søke?</span>}
 				/>
-				<TextInput
-					required
-					autoComplete='tel'
-					classNames={{ label: classes.labelText, input: classes.formField }}
-					label={'Telefonnummer'}
-					onBlur={() => form.validateField('phone_number')}
-					{...form.getInputProps('phone_number')}
-				/>
-				{!committeesFailed ? (
-					<MultiSelect
-						data={committees}
-						required
-						searchable
-						rightSection={<ChevronDown size={14} />}
-						rightSectionWidth={40}
-						nothingFound='Kunne ikke finne utvalget du søker etter'
-						classNames={{ label: classes.multiSelectInput, input: classes.formField }}
-						label={<span className={classes.labelText}>Hva ønsker du å søke?</span>}
-						onBlur={() => form.validateField('committees')}
-						{...form.getInputProps('committees')}
-					/>
-				) : (
-					<MultiSelect
-						data={committees}
-						required
-						disabled
-						icon={<X size={18} />}
-						placeholder='Kunne ikke laste inn kommitteer'
-						classNames={{ label: classes.multiSelectInput, input: classes.formField }}
-						label={<span className={classes.labelText}>Hva ønsker du å søke?</span>}
-					/>
-				)}
-				<Textarea
-					required
-					classNames={{ label: classes.labelText, input: classes.formField }}
-					label={'Søknadstekst'}
-					autosize
-					minRows={3}
-					onBlur={() => form.validateField('text')}
-					{...form.getInputProps('text')}
-				/>
+			)}
+			<Textarea
+				required
+				classNames={{ label: classes.labelText, input: classes.formField }}
+				label={'Søknadstekst'}
+				autosize
+				minRows={3}
+				onBlur={() => form.validateField('text')}
+				{...form.getInputProps('text')}
+			/>
 
-				<Button
-					leftIcon={isLoading ? <Loader size={18} /> : <Check size={18} />}
-					className={classes.submitButton}
-					type='submit'
-				>
-					Send søknad
-				</Button>
-			</form>
+			<Button
+				leftIcon={isLoading ? <Loader size={18} /> : <Check size={18} />}
+				className={classes.submitButton}
+				type='submit'
+			>
+				Send søknad
+			</Button>
+		</form>
 	)
 }

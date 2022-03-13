@@ -40,7 +40,8 @@ const useStyles = createStyles((theme) => ({
 		fontSize: 'x-large',
 		textAlign: 'center',
 		margin: '1rem auto 0 auto',
-		"*":{ // Icon
+		'*': {
+			// Icon
 			margin: '0 0 -3px 0',
 		},
 		'@media (max-width: 700px)': {
@@ -85,10 +86,15 @@ function FormBox() {
 					<img alt='NTNUI logo' src='/images/ntnui.svg' />
 					<h1>OPPTAK</h1>
 				</Box>
-				<Button uppercase className={classes.internButton}>Intern innlogging</Button>
+				<Button uppercase className={classes.internButton}>
+					Intern innlogging
+				</Button>
 			</Box>
 			<Box className={classes.formTitleAndBodyWrapper}>
-				<h2 className={classes.formTitle}><FileText/>Søknad til NTNUI Admin</h2>
+				<h2 className={classes.formTitle}>
+					<FileText />
+					Søknad til NTNUI Admin
+				</h2>
 				<Form />
 			</Box>
 		</>
