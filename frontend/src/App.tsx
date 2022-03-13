@@ -1,6 +1,7 @@
 import { MantineProvider } from '@mantine/core'
 import { NotificationsProvider } from '@mantine/notifications'
 import axios from 'axios'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.css'
 import FormPage from './pages/FormPage'
 import colors from './utils/theme'

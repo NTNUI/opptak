@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { UnauthorizedUserError } from 'ntnui-tools/customError'
+import { CustomError, UnauthorizedUserError } from 'ntnui-tools/customError'
 import { RequestWithNtnuiNo } from '../utils/request'
 import { ApplicationModel } from '../models/Application'
 import { UserModel } from '../models/User'
@@ -9,8 +9,8 @@ const getApplications = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	const { ntnuiNo } = req
 	try {
+		const { ntnuiNo } = req
 		// Access control - retrieve committees that user is member of
 		if (!ntnuiNo) throw UnauthorizedUserError
 		let committeeIds: number[] = []
@@ -20,28 +20,34 @@ const getApplications = async (
 					committeeIds = user.committees.map((committee) => committee.committee)
 				}
 			})
+			// eslint-disable-next-line arrow-body-style
 			.catch(() => {
-				throw UnauthorizedUserError
+				return res.status(401).json({message: 'Unauthorized user!'})
 			}) // TODO: Correct error handling
 
 		// Pagination
 		const { page } = req.query
 		const LIMIT = 4
 		const startIndex = (Number(page) - 1) * LIMIT
-		const total = await ApplicationModel.countDocuments({ committees: { $in: committeeIds } })
+		const total = await ApplicationModel.countDocuments({
+			committees: { $in: committeeIds },
+		})
 		// Retrieve applications that only have the given committees
-		ApplicationModel.find({ committees: { $in: committeeIds } })
+		await ApplicationModel.find({ committees: { $in: committeeIds } })
 			.populate('committees', 'name')
 			.limit(LIMIT)
 			.skip(startIndex)
 			.then((applications) =>
-				res.json({
-					applications,
-					currentPage: Number(page),
-					numberOfPages: Math.ceil(total / LIMIT),
-				})
+			res.status(200).json({
+				applications,
+				currentPage: Number(page),
+				numberOfPages: Math.ceil(total / LIMIT),
+			})
 			)
-			.catch((err) => res.status(404).json({ message: err.message }))
+			.catch((err) => {
+				console.log(err)
+				res.status(401).json({message: 'Could not find any committees'})
+			})
 	} catch (error) {
 		return next(error)
 	}

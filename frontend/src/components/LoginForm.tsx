@@ -2,6 +2,7 @@ import {
 	Button,
 	createStyles,
 	InputWrapper,
+	Loader,
 	PasswordInput,
 	Select,
 	TextInput,
@@ -9,7 +10,10 @@ import {
 } from '@mantine/core'
 import { ChevronDown, InfoCircle, Lock, Phone, World } from 'tabler-icons-react'
 import { useForm } from '@mantine/form'
-import { countryCodes } from '../utils/countryCodes'
+import countryCodes from '../utils/countryCodes'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 
 const useStyles = createStyles((theme) => ({
 	phoneNumberWrapper: {
@@ -36,13 +40,16 @@ const useStyles = createStyles((theme) => ({
 			gridArea: 'country_code',
 			backgroundColor: 'transparent',
 			borderRadius: '5px 0 0 5px',
-			borderRight: 0,
 			color: 'white',
 			width: '100%',
+			transition: '0.3s',
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
 		},
 	},
 	numberInput: {
 		input: {
+			borderLeft: 0,
 			gridArea: 'phone_number',
 			backgroundColor: 'transparent',
 			color: 'white',
@@ -96,8 +103,22 @@ const useStyles = createStyles((theme) => ({
 	},
 }))
 
+interface formValues {
+	country_code: string
+	phone_number: string
+	password: string
+}
+
+interface countryCodePair {
+	land: string
+	kode: string
+}
+
 function LoginForm() {
 	const { classes } = useStyles()
+	let navigate = useNavigate()
+	const [isLoading, setIsLoading] = useState(false)
+
 	const form = useForm({
 		initialValues: {
 			country_code: '47',
@@ -111,17 +132,37 @@ function LoginForm() {
 		},
 	})
 
-	const countryCodesToSelect = countryCodes.map((code: any) => {
+	const submitLoginForm = (values: formValues) => {
+		setIsLoading(true)
+		const credentials = {
+			phone_number: '+' + values.country_code + values.phone_number,
+			password: values.password,
+		}
+		axios
+			.post('/auth/', credentials)
+			.then((response) => {
+				setIsLoading(false)
+				navigate('/applications')
+				console.log(response)
+			})
+			.catch((err) => {
+				setIsLoading(false)
+				console.log('Show error-notification!')
+				console.log(err.message)
+			})
+	}
+
+	const countryCodesToSelect = countryCodes.map((code: countryCodePair) => {
 		return {
-			key: code.name,
-			value: code.dialCode,
-			label: `${code.name} (+${code.dialCode})`,
+			key: code.land,
+			value: code.kode,
+			label: `(+${code.kode}) ${code.land}`,
 		}
 	})
 
 	return (
 		<form
-			onSubmit={form.onSubmit((values) => console.log(values))}
+			onSubmit={form.onSubmit((values) => submitLoginForm(values))}
 			className={classes.form}
 		>
 			<InputWrapper
@@ -139,7 +180,7 @@ function LoginForm() {
 							transition='pop'
 							label={
 								<>
-									Logg inn med samme telefonnummer som du bruker i medlemssystemet{' '}
+									Logg inn med samme telefonnummer som du bruker i medlemssystemet
 									<a className={classes.link} href='https://medlem.ntnui.no/login'>
 										medlem.ntnui.no
 									</a>
@@ -167,7 +208,7 @@ function LoginForm() {
 				<TextInput
 					required
 					type='tel'
-					placeholder='Ditt telefonnummer'
+					placeholder='Telefon'
 					icon={<Phone size={18} />}
 					className={classes.numberInput}
 					{...form.getInputProps('phone_number')}
@@ -182,7 +223,7 @@ function LoginForm() {
 				className={classes.passwordInput}
 				{...form.getInputProps('password')}
 			/>
-			<Button uppercase className={classes.submitButton} type='submit'>
+			<Button leftIcon={isLoading? <Loader size={14} color="white"/> : ''} uppercase className={classes.submitButton} type='submit'>
 				Logg inn
 			</Button>
 			<Button uppercase className={classes.forgottenButton} variant='outline'>

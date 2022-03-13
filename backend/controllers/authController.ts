@@ -69,11 +69,11 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
 }
 
 export async function verify(req: Request, res: Response) {
-	if (!req.body.token) {
+	if (!req.cookies.accessToken) {
 		return res.status(403).json({ message: 'No token sent!' })
 	}
-	const { token } = req.body
-	const isValidToken = await isValidNtnuiToken(token)
+	const { accessToken } = req.cookies
+	const isValidToken = await isValidNtnuiToken(accessToken)
 	if (isValidToken) {
 		return res.status(200).json({ message: 'Token is valid' })
 	}
@@ -127,7 +127,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 			const ntnuiNo = decodedToken.ntnui_no
 			if (rolesInCommittees.length) {
 				await updateOrCreateUserModel(ntnuiNo, rolesInCommittees)
-				res
+				return res
 					.cookie('accessToken', tokens.access, {
 						maxAge: 1800000, // 30 minutes
 						httpOnly: true,
@@ -135,6 +135,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 						sameSite: true,
 					})
 					.cookie('refreshToken', tokens.refresh, {
+						maxAge: 86400000, // 1 day
 						httpOnly: true, // TODO: Match membership-system
 						secure: false, // TODO: process.env.NODE_ENV === "production"
 						sameSite: true,
@@ -156,28 +157,25 @@ export const authorization = async (
 ) => {
 	let { accessToken } = req.cookies
 	const { refreshToken } = req.cookies
-	if (!accessToken && !refreshToken)
+	if (!accessToken)
 		return res.status(401).json({ message: 'No token was sent' })
 	try {
-		if (!refreshToken) {
-			return res.status(401).json({ message: 'No refresh-token was sent' })
-		}
 		const isValid = await isValidNtnuiToken(accessToken)
 		if (!isValid) {
 			// Try to refresh
-			console.log('⚠ Is invalid!')
+			if (!refreshToken) {
+				return res.status(401).json({ message: 'No refresh-token was sent' })
+			}
 			const newToken = await refreshNtnuiToken(refreshToken)
 			if (newToken) {
-				console.log('🔁 Got refreshed!')
 				accessToken = newToken.access
-				console.log(newToken)
-				res
-					.cookie('accessToken', newToken.access, {
-						maxAge: 1800000, // 30 minutes
-						httpOnly: true,
-						secure: false, // TODO: process.env.NODE_ENV === "production"
-						sameSite: true,
-					})
+				res.cookie('accessToken', newToken.access, {
+					maxAge: 1800000, // 30 minutes
+					httpOnly: true,
+					secure: false, // TODO: process.env.NODE_ENV === "production"
+					sameSite: true,
+				})
+				
 			} else {
 				return res.status(401).json({ message: 'Invalid token' })
 			}
@@ -186,9 +184,10 @@ export const authorization = async (
 		if (decoded && typeof decoded !== 'string') {
 			req.ntnuiNo = decoded.ntnui_no
 			return next()
-		}
+		} 
+		throw UnauthorizedUserError
 	} catch (error) {
-		return next(error)
+		console.log(error)
+		return res.status(403).json({ message: 'Authorization failed' })
 	}
-	return res.status(403).json({ message: 'Authorization failed' })
 }

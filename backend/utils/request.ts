@@ -1,6 +1,5 @@
-import {Request} from 'express';
+import { Request } from 'express'
 
-export interface RequestWithNtnuiNo extends Request
-{
-    ntnuiNo?: string;
+export interface RequestWithNtnuiNo extends Request {
+	ntnuiNo?: string
 }

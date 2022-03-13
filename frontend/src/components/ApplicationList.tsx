@@ -1,8 +1,9 @@
-import { Container, createStyles, Pagination } from '@mantine/core'
+import { Container, createStyles, Loader, Pagination } from '@mantine/core'
 import ApplicationItem from './ApplicationItem'
 import { IApplication } from '../types/types'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 const useStyles = createStyles((theme) => ({
 	container: {
@@ -44,17 +45,27 @@ function ApplicationList() {
 	const [applications, setApplications] = useState<IApplication[]>([])
 	const [currentPage, setCurrentPage] = useState(1)
 	const [numberOfPages, setNumberOfPages] = useState(1)
+	const [isLoading, setIsLoading] = useState(false)
+	let navigate = useNavigate()
 
 	useEffect(() => {
+		setIsLoading(true)
 		axios
 			.get(`/applications/?page=${currentPage}`)
 			.then((res) => {
 				setApplications(res.data.applications)
 				setCurrentPage(res.data.currentPage)
 				setNumberOfPages(res.data.numberOfPages)
+				setIsLoading(false)
 			})
-			.catch((err) => console.log(err))
-	}, [currentPage])
+			.catch((err) => {
+				setIsLoading(false)
+				if (err.response.status === 401 || err.response.status === 403) {
+					navigate('/login')
+				}
+				console.log(err)
+			})
+	}, [currentPage, navigate])
 
 	const { classes } = useStyles()
 	return applications.length ? (
@@ -74,6 +85,8 @@ function ApplicationList() {
 				onChange={setCurrentPage}
 			/>
 		</Container>
+	) : isLoading ? (
+		<Loader color='yellow' />
 	) : (
 		<span>No applications found</span>
 	)
