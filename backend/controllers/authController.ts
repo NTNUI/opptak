@@ -7,6 +7,7 @@ import {
 	refreshNtnuiToken,
 } from 'ntnui-tools'
 import { CustomError, UnauthorizedUserError } from 'ntnui-tools/customError'
+import { RequestWithNtnuiNo } from '../utils/request'
 import { CommitteeModel } from '../models/Committee'
 import MembershipType from '../utils/enums'
 import { IRoleInCommittee, UserModel } from '../models/User'
@@ -126,13 +127,68 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 			const ntnuiNo = decodedToken.ntnui_no
 			if (rolesInCommittees.length) {
 				await updateOrCreateUserModel(ntnuiNo, rolesInCommittees)
-				return res
+				res
+					.cookie('accessToken', tokens.access, {
+						maxAge: 1800000, // 30 minutes
+						httpOnly: true,
+						secure: false, // TODO: process.env.NODE_ENV === "production"
+						sameSite: true,
+					})
+					.cookie('refreshToken', tokens.refresh, {
+						httpOnly: true, // TODO: Match membership-system
+						secure: false, // TODO: process.env.NODE_ENV === "production"
+						sameSite: true,
+					})
 					.status(200)
-					.json({ access: tokens.access, refresh: tokens.refresh })
+					.json({ message: 'Successful login' })
 			}
 		}
 		throw UnauthorizedUserError
 	} catch (error) {
 		return next(error)
 	}
+}
+
+export const authorization = async (
+	req: RequestWithNtnuiNo,
+	res: Response,
+	next: NextFunction
+) => {
+	let { accessToken } = req.cookies
+	const { refreshToken } = req.cookies
+	if (!accessToken && !refreshToken)
+		return res.status(401).json({ message: 'No token was sent' })
+	try {
+		if (!refreshToken) {
+			return res.status(401).json({ message: 'No refresh-token was sent' })
+		}
+		const isValid = await isValidNtnuiToken(accessToken)
+		if (!isValid) {
+			// Try to refresh
+			console.log('⚠ Is invalid!')
+			const newToken = await refreshNtnuiToken(refreshToken)
+			if (newToken) {
+				console.log('🔁 Got refreshed!')
+				accessToken = newToken.access
+				console.log(newToken)
+				res
+					.cookie('accessToken', newToken.access, {
+						maxAge: 1800000, // 30 minutes
+						httpOnly: true,
+						secure: false, // TODO: process.env.NODE_ENV === "production"
+						sameSite: true,
+					})
+			} else {
+				return res.status(401).json({ message: 'Invalid token' })
+			}
+		}
+		const decoded: string | JwtPayload | null = jsonwebtoken.decode(accessToken)
+		if (decoded && typeof decoded !== 'string') {
+			req.ntnuiNo = decoded.ntnui_no
+			return next()
+		}
+	} catch (error) {
+		return next(error)
+	}
+	return res.status(403).json({ message: 'Authorization failed' })
 }

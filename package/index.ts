@@ -49,7 +49,7 @@ async function getRoleInGroup(
 		})
 }
 
-type INtnuiToken = {
+type INtnuiTokens = {
 	access: string
 	refresh: string
 }
@@ -64,7 +64,7 @@ interface ITokenResponse {
 async function getNtnuiToken(
 	phone_number: string,
 	password: string
-): Promise<INtnuiToken> {
+): Promise<INtnuiTokens> {
 	return axios
 		.post('token/', {
 			phone_number,
@@ -93,14 +93,23 @@ async function isValidNtnuiToken(token: string): Promise<boolean> {
 		.catch(() => false)
 }
 
-async function refreshNtnuiToken(token: string): Promise<INtnuiToken> {
+interface IAccessTokenResponse {
+	data: {
+		access: string
+	}
+}
+
+interface INtnuiAccessToken {
+	access: string
+}
+
+async function refreshNtnuiToken(token: string): Promise<INtnuiAccessToken> {
 	return axios
 		.post('token/refresh/', {
 			refresh: token,
 		})
-		.then((tokenRes: ITokenResponse) => ({
+		.then((tokenRes: IAccessTokenResponse) => ({
 			access: tokenRes.data.access,
-			refresh: tokenRes.data.refresh,
 		}))
 		.catch((err) => {
 			if (err.response.status === 401) {
