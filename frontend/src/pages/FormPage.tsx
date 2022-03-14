@@ -1,6 +1,5 @@
 import { Box, Button, createStyles } from '@mantine/core'
-import React from 'react'
-import { FileText } from 'tabler-icons-react'
+import { FileText, Login } from 'tabler-icons-react'
 import { Form } from '../components/ApplicationForm'
 
 const useStyles = createStyles((theme) => ({
@@ -26,12 +25,14 @@ const useStyles = createStyles((theme) => ({
 	header: {
 		width: 'auto',
 		margin: '2rem 0',
-		padding: '0 2rem',
 		display: 'grid',
 		gridTemplateColumns: '1fr 1fr 3fr 1fr 1fr',
 		'@media (max-width: 700px)': {
+			padding: '2rem 2rem 0',
+			margin: 0,
+			alignItems: 'center',
 			gridTemplateColumns: '1fr',
-			gridTemplateRows: 'auto 1fr',
+			gridTemplateRows: 'auto',
 			gap: '20px',
 		},
 	},
@@ -39,13 +40,14 @@ const useStyles = createStyles((theme) => ({
 		fontWeight: 'lighter',
 		fontSize: 'x-large',
 		textAlign: 'center',
-		margin: '1rem auto 0 auto',
+		margin: '1.5rem auto 0 auto',
 		'*': {
 			// Icon
 			margin: '0 0 -3px 0',
 		},
 		'@media (max-width: 700px)': {
 			fontSize: 'large',
+			marginBottom: '1rem',
 		},
 	},
 	logo: {
@@ -62,16 +64,36 @@ const useStyles = createStyles((theme) => ({
 			height: '100px',
 		},
 		'@media (max-width: 700px)': {
+			display: 'flex',
+			img: {
+				maxHeight: '40px',
+			},
+			h1: {
+				display: 'none',
+			},
+			justifySelf: 'start',
 			gridColumn: 1,
-			gridRow: 2,
+			gridRow: 1,
 		},
 	},
 	internButton: {
+		backgroundColor: 'transparent',
 		justifySelf: 'end',
 		fontWeight: 'normal',
+		border: '2px solid' + theme.colors.ntnui_blue[9],
+		borderRadius: '5px 0 0 5px',
+		borderRight: '0',
 		gridColumn: 5,
+		transition: '0.3s',
 		'@media (max-width: 700px)': {
-			gridColumn: 1,
+			'&:hover': {
+				transform: 'none',
+				backgroundColor: 'transparent',
+			},
+			padding: '0',
+			border: 'none',
+			justifySelf: 'end',
+			gridColumn: 2,
 			gridRow: 1,
 		},
 	},
@@ -87,7 +109,8 @@ function FormBox() {
 					<h1>OPPTAK</h1>
 				</Box>
 				<Button uppercase className={classes.internButton}>
-					Intern innlogging
+					<Login size={20} />
+					Intern
 				</Button>
 			</Box>
 			<Box className={classes.formTitleAndBodyWrapper}>

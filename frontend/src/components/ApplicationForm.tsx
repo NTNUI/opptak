@@ -50,9 +50,13 @@ const useStyles = createStyles((theme) => ({
 	},
 	submitButton: {
 		width: '100%',
+		marginTop: '1rem',
+		transition: '0.2s',
 		'&:hover': {
 			backgroundColor: 'green',
-			transition: '0.2s',
+		},
+		'&:focus': {
+			backgroundColor: 'darkgreen',
 		},
 	},
 }))
