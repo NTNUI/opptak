@@ -20,10 +20,7 @@ const getApplications = async (
 					committeeIds = user.committees.map((committee) => committee.committee)
 				}
 			})
-			// eslint-disable-next-line arrow-body-style
-			.catch(() => {
-				return res.status(401).json({message: 'Unauthorized user!'})
-			}) // TODO: Correct error handling
+			.catch(() => res.status(401).json({ message: 'Unauthorized user!' })) // TODO: Correct error handling
 
 		// Pagination
 		const { page } = req.query
@@ -38,16 +35,16 @@ const getApplications = async (
 			.limit(LIMIT)
 			.skip(startIndex)
 			.then((applications) =>
-			res.status(200).json({
-				applications,
-				currentPage: Number(page),
-				numberOfPages: Math.ceil(total / LIMIT),
-			})
+				res.status(200).json({
+					applications,
+					currentPage: Number(page),
+					numberOfPages: Math.ceil(total / LIMIT),
+				})
 			)
-			.catch((err) => {
-				console.log(err)
-				res.status(401).json({message: 'Could not find any committees'})
+			.catch(() => {
+				res.status(401).json({ message: 'Could not find any committees' })
 			})
+		throw new CustomError('Could not find any committees', 401)
 	} catch (error) {
 		return next(error)
 	}

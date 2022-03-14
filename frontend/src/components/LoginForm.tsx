@@ -142,13 +142,11 @@ function LoginForm() {
 			.post('/auth/', credentials)
 			.then((response) => {
 				setIsLoading(false)
-				navigate('/applications')
-				console.log(response)
+				navigate('/applications') // TODO: Redirect to dashboard
 			})
 			.catch((err) => {
 				setIsLoading(false)
 				console.log('Show error-notification!')
-				console.log(err.message)
 			})
 	}
 
@@ -223,7 +221,12 @@ function LoginForm() {
 				className={classes.passwordInput}
 				{...form.getInputProps('password')}
 			/>
-			<Button leftIcon={isLoading? <Loader size={14} color="white"/> : ''} uppercase className={classes.submitButton} type='submit'>
+			<Button
+				leftIcon={isLoading ? <Loader size={14} color='white' /> : ''}
+				uppercase
+				className={classes.submitButton}
+				type='submit'
+			>
 				Logg inn
 			</Button>
 			<Button uppercase className={classes.forgottenButton} variant='outline'>

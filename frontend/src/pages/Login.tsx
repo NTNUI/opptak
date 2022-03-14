@@ -1,4 +1,7 @@
 import { Button, createStyles } from '@mantine/core'
+import axios from 'axios'
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'tabler-icons-react'
 import LoginForm from '../components/LoginForm'
 
@@ -47,6 +50,16 @@ const useStyles = createStyles((theme) => ({
 
 function Login() {
 	const { classes } = useStyles()
+	const navigate = useNavigate()
+
+	useEffect(() => {
+		axios
+			.post('/auth/verify')
+			.then((res) => {
+				navigate('/applications') // TODO: redirect to dashboard
+			})
+			.catch(() => console.log('was not authed')) // TODO: catch properly
+	}, [navigate])
 
 	return (
 		<div className={classes.pageWrapper}>

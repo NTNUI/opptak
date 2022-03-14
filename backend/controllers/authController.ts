@@ -70,7 +70,7 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
 
 export async function verify(req: Request, res: Response) {
 	if (!req.cookies.accessToken) {
-		return res.status(403).json({ message: 'No token sent!' })
+		return res.status(401).json({ message: 'No token sent!' })
 	}
 	const { accessToken } = req.cookies
 	const isValidToken = await isValidNtnuiToken(accessToken)
@@ -90,6 +90,7 @@ export async function verify(req: Request, res: Response) {
  * 	   - Determine if role is in access roles of local committees OR is leader
  * 	     * If true, push to array of role in committee
  *     - Update user model in local database with roles in committees
+ *     - Set cookies and allow login
  * 4. If role in committees is empty, unauthorized user
  * @param req express Request object
  * @param res express Response object
@@ -150,6 +151,14 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 	}
 }
 
+export function logout(_req: Request, res: Response) {
+	return res
+		.clearCookie('accessToken')
+		.clearCookie('refreshToken')
+		.status(200)
+		.json({ message: 'Successfully logged out' })
+}
+
 export const authorization = async (
 	req: RequestWithNtnuiNo,
 	res: Response,
@@ -157,25 +166,26 @@ export const authorization = async (
 ) => {
 	let { accessToken } = req.cookies
 	const { refreshToken } = req.cookies
-	if (!accessToken)
-		return res.status(401).json({ message: 'No token was sent' })
 	try {
+		if (!refreshToken && !accessToken) {
+			return res.status(401).json({ message: 'No tokens sent' })
+		}
 		const isValid = await isValidNtnuiToken(accessToken)
 		if (!isValid) {
 			// Try to refresh
 			if (!refreshToken) {
-				return res.status(401).json({ message: 'No refresh-token was sent' })
+				return res.status(401).json({ message: 'No refresh-token sent' })
 			}
 			const newToken = await refreshNtnuiToken(refreshToken)
 			if (newToken) {
 				accessToken = newToken.access
+				// Set cookies
 				res.cookie('accessToken', newToken.access, {
 					maxAge: 1800000, // 30 minutes
 					httpOnly: true,
 					secure: false, // TODO: process.env.NODE_ENV === "production"
 					sameSite: true,
 				})
-				
 			} else {
 				return res.status(401).json({ message: 'Invalid token' })
 			}
@@ -184,10 +194,9 @@ export const authorization = async (
 		if (decoded && typeof decoded !== 'string') {
 			req.ntnuiNo = decoded.ntnui_no
 			return next()
-		} 
+		}
 		throw UnauthorizedUserError
 	} catch (error) {
-		console.log(error)
 		return res.status(403).json({ message: 'Authorization failed' })
 	}
 }
