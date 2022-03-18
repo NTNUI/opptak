@@ -1,7 +1,8 @@
-import { Container, MantineProvider } from '@mantine/core'
+import { MantineProvider } from '@mantine/core'
+import { NotificationsProvider } from '@mantine/notifications'
 import axios from 'axios'
 import './App.css'
-import ApplicationOverview from './pages/ApplicationOverview'
+import FormPage from './pages/FormPage'
 import colors from './utils/theme'
 
 function App() {
@@ -12,9 +13,9 @@ function App() {
 				colors: colors,
 			}}
 			children={
-				<Container>
-					<ApplicationOverview />
-				</Container>
+				<NotificationsProvider position='top-right'>
+					<FormPage />
+				</NotificationsProvider>
 			}
 		/>
 	)
