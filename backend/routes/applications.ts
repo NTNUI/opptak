@@ -7,8 +7,8 @@ import {
 const applicationRouter = express.Router()
 
 // @route GET applications
-// @description Get all applications
-// @access Public
+// @description Get all applications that user has access to
+// @access Private
 applicationRouter.get('/', getApplications)
 
 // @route POST applications

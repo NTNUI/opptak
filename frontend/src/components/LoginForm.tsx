@@ -2,7 +2,6 @@ import {
 	Button,
 	createStyles,
 	InputWrapper,
-	Loader,
 	PasswordInput,
 	Select,
 	TextInput,
@@ -11,9 +10,9 @@ import {
 import { ChevronDown, InfoCircle, Lock, Phone, World } from 'tabler-icons-react'
 import { useForm } from '@mantine/form'
 import countryCodes from '../utils/countryCodes'
-import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import { login } from '../services/Auth'
 
 const useStyles = createStyles((theme) => ({
 	phoneNumberWrapper: {
@@ -69,6 +68,7 @@ const useStyles = createStyles((theme) => ({
 		},
 	},
 	submitButton: {
+		transition: '0.3s',
 		width: '100%',
 		margin: '1rem 0 0.5rem 0',
 	},
@@ -138,16 +138,21 @@ function LoginForm() {
 			phone_number: '+' + values.country_code + values.phone_number,
 			password: values.password,
 		}
-		axios
-			.post('/auth/', credentials)
-			.then((response) => {
-				setIsLoading(false)
-				navigate('/applications') // TODO: Redirect to dashboard
-			})
-			.catch((err) => {
-				setIsLoading(false)
-				console.log('Show error-notification!')
-			})
+		try {
+			login(credentials.phone_number, credentials.password)
+				.then((response) => {
+					console.log(`Pls ${response}`)
+					setIsLoading(false)
+					navigate('/applications') // TODO: Redirect to dashboard
+				})
+				.catch(() => {
+					setIsLoading(false)
+					// TODO: Display error
+				})
+		} catch (error) {
+			setIsLoading(false)
+			console.log(`Caught by try/catch ${error}`)
+		}
 	}
 
 	const countryCodesToSelect = countryCodes.map((code: countryCodePair) => {
@@ -215,6 +220,7 @@ function LoginForm() {
 			</InputWrapper>
 			<PasswordInput
 				required
+				autoComplete='password'
 				label='Passord'
 				placeholder='Passord'
 				icon={<Lock size={18} />}
@@ -222,7 +228,7 @@ function LoginForm() {
 				{...form.getInputProps('password')}
 			/>
 			<Button
-				leftIcon={isLoading ? <Loader size={14} color='white' /> : ''}
+				loading={isLoading}
 				uppercase
 				className={classes.submitButton}
 				type='submit'

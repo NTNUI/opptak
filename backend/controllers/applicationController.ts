@@ -4,24 +4,31 @@ import { RequestWithNtnuiNo } from '../utils/request'
 import { ApplicationModel } from '../models/Application'
 import { UserModel } from '../models/User'
 
+// TODO: Move function?
+async function getUserCommitteeIdsByUserId(userId: number | string) {
+	let committeeIds: number[] = []
+	await UserModel.findById(userId)
+		.then((user) => {
+			if (user) {
+				committeeIds = user.committees.map((committee) => committee.committee)
+			}
+		})
+		.catch(() => {
+			throw new CustomError('Something went wrong when trying to find user', 500)
+		}) // TODO: Correct error handling
+	return committeeIds
+}
+
 const getApplications = async (
 	req: RequestWithNtnuiNo,
 	res: Response,
 	next: NextFunction
 ) => {
 	try {
-		const { ntnuiNo } = req
 		// Access control - retrieve committees that user is member of
+		const { ntnuiNo } = req
 		if (!ntnuiNo) throw UnauthorizedUserError
-		let committeeIds: number[] = []
-		await UserModel.findById(ntnuiNo)
-			.then((user) => {
-				if (user) {
-					committeeIds = user.committees.map((committee) => committee.committee)
-				}
-			})
-			.catch(() => res.status(401).json({ message: 'Unauthorized user!' })) // TODO: Correct error handling
-
+		const committeeIds: number[] = await getUserCommitteeIdsByUserId(ntnuiNo)
 		// Pagination
 		const { page } = req.query
 		const LIMIT = 4
@@ -42,12 +49,12 @@ const getApplications = async (
 				})
 			)
 			.catch(() => {
-				res.status(401).json({ message: 'Could not find any committees' })
+				throw new CustomError('Unable to retrieve applications', 500)
 			})
-		throw new CustomError('Could not find any committees', 401)
 	} catch (error) {
 		return next(error)
 	}
+	throw new CustomError('Unable to retrieve applications', 500)
 }
 
 const postApplication = (req: Request, res: Response) => {

@@ -1,9 +1,9 @@
 import { Button, createStyles } from '@mantine/core'
-import axios from 'axios'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'tabler-icons-react'
 import LoginForm from '../components/LoginForm'
+import { verifyToken } from '../services/Auth'
 
 const useStyles = createStyles((theme) => ({
 	backButton: {
@@ -35,15 +35,10 @@ const useStyles = createStyles((theme) => ({
 		display: 'flex',
 		flexDirection: 'column',
 		margin: 'auto',
-		'@media (max-width: 600px)': {
+		width: '340px',
+		'@media (max-width: 400px)': {
 			fontSize: 'small',
 			width: '90%',
-		},
-		'@media (min-width: 600px)': {
-			width: '50%',
-		},
-		'@media (min-width: 900px)': {
-			width: '25%',
 		},
 	},
 }))
@@ -53,12 +48,13 @@ function Login() {
 	const navigate = useNavigate()
 
 	useEffect(() => {
-		axios
-			.post('/auth/verify')
-			.then((res) => {
-				navigate('/applications') // TODO: redirect to dashboard
-			})
-			.catch(() => console.log('was not authed')) // TODO: catch properly
+		const verifyTokenAsync = async () => {
+			try {
+				await verifyToken()
+				navigate('/applications') // TODO: Navigate to dashboard
+			} catch (error) {}
+		}
+		verifyTokenAsync()
 	}, [navigate])
 
 	return (

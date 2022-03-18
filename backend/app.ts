@@ -8,7 +8,7 @@ import committeeRouter from './routes/committees'
 import applicationRouter from './routes/applications'
 import authRouter from './routes/auth'
 import errorHandler from './utils/errorHandler'
-import { authorization } from './controllers/authController'
+import authorization from './utils/authorizationMiddleware'
 
 axios.defaults.baseURL = 'https://dev.api.ntnui.no/' // GET FROM ENV OR CONFIG
 const app = express()
