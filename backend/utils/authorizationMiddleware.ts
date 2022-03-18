@@ -41,7 +41,7 @@ const authorization = async (
 				res.cookie('accessToken', newToken.access, {
 					maxAge: 1800000, // 30 minutes
 					httpOnly: true,
-					secure: process.env.NODE_ENV === 'production', // TODO: process.env.NODE_ENV === "production"
+					secure: process.env.NODE_ENV === 'production',
 					sameSite: true,
 				})
 			} else {
@@ -55,9 +55,8 @@ const authorization = async (
 		}
 		throw UnauthorizedUserError
 	} catch (error) {
-		next(error)
+		return next(error)
 	}
-	throw new CustomError('Unable to retrieve applications', 500)
 }
 
 export default authorization

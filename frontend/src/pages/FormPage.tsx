@@ -104,8 +104,6 @@ function FormBox() {
 	const { classes } = useStyles()
 	let navigate = useNavigate()
 
-
-
 	const routeToIntern = () => {
 		navigate('/login')
 	}

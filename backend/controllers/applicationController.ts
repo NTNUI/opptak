@@ -4,7 +4,6 @@ import { RequestWithNtnuiNo } from '../utils/request'
 import { ApplicationModel } from '../models/Application'
 import { UserModel } from '../models/User'
 
-// TODO: Move function?
 async function getUserCommitteeIdsByUserId(userId: number | string) {
 	let committeeIds: number[] = []
 	await UserModel.findById(userId)
@@ -51,10 +50,10 @@ const getApplications = async (
 			.catch(() => {
 				throw new CustomError('Unable to retrieve applications', 500)
 			})
+		throw new CustomError('Unable to retrieve applications', 500)
 	} catch (error) {
 		return next(error)
 	}
-	throw new CustomError('Unable to retrieve applications', 500)
 }
 
 const postApplication = (req: Request, res: Response) => {

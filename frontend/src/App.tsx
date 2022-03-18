@@ -21,7 +21,7 @@ function App() {
 					<NotificationsProvider position='top-right'>
 						<BrowserRouter>
 							<Routes>
-								<Route path='/' element={<FormPage/>} />
+								<Route path='/' element={<FormPage />} />
 								<Route path='login' element={<Login />} />
 								<Route path='applications' element={<ApplicationOverview />} />
 							</Routes>
