@@ -57,9 +57,14 @@ function Login() {
 		verifyTokenAsync()
 	}, [navigate])
 
+	const backToForm = () => {
+		navigate('/')
+	}
+
 	return (
 		<div className={classes.pageWrapper}>
 			<Button
+				onClick={backToForm}
 				size='lg'
 				variant='subtle'
 				className={classes.backButton}

@@ -7,8 +7,16 @@ import {
 	TextInput,
 	Tooltip,
 } from '@mantine/core'
-import { ChevronDown, InfoCircle, Lock, Phone, World } from 'tabler-icons-react'
+import {
+	ChevronDown,
+	InfoCircle,
+	Lock,
+	Phone,
+	World,
+	X,
+} from 'tabler-icons-react'
 import { useForm } from '@mantine/form'
+import { Notification } from '@mantine/core'
 import countryCodes from '../utils/countryCodes'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
@@ -62,6 +70,7 @@ const useStyles = createStyles((theme) => ({
 	passwordInput: {
 		label: { color: 'white' },
 		width: '100%',
+		marginBottom: '10px',
 		input: {
 			backgroundColor: theme.colors.ntnui_background[9],
 			color: 'white',
@@ -118,6 +127,7 @@ function LoginForm() {
 	const { classes } = useStyles()
 	let navigate = useNavigate()
 	const [isLoading, setIsLoading] = useState(false)
+	const [error, setError] = useState(false)
 
 	const form = useForm({
 		initialValues: {
@@ -141,13 +151,12 @@ function LoginForm() {
 		try {
 			login(credentials.phone_number, credentials.password)
 				.then((response) => {
-					console.log(`Pls ${response}`)
 					setIsLoading(false)
 					navigate('/applications') // TODO: Redirect to dashboard
 				})
 				.catch(() => {
 					setIsLoading(false)
-					// TODO: Display error
+					setError(true)
 				})
 		} catch (error) {
 			setIsLoading(false)
@@ -227,6 +236,17 @@ function LoginForm() {
 				className={classes.passwordInput}
 				{...form.getInputProps('password')}
 			/>
+			{error && (
+				<Notification
+					title='Kunne ikke logge inn!'
+					disallowClose
+					onClose={() => {}}
+					icon={<X size={18} />}
+					color='red'
+				>
+					Finner ingen bruker med dette nummeret og dette passordet.
+				</Notification>
+			)}
 			<Button
 				loading={isLoading}
 				uppercase
