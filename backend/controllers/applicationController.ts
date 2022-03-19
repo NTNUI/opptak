@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import { CustomError, UnauthorizedUserError } from 'ntnui-tools/customError'
 import { RequestWithNtnuiNo } from '../utils/request'
-import { ApplicationModel } from '../models/Application'
+import { ApplicationModel, IApplication } from '../models/Application'
 import { UserModel } from '../models/User'
 
 async function getUserCommitteeIdsByUserId(userId: number | string) {
@@ -14,7 +14,7 @@ async function getUserCommitteeIdsByUserId(userId: number | string) {
 		})
 		.catch(() => {
 			throw new CustomError('Something went wrong when trying to find user', 500)
-		}) // TODO: Correct error handling
+		})
 	return committeeIds
 }
 
@@ -36,21 +36,25 @@ const getApplications = async (
 			committees: { $in: committeeIds },
 		})
 		// Retrieve applications that only have the given committees
-		await ApplicationModel.find({ committees: { $in: committeeIds } })
+		let applications: IApplication[] = []
+		await ApplicationModel.find({
+			committees: { $in: committeeIds },
+		})
 			.populate('committees', 'name')
 			.limit(LIMIT)
 			.skip(startIndex)
-			.then((applications) =>
-				res.status(200).json({
-					applications,
-					currentPage: Number(page),
-					numberOfPages: Math.ceil(total / LIMIT),
-				})
-			)
-			.catch(() => {
-				throw new CustomError('Unable to retrieve applications', 500)
+			.then((applicationRes) => {
+				applications = applicationRes
 			})
-		throw new CustomError('Unable to retrieve applications', 500)
+			.catch(() => {
+				throw new CustomError('Something went wrong retrieving applications', 500)
+			})
+
+		return res.status(200).json({
+			applications,
+			currentPage: Number(page),
+			numberOfPages: Math.ceil(total / LIMIT),
+		})
 	} catch (error) {
 		return next(error)
 	}

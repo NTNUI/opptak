@@ -51,7 +51,7 @@ function Login() {
 		const verifyTokenAsync = async () => {
 			try {
 				await verifyToken()
-				navigate('/applications') // TODO: Navigate to dashboard
+				navigate('/dashboard')
 			} catch (error) {}
 		}
 		verifyTokenAsync()

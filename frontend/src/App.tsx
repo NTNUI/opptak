@@ -3,7 +3,9 @@ import { NotificationsProvider } from '@mantine/notifications'
 import axios from 'axios'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.css'
+import Navbar from './components/Navbar'
 import ApplicationOverview from './pages/ApplicationOverview'
+import Dashboard from './pages/Dashboard'
 import FormPage from './pages/FormPage'
 import Login from './pages/Login'
 import colors from './utils/theme'
@@ -23,7 +25,42 @@ function App() {
 							<Routes>
 								<Route path='/' element={<FormPage />} />
 								<Route path='login' element={<Login />} />
-								<Route path='applications' element={<ApplicationOverview />} />
+								<Route
+									path='dashboard'
+									element={
+										<>
+											<Navbar />
+											<Dashboard />
+										</>
+									}
+								/>
+								<Route
+									path='applications'
+									element={
+										<>
+											<Navbar />
+											<ApplicationOverview />
+										</>
+									}
+								/>
+								<Route
+									path='application-status'
+									element={
+										<>
+											<Navbar />
+											<h1>Opptaksstatus</h1>
+										</>
+									}
+								/>
+								<Route
+									path='application-period'
+									element={
+										<>
+											<Navbar />
+											<h1>Opptaksperiode</h1>
+										</>
+									}
+								/>
 							</Routes>
 						</BrowserRouter>
 					</NotificationsProvider>
