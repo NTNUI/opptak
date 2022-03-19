@@ -7,21 +7,28 @@ const getCommittees = (_req: Request, res: Response) => {
 		.catch((err) => res.status(404).json({ message: err.message }))
 }
 
-const postOpenForApplications = (req: Request, res: Response) => {
-	CommitteeModel.find({ slug: req.params.slug, accepts_applicants: Boolean })
-		.then((committees) => {
-			if (committees.length === 0) {
-				return res.status(404).json({ message: 'Committee not found' })
-			}
-
-			const committee = committees[0]
-			committee.accepts_applicants = true
-			committee
-				.save()
-				.then((committee) => res.status(200).json(committee))
-				.catch((err) => res.status(400).json({ message: err.message }))
-		}
+async function acceptApplicants(req: Request, res: Response) {
+	// TODO: Implement check if user is organizer or leader of committee
+	const { slug } = req.params
+	const committee = await CommitteeModel.findOne({ slug })
+	if (!committee) {
+		return res.status(404).json({ message: 'Committee not found' })
+	}
+	committee.accepts_applicants = !committee.accepts_applicants
+	if (committee.accepts_applicants) {
+		return committee
+			.save()
+			.then(() =>
+				res.status(200).json({ message: 'Committee opened for applications' })
+			)
+			.catch((err) => res.status(500).json({ message: err.message }))
+	}
+	return committee
+		.save()
+		.then(() =>
+			res.status(200).json({ message: 'Committee closed for applications' })
 		)
+		.catch((err) => res.status(500).json({ message: err.message }))
 }
 
-export default getCommittees
+export { getCommittees, acceptApplicants }
