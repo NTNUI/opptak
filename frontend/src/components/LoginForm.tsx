@@ -69,7 +69,15 @@ const useStyles = createStyles((theme) => ({
 		},
 	},
 	passwordInput: {
-		label: { color: 'white', display: 'flex', alignItems: 'center' },
+		label: {
+			color: 'white',
+			display: 'flex',
+			alignItems: 'center',
+			margin: 0,
+			span: {
+				display: 'none',
+			},
+		},
 		width: '100%',
 		marginBottom: '10px',
 		input: {
@@ -87,7 +95,7 @@ const useStyles = createStyles((theme) => ({
 		color: theme.colors.ntnui_blue[9],
 	},
 	loginTooltip: {
-		margin: '0 0 0 1px',
+		margin: '0 0 0 2px',
 		textAlign: 'center',
 		svg: {
 			// Aligns info-icon with label
@@ -176,7 +184,7 @@ function LoginForm() {
 				label={label}
 				wrapLines
 			>
-				<InfoCircle size={18} />
+				<InfoCircle size={16} />
 			</Tooltip>
 		)
 	}
@@ -195,7 +203,6 @@ function LoginForm() {
 			className={classes.form}
 		>
 			<InputWrapper
-				required
 				label={
 					<>
 						Telefon
@@ -276,22 +283,6 @@ function LoginForm() {
 			>
 				Logg inn
 			</Button>
-			<b>
-				<a className={classes.link} href='https://medlem.ntnui.no/forgot-password'>
-					Glemt passord
-				</a>
-				{NtnuiInfoTooltip(
-					<p>
-						Dersom du har glemt passordet ditt i medlemssystemet kan du endre det på{' '}
-						<a
-							className={classes.link}
-							href='https://medlem.ntnui.no/forgot-password'
-						>
-							medlem.ntnui.no
-						</a>
-					</p>
-				)}
-			</b>
 		</form>
 	)
 }
