@@ -43,6 +43,7 @@ const useStyles = createStyles((theme) => ({
 	},
 	selectCountryCodeInput: {
 		color: 'white',
+		'.mantine-Select-rightSection': { pointerEvents: 'none' },
 		input: {
 			gridArea: 'country_code',
 			backgroundColor: 'transparent',
@@ -152,7 +153,7 @@ function LoginForm() {
 			login(credentials.phone_number, credentials.password)
 				.then((response) => {
 					setIsLoading(false)
-					navigate('/applications') // TODO: Redirect to dashboard
+					navigate('/dashboard')
 				})
 				.catch(() => {
 					setIsLoading(false)

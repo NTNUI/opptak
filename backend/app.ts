@@ -8,7 +8,6 @@ import committeeRouter from './routes/committees'
 import applicationRouter from './routes/applications'
 import authRouter from './routes/auth'
 import errorHandler from './utils/errorHandler'
-import authorization from './utils/authorizationMiddleware'
 
 axios.defaults.baseURL = 'https://dev.api.ntnui.no/' // GET FROM ENV OR CONFIG
 const app = express()
@@ -24,7 +23,7 @@ app.use(express.json())
 // Set up routes
 app.use('/auth', authRouter)
 app.use('/test', testRoute)
-app.use('/applications', authorization, applicationRouter)
+app.use('/applications', applicationRouter)
 app.use('/committees', committeeRouter)
 
 // Error handling middleware

@@ -3,13 +3,14 @@ import {
 	getApplications,
 	postApplication,
 } from '../controllers/applicationController'
+import authorization from '../utils/authorizationMiddleware'
 
 const applicationRouter = express.Router()
 
 // @route GET applications
 // @description Get all applications that user has access to
 // @access Private
-applicationRouter.get('/', getApplications)
+applicationRouter.get('/', authorization, getApplications)
 
 // @route POST applications
 // @description Add application
