@@ -98,8 +98,8 @@ function Navbar() {
 	const location = useLocation()
 	const [opened, handlers] = useDisclosure(false)
 
-	const logOut = () => {
-		axios
+	const logOut = async () => {
+		await axios
 			.post('/auth/logout')
 			.then(() => {
 				navigate('/login')

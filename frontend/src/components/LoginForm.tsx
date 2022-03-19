@@ -69,7 +69,7 @@ const useStyles = createStyles((theme) => ({
 		},
 	},
 	passwordInput: {
-		label: { color: 'white' },
+		label: { color: 'white', display: 'flex', alignItems: 'center' },
 		width: '100%',
 		marginBottom: '10px',
 		input: {
@@ -82,15 +82,6 @@ const useStyles = createStyles((theme) => ({
 		width: '100%',
 		margin: '1rem 0 0.5rem 0',
 	},
-	forgottenButton: {
-		color: 'white',
-		width: '100%',
-		transition: '0.3s',
-		'&:hover': {
-			color: theme.colors.ntnui_background[9],
-			background: theme.colors.ntnui_blue[9],
-		},
-	},
 	link: {
 		textDecoration: 'none',
 		color: theme.colors.ntnui_blue[9],
@@ -98,28 +89,36 @@ const useStyles = createStyles((theme) => ({
 	loginTooltip: {
 		margin: '0 0 0 1px',
 		textAlign: 'center',
-		'*': {
-			// Aligns info-icon with phonenumber
+		svg: {
+			// Aligns info-icon with label
 			display: 'flex',
 			alignContent: 'center',
 			justifyContent: 'center',
 		},
+	},
+	loginErrorRoot: {
+		backgroundColor: theme.colors.ntnui_background[9],
+		borderColor: theme.colors.ntnui_red[9],
+	},
+	loginErrorText: {
+		color: 'white',
 	},
 	form: {
 		width: '100%',
 		display: 'flex',
 		justifyContent: 'center',
 		flexDirection: 'column',
+		color: 'white',
 	},
 }))
 
-interface formValues {
+type FormValues = {
 	country_code: string
 	phone_number: string
 	password: string
 }
 
-interface countryCodePair {
+type CountryCodePair = {
 	land: string
 	kode: string
 }
@@ -143,7 +142,7 @@ function LoginForm() {
 		},
 	})
 
-	const submitLoginForm = (values: formValues) => {
+	const submitLoginForm = (values: FormValues) => {
 		setIsLoading(true)
 		const credentials = {
 			phone_number: '+' + values.country_code + values.phone_number,
@@ -151,7 +150,7 @@ function LoginForm() {
 		}
 		try {
 			login(credentials.phone_number, credentials.password)
-				.then((response) => {
+				.then(() => {
 					setIsLoading(false)
 					navigate('/dashboard')
 				})
@@ -161,11 +160,28 @@ function LoginForm() {
 				})
 		} catch (error) {
 			setIsLoading(false)
-			console.log(`Caught by try/catch ${error}`)
 		}
 	}
 
-	const countryCodesToSelect = countryCodes.map((code: countryCodePair) => {
+	const NtnuiInfoTooltip = (label: JSX.Element) => {
+		return (
+			<Tooltip
+				position='top'
+				allowPointerEvents
+				className={classes.loginTooltip}
+				classNames={{ body: classes.loginTooltip }}
+				color='dark'
+				width={250}
+				transition='pop'
+				label={label}
+				wrapLines
+			>
+				<InfoCircle size={18} />
+			</Tooltip>
+		)
+	}
+
+	const countryCodesToSelect = countryCodes.map((code: CountryCodePair) => {
 		return {
 			key: code.land,
 			value: code.kode,
@@ -183,27 +199,14 @@ function LoginForm() {
 				label={
 					<>
 						Telefon
-						<Tooltip
-							position='top'
-							allowPointerEvents
-							className={classes.loginTooltip}
-							classNames={{ body: classes.loginTooltip }}
-							color='dark'
-							width={250}
-							transition='pop'
-							label={
-								<>
-									Logg inn med samme telefonnummer som du bruker i medlemssystemet
-									<a className={classes.link} href='https://medlem.ntnui.no/login'>
-										medlem.ntnui.no
-									</a>
-								</>
-							}
-							withArrow
-							wrapLines
-						>
-							<InfoCircle size={18} />
-						</Tooltip>
+						{NtnuiInfoTooltip(
+							<>
+								Logg inn med samme telefonnummer som du bruker på{' '}
+								<a className={classes.link} href='https://medlem.ntnui.no/login'>
+									medlem.ntnui.no
+								</a>
+							</>
+						)}
 					</>
 				}
 				className={classes.phoneNumberWrapper}
@@ -231,7 +234,19 @@ function LoginForm() {
 			<PasswordInput
 				required
 				autoComplete='password'
-				label='Passord'
+				label={
+					<>
+						Passord
+						{NtnuiInfoTooltip(
+							<p>
+								Logg inn med samme passord som du bruker på{' '}
+								<a className={classes.link} href='https://medlem.ntnui.no/login'>
+									medlem.ntnui.no
+								</a>
+							</p>
+						)}
+					</>
+				}
 				placeholder='Passord'
 				icon={<Lock size={18} />}
 				className={classes.passwordInput}
@@ -241,11 +256,16 @@ function LoginForm() {
 				<Notification
 					title='Kunne ikke logge inn!'
 					disallowClose
+					classNames={{
+						root: classes.loginErrorRoot,
+						title: classes.loginErrorText,
+						description: classes.loginErrorText,
+					}}
 					onClose={() => {}}
 					icon={<X size={18} />}
 					color='red'
 				>
-					Finner ingen bruker med dette nummeret og dette passordet.
+					Finner ingen bruker med dette nummeret og dette passordet
 				</Notification>
 			)}
 			<Button
@@ -256,9 +276,22 @@ function LoginForm() {
 			>
 				Logg inn
 			</Button>
-			<Button uppercase className={classes.forgottenButton} variant='outline'>
-				Glemt passord
-			</Button>
+			<b>
+				<a className={classes.link} href='https://medlem.ntnui.no/forgot-password'>
+					Glemt passord
+				</a>
+				{NtnuiInfoTooltip(
+					<p>
+						Dersom du har glemt passordet ditt i medlemssystemet kan du endre det på{' '}
+						<a
+							className={classes.link}
+							href='https://medlem.ntnui.no/forgot-password'
+						>
+							medlem.ntnui.no
+						</a>
+					</p>
+				)}
+			</b>
 		</form>
 	)
 }
