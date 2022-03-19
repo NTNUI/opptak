@@ -24,7 +24,7 @@ function Dashboard() {
 			<Button onClick={() => navigate('/applications')}>
 				<FileText size={18} /> Søknader
 			</Button>
-			<Button onClick={() => navigate('/application-status')}>
+			<Button onClick={() => navigate('/admission-status')}>
 				<Users size={18} /> Opptaksstatus
 			</Button>
 			<Button onClick={() => navigate('/application-period')}>

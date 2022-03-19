@@ -111,7 +111,11 @@ function FormBox() {
 					<img alt='NTNUI logo' src='/images/ntnui.svg' />
 					<h1>OPPTAK</h1>
 				</Box>
-				<Button onClick={() => navigate('/login')} uppercase className={classes.internButton}>
+				<Button
+					onClick={() => navigate('/login')}
+					uppercase
+					className={classes.internButton}
+				>
 					<Login size={20} />
 					Intern
 				</Button>

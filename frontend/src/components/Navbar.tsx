@@ -163,11 +163,11 @@ function Navbar() {
 					<Menu.Item
 						icon={<Users size={18} />}
 						className={
-							location.pathname === '/application-status'
+							location.pathname === '/admission-status'
 								? classes.active
 								: classes.menuItemBody
 						}
-						onClick={() => navigate('/application-status')}
+						onClick={() => navigate('/admission-status')}
 					>
 						Opptaksstatus
 					</Menu.Item>

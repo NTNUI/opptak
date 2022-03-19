@@ -44,7 +44,7 @@ function App() {
 									}
 								/>
 								<Route
-									path='application-status'
+									path='admission-status'
 									element={
 										<>
 											<Navbar />
