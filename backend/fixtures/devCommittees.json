@@ -3,60 +3,70 @@
 		"_id": 9,
 		"name": "Blits",
 		"slug": "blits",
-		"access_roles": ["deputy_leader"]
+		"access_roles": ["deputy_leader"],
+		"accepts_applicants": true
 	},
 	{
 		"_id": 10,
 		"name": "Event",
 		"slug": "event",
-		"access_roles": []
+		"access_roles": [],
+		"accepts_applicants": true
 	},
 	{
 		"_id": 5,
 		"name": "Hidden-test-group",
 		"slug": "hidden-test-group",
-		"access_roles": ["deputy_leader"]
+		"access_roles": ["deputy_leader"],
+		"accepts_applicants": true
 	},
 	{
 		"_id": 7,
 		"name": "Koiene",
 		"slug": "koiene",
-		"access_roles": []
+		"access_roles": [],
+		"accepts_applicants": true
 	},
 	{
 		"_id": 8,
 		"name": "Økonomiutvalget",
 		"slug": "okonomiutvalget",
-		"access_roles": ["deputy_leader"]
+		"access_roles": ["deputy_leader"],
+		"accepts_applicants": true
 	},
 	{
 		"_id": 4,
 		"name": "Ski og fjellsport",
 		"slug": "ski-og-fjellsport",
-		"access_roles": ["deputy_leader"]
+		"access_roles": ["deputy_leader"],
+		"accepts_applicants": false
 	},
 	{
 		"_id": 1,
 		"name": "Sprint",
 		"slug": "sprint",
-		"access_roles": ["deputy_leader"]
+		"access_roles": ["deputy_leader"],
+		"accepts_applicants": true
 	},
 	{
 		"_id": 6,
 		"name": "Tindegruppa",
 		"slug": "tindegruppa",
-		"access_roles": ["deputy_leader"]
+		"access_roles": ["deputy_leader"],
+		"accepts_applicants": true
 	},
 	{
 		"_id": 2,
 		"name": "Triatlon",
 		"slug": "triatlon",
-		"access_roles": []
+		"access_roles": [],
+		"accepts_applicants": true
 	},
 	{
 		"_id": 3,
 		"name": "Turn",
 		"slug": "turn",
-		"access_roles": ["deputy_leader"]
+		"access_roles": ["deputy_leader"],
+		"accepts_applicants": true
 	}
 ]
