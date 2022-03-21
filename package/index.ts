@@ -5,12 +5,6 @@ import {
 	UnauthorizedUserError,
 } from './customError'
 
-interface IGroup {
-	_id: Number
-	name: string
-	slug: string
-}
-
 axios.defaults.baseURL = 'https://dev.api.ntnui.no/' // TODO: GET FROM ENV OR CONFIG
 
 type IGroupPageResult = {
@@ -117,9 +111,4 @@ async function refreshNtnuiToken(token: string): Promise<INtnuiAccessToken> {
 		})
 }
 
-export {
-	getRoleInGroup,
-	getNtnuiToken,
-	isValidNtnuiToken,
-	refreshNtnuiToken,
-}
+export { getRoleInGroup, getNtnuiToken, isValidNtnuiToken, refreshNtnuiToken }

@@ -3,6 +3,7 @@ import {
 	getCommittees,
 	acceptApplicants,
 } from '../controllers/committeeController'
+import authorization from '../utils/authorizationMiddleware'
 
 const committeeRouter = express.Router()
 
@@ -11,9 +12,9 @@ const committeeRouter = express.Router()
 // @access Public
 committeeRouter.get('/', getCommittees)
 
-// @route PUT /committees/:slug/accept-applications
-// @description Open committee for applications
+// @route PUT /committees/:slug/accept-applicants
+// @description Open committee for applicants/applications
 // @access Private
-committeeRouter.put('/:slug/accept-applications', acceptApplicants)
+committeeRouter.put('/:slug/accept-applicants', authorization, acceptApplicants)
 
 export default committeeRouter
