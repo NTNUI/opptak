@@ -25,6 +25,7 @@ import { login } from '../services/Auth'
 const useStyles = createStyles((theme) => ({
 	phoneNumberWrapper: {
 		width: '100%',
+		marginBottom: '1rem',
 		display: 'grid',
 		gridTemplateColumns: '1fr 1fr',
 		gridTemplateRows: '1fr auto',
@@ -66,6 +67,7 @@ const useStyles = createStyles((theme) => ({
 		},
 		'.mantine-TextInput-error': {
 			margin: 0,
+			position: 'absolute',
 		},
 	},
 	passwordInput: {
@@ -89,6 +91,13 @@ const useStyles = createStyles((theme) => ({
 		transition: '0.3s',
 		width: '100%',
 		margin: '1rem 0 0.5rem 0',
+		backgroundColor: theme.colors.ntnui_blue[9],
+		border: '2px solid' + theme.colors.ntnui_blue[9],
+		':hover': {
+			border: '2px solid' + theme.colors.ntnui_blue[9],
+			color: theme.colors.ntnui_blue[9],
+			backgroundColor: 'transparent',
+		},
 	},
 	link: {
 		textDecoration: 'none',
