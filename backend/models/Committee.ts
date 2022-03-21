@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 import MembershipType from '../utils/enums'
 
-interface CommitteeI {
+interface ICommittee {
 	_id: number
 	name: string
 	slug: string
@@ -9,9 +9,9 @@ interface CommitteeI {
 	access_roles: string[]
 }
 
-const CommitteeModel = mongoose.model<CommitteeI>(
+const CommitteeModel = mongoose.model<ICommittee>(
 	'Committee',
-	new mongoose.Schema<CommitteeI>({
+	new mongoose.Schema<ICommittee>({
 		_id: { type: Number, required: true },
 		name: { type: String, required: true },
 		slug: { type: String, required: true },
@@ -21,4 +21,4 @@ const CommitteeModel = mongoose.model<CommitteeI>(
 )
 
 export { CommitteeModel }
-export type { CommitteeI }
+export type { ICommittee }

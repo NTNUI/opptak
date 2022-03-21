@@ -3,7 +3,7 @@ import { CustomError, UnauthorizedUserError } from 'ntnui-tools/customError'
 import { RequestWithNtnuiNo } from '../utils/request'
 import { ApplicationModel, IApplication } from '../models/Application'
 import { UserModel } from '../models/User'
-import { CommitteeModel } from '../models/Committee'
+import { CommitteeModel, ICommittee } from '../models/Committee'
 
 async function getUserCommitteeIdsByUserId(userId: number | string) {
 	let committeeIds: number[] = []
@@ -17,6 +17,42 @@ async function getUserCommitteeIdsByUserId(userId: number | string) {
 			throw new CustomError('Something went wrong when trying to find user', 500)
 		})
 	return committeeIds
+}
+
+interface IPopulatedApplication extends Omit<IApplication, 'committees'> {
+	committees: ICommittee[]
+}
+
+const getApplicationById = async (
+	req: RequestWithNtnuiNo,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		// Access control - retrieve committees that user is member of
+		const { ntnuiNo } = req
+		if (!ntnuiNo) throw UnauthorizedUserError
+		const userCommitteeIds: number[] = await getUserCommitteeIdsByUserId(ntnuiNo)
+		// Retrieve application and committees the application is sent to
+		const application = await ApplicationModel.findById(req.params.application_id)
+			.populate<IPopulatedApplication>('committees', 'name slug')
+			.then((applicationRes) => applicationRes)
+			.catch(() => {
+				throw new CustomError('Kunne ikke finne søknaden', 404)
+			})
+		if (!application) throw new CustomError('Could not find application', 404)
+		const applicationCommittees: ICommittee[] = application.committees
+		// Check if user is in committee that application is sent to
+		for (let id = 0; id < applicationCommittees.length; id += 1) {
+			const appCommitteeId = applicationCommittees[id]._id
+			if (userCommitteeIds.includes(appCommitteeId)) {
+				return res.status(200).json({ application })
+			}
+		}
+		throw new CustomError('Du har ikke tilgang til denne søknaden', 401)
+	} catch (error) {
+		return next(error)
+	}
 }
 
 const getApplications = async (
@@ -88,4 +124,4 @@ const postApplication = async (
 	}
 }
 
-export { getApplications, postApplication }
+export { getApplications, postApplication, getApplicationById }
