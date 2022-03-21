@@ -11,10 +11,6 @@ interface IGroup {
 	slug: string
 }
 
-function printSlug(committee: IGroup) {
-	console.log(committee.slug) // eslint-disable-line no-console
-}
-
 axios.defaults.baseURL = 'https://dev.api.ntnui.no/' // TODO: GET FROM ENV OR CONFIG
 
 type IGroupPageResult = {
@@ -122,7 +118,6 @@ async function refreshNtnuiToken(token: string): Promise<INtnuiAccessToken> {
 }
 
 export {
-	printSlug,
 	getRoleInGroup,
 	getNtnuiToken,
 	isValidNtnuiToken,

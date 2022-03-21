@@ -1,10 +1,4 @@
 import express from 'express'
-import { printSlug } from 'ntnui-tools'
-
-const group69 = { _id: 69, name: 'Group 69', slug: 'group-69' }
-
-printSlug(group69)
-console.log(group69.slug) // eslint-disable-line no-console
 
 const testRouter = express.Router()
 
