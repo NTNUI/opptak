@@ -68,11 +68,11 @@ export async function refresh(req: Request, res: Response, next: NextFunction) {
 }
 
 export async function verify(req: Request, res: Response) {
-	if (!req.body.token) {
-		return res.status(403).json({ message: 'No token sent!' })
+	if (!req.cookies.accessToken) {
+		return res.status(401).json({ message: 'No token sent!' })
 	}
-	const { token } = req.body
-	const isValidToken = await isValidNtnuiToken(token)
+	const { accessToken } = req.cookies
+	const isValidToken = await isValidNtnuiToken(accessToken)
 	if (isValidToken) {
 		return res.status(200).json({ message: 'Token is valid' })
 	}
@@ -89,6 +89,7 @@ export async function verify(req: Request, res: Response) {
  * 	   - Determine if role is in access roles of local committees OR is leader
  * 	     * If true, push to array of role in committee
  *     - Update user model in local database with roles in committees
+ *     - Set cookies and allow login
  * 4. If role in committees is empty, unauthorized user
  * @param req express Request object
  * @param res express Response object
@@ -127,12 +128,32 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 			if (rolesInCommittees.length) {
 				await updateOrCreateUserModel(ntnuiNo, rolesInCommittees)
 				return res
+					.cookie('accessToken', tokens.access, {
+						maxAge: 1800000, // 30 minutes
+						httpOnly: true,
+						secure: process.env.NODE_ENV === 'production',
+						sameSite: true,
+					})
+					.cookie('refreshToken', tokens.refresh, {
+						maxAge: 86400000, // 1 day
+						httpOnly: true,
+						secure: process.env.NODE_ENV === 'production',
+						sameSite: true,
+					})
 					.status(200)
-					.json({ access: tokens.access, refresh: tokens.refresh })
+					.json({ message: 'Successful login' })
 			}
 		}
 		throw UnauthorizedUserError
 	} catch (error) {
 		return next(error)
 	}
+}
+
+export function logout(_req: Request, res: Response) {
+	return res
+		.clearCookie('accessToken')
+		.clearCookie('refreshToken')
+		.status(200)
+		.json({ message: 'Successfully logged out' })
 }

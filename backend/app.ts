@@ -1,6 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import axios from 'axios'
+import cookieParser = require('cookie-parser')
 import connectDB from './config/db'
 import testRoute from './routes/test'
 import committeeRouter from './routes/committees'
@@ -14,7 +15,8 @@ const app = express()
 connectDB()
 
 // Set up middleware
-app.use(cors({ origin: 'http://localhost:3000' }))
+app.use(cookieParser())
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 

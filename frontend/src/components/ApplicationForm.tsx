@@ -48,6 +48,9 @@ const useStyles = createStyles((theme) => ({
 		backgroundColor: 'transparent',
 		color: 'black',
 	},
+	multiSelectRightSection: {
+		'.mantine-MultiSelect-rightSection': { pointerEvents: 'none' },
+	},
 	submitButton: {
 		width: '100%',
 		marginTop: '1rem',
@@ -196,6 +199,7 @@ export function Form() {
 					rightSection={<ChevronDown size={14} />}
 					rightSectionWidth={40}
 					nothingFound='Kunne ikke finne utvalget du søker etter'
+					className={classes.multiSelectRightSection}
 					classNames={{ label: classes.multiSelectInput, input: classes.formField }}
 					label={<span className={classes.labelText}>Hva ønsker du å søke?</span>}
 					onBlur={() => form.validateField('committees')}

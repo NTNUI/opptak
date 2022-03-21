@@ -1,6 +1,7 @@
 import { Box, Button, createStyles } from '@mantine/core'
 import { FileText, Login } from 'tabler-icons-react'
 import { Form } from '../components/ApplicationForm'
+import { useNavigate } from 'react-router-dom'
 
 const useStyles = createStyles((theme) => ({
 	formTitleAndBodyWrapper: {
@@ -101,6 +102,8 @@ const useStyles = createStyles((theme) => ({
 
 function FormBox() {
 	const { classes } = useStyles()
+	let navigate = useNavigate()
+
 	return (
 		<>
 			<Box className={classes.header}>
@@ -108,7 +111,11 @@ function FormBox() {
 					<img alt='NTNUI logo' src='/images/ntnui.svg' />
 					<h1>OPPTAK</h1>
 				</Box>
-				<Button uppercase className={classes.internButton}>
+				<Button
+					onClick={() => navigate('/login')}
+					uppercase
+					className={classes.internButton}
+				>
 					<Login size={20} />
 					Intern
 				</Button>

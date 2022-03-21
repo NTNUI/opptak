@@ -1,23 +1,22 @@
-import { Container, createStyles, Pagination } from '@mantine/core'
+import { Container, createStyles, Loader, Pagination } from '@mantine/core'
 import ApplicationItem from './ApplicationItem'
 import { IApplication } from '../types/types'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
+import getApplications from '../services/Applications'
 
 const useStyles = createStyles((theme) => ({
 	container: {
-		width: '100%',
 		display: 'flex',
 		padding: '0',
 		flexDirection: 'column',
 		gap: '1rem',
-		margin: 'auto',
 	},
 	pagination: {
 		margin: '1rem auto 1rem auto',
 		active: { color: 'red' },
 	},
-	pagintaionItems: {
+	paginationItems: {
 		color: 'white',
 		border: theme.colors.ntnui_background[9],
 		backgroundColor: theme.colors.ntnui_background[9],
@@ -44,17 +43,27 @@ function ApplicationList() {
 	const [applications, setApplications] = useState<IApplication[]>([])
 	const [currentPage, setCurrentPage] = useState(1)
 	const [numberOfPages, setNumberOfPages] = useState(1)
+	const [isLoading, setIsLoading] = useState(false)
+	let navigate = useNavigate()
 
 	useEffect(() => {
-		axios
-			.get(`/applications/?page=${currentPage}`)
-			.then((res) => {
-				setApplications(res.data.applications)
-				setCurrentPage(res.data.currentPage)
-				setNumberOfPages(res.data.numberOfPages)
-			})
-			.catch((err) => console.log(err))
-	}, [currentPage])
+		setIsLoading(true)
+		const getApplicationsAsync = async () => {
+			try {
+				const response = await getApplications(currentPage)
+				setApplications(response.applications)
+				setCurrentPage(response.currentPage)
+				setNumberOfPages(response.numberOfPages)
+				setIsLoading(false)
+			} catch (error: any) {
+				setIsLoading(false)
+				if (error.response.status !== 200) {
+					navigate('/login')
+				}
+			}
+		}
+		getApplicationsAsync()
+	}, [currentPage, navigate])
 
 	const { classes } = useStyles()
 	return applications.length ? (
@@ -65,7 +74,7 @@ function ApplicationList() {
 			<Pagination
 				className={classes.pagination}
 				classNames={{
-					item: classes.pagintaionItems,
+					item: classes.paginationItems,
 					active: classes.pagintationActive,
 				}}
 				total={numberOfPages}
@@ -74,6 +83,8 @@ function ApplicationList() {
 				onChange={setCurrentPage}
 			/>
 		</Container>
+	) : isLoading ? (
+		<Loader color='yellow' />
 	) : (
 		<span>No applications found</span>
 	)
