@@ -30,6 +30,9 @@ const useStyles = createStyles((theme) => ({
 			color: 'white',
 			textAlign: 'center',
 		},
+		p: {
+			marginTop: '0.5rem',
+		},
 	},
 	pageWrapper: {
 		display: 'flex',
