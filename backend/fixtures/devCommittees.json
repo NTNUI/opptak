@@ -4,7 +4,7 @@
 		"name": "Blits",
 		"slug": "blits",
 		"access_roles": ["deputy_leader"],
-		"accepts_applicants": true
+		"accepts_applicants": false
 	},
 	{
 		"_id": 10,
@@ -67,6 +67,18 @@
 		"name": "Turn",
 		"slug": "turn",
 		"access_roles": ["deputy_leader"],
+		"accepts_applicants": true
+	},
+	{
+		"_id": 10,
+		"name": "Hovedstyret",
+		"slug": "hovedstyret",
+		"access_roles": [
+			"deputy_leader",
+			"cashier",
+			"board_member",
+			"deputy_board_member"
+		],
 		"accepts_applicants": true
 	}
 ]
