@@ -7,7 +7,7 @@ import {
 	Switch,
 } from '@mantine/core'
 import { useState } from 'react'
-import { DeviceFloppy, X } from 'tabler-icons-react'
+import { DeviceFloppy, Users, X } from 'tabler-icons-react'
 
 const useStyles = createStyles((theme) => ({
 	modal: {
@@ -138,7 +138,10 @@ function AdmissionStatus() {
 			</Modal>
 
 			<Group position='center'>
-				<Button onClick={() => setOpened(true)}>Opptaksstatus</Button>
+				<Button onClick={() => setOpened(true)}>
+					<Users size={18} />
+					Opptaksstatus
+				</Button>
 			</Group>
 		</>
 	)
