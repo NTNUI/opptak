@@ -15,18 +15,14 @@ async function acceptApplicants(req: Request, res: Response) {
 		return res.status(404).json({ message: 'Committee not found' })
 	}
 	committee.accepts_applicants = !committee.accepts_applicants
-	if (committee.accepts_applicants) {
-		return committee
-			.save()
-			.then(() =>
-				res.status(200).json({ message: 'Committee opened for applications' })
-			)
-			.catch((err) => res.status(500).json({ message: err.message }))
-	}
+	const applicationStatus = committee.accepts_applicants ? 'opened' : 'closed'
+
 	return committee
 		.save()
 		.then(() =>
-			res.status(200).json({ message: 'Committee closed for applications' })
+			res.status(200).json({
+				message: `Committee ${committee.name} ${applicationStatus} for applications`,
+			})
 		)
 		.catch((err) => res.status(500).json({ message: err.message }))
 }
