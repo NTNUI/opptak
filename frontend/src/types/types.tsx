@@ -17,6 +17,8 @@ interface ICommittee {
 	_id: number
 	name: string
 	slug: string
+	accepts_applicants: boolean
+	access_roles: string[]
 }
 
 export type { IApplication, ICommittee, IApplicationResponse }

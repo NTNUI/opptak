@@ -131,10 +131,13 @@ export function Form() {
 	}
 
 	const mapCommitteeToSelect = (committees: ICommittee[]) => {
-		return committees.map((committee: ICommittee) => {
-			return { value: committee._id.toString(), label: committee.name }
-		})
+		return committees
+			.filter((committee) => committee.accepts_applicants)
+			.map((committee: ICommittee) => {
+				return { value: committee._id.toString(), label: committee.name }
+			})
 	}
+
 	const form = useForm({
 		initialValues: {
 			email: '',
