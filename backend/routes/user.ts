@@ -7,6 +7,6 @@ const userRouter = express.Router()
 // @route GET users committees
 // @description Get all committees that user is member of
 // @access Private
-userRouter.get('/', authorization, getUserCommittees)
+userRouter.get('/committees', authorization, getUserCommittees)
 
 export default userRouter
