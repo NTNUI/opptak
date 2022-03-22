@@ -3,6 +3,7 @@ import { CustomError, UnauthorizedUserError } from 'ntnui-tools/customError'
 import { RequestWithNtnuiNo } from '../utils/request'
 import { ApplicationModel, IApplication } from '../models/Application'
 import { UserModel } from '../models/User'
+import { CommitteeModel } from '../models/Committee'
 
 async function getUserCommitteeIdsByUserId(userId: number | string) {
 	let committeeIds: number[] = []
@@ -60,14 +61,31 @@ const getApplications = async (
 	}
 }
 
-const postApplication = (req: Request, res: Response) => {
-	const application = new ApplicationModel(req.body)
-	application
-		.save()
-		.then((newApplication) =>
-			res.status(200).json({ application: newApplication })
-		)
-		.catch((err) => res.status(400).json({ message: err.message }))
+const postApplication = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const application = new ApplicationModel(req.body)
+		// Check that all applied committees accepts applicants
+		const closedCommittees = await CommitteeModel.findOne({
+			_id: { $in: application.committees },
+			accepts_applicants: false,
+		})
+		if (closedCommittees) {
+			return res
+				.status(400)
+				.json({ message: 'A committee the application was sent to is closed' })
+		}
+		return application
+			.save()
+			.then((newApplication) =>
+				res.status(200).json({ application: newApplication })
+			)
+	} catch (error) {
+		return next(error)
+	}
 }
 
 export { getApplications, postApplication }

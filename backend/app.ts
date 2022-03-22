@@ -7,6 +7,7 @@ import testRoute from './routes/test'
 import committeeRouter from './routes/committees'
 import applicationRouter from './routes/applications'
 import authRouter from './routes/auth'
+import userRouter from './routes/user'
 import errorHandler from './utils/errorHandler'
 
 axios.defaults.baseURL = 'https://dev.api.ntnui.no/' // GET FROM ENV OR CONFIG
@@ -25,6 +26,7 @@ app.use('/auth', authRouter)
 app.use('/test', testRoute)
 app.use('/applications', applicationRouter)
 app.use('/committees', committeeRouter)
+app.use('/user', userRouter)
 
 // Error handling middleware
 app.use(errorHandler)
