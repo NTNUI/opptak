@@ -1,12 +1,37 @@
 import { Box, Button, createStyles } from '@mantine/core'
 import {
 	AlertTriangle,
-	FileText,
+	ClipboardList,
+	CursorText,
 	Home,
 	Login,
 	Logout,
+	Mail,
+	Phone,
+	User,
 } from 'tabler-icons-react'
-import { Form } from '../components/ApplicationForm'
+
+const application = {
+		_id: '6234871c96f988e3595d1d49',
+		name: 'Sander Arntzen',
+		phone_number: '123456778',
+		email: 'sander@arn.no',
+		text: "I'm super sporty!",
+		committees: [
+			{
+				_id: 2,
+				name: 'Triatlon',
+				slug: 'triatlon',
+			},
+			{
+				_id: 2,
+				name: 'Sprint',
+				slug: 'sprint',
+			},
+		],
+		submitted_date: '2022-03-18T13:20:28.742Z',
+		__v: 0,
+}
 
 const useStyles = createStyles((theme) => ({
 	warningBox: {
@@ -15,23 +40,7 @@ const useStyles = createStyles((theme) => ({
 		margin: 'auto',
 		border: '3px solid ' + theme.colors.ntnui_red[9],
 		textAlign: 'left',
-		color: 'white',
-		'@media (max-width: 1200px)': {
-			width: '70%',
-		},
-		'@media (max-width: 700px)': {
-			width: '85%',
-			border: 'none',
-			backgroundColor: 'transparent',
-			padding: '1rem',
-		},
-	},
-    headerBox: {
-		width: '80%',
-		justifyContent: 'center',
-		margin: 'auto',
-		border: '3px solid ' + theme.colors.ntnui_red[9],
-		textAlign: 'left',
+		background: 'rgba(255,0,0,0.1)',
 		color: 'white',
 		'@media (max-width: 1200px)': {
 			width: '70%',
@@ -47,8 +56,78 @@ const useStyles = createStyles((theme) => ({
 		width: '80%',
 		justifyContent: 'center',
 		margin: 'auto',
+		marginTop: '1rem',
 		border: '2px solid ' + theme.colors.ntnui_yellow[9],
 		textAlign: 'left',
+		color: 'white',
+		'@media (max-width: 1200px)': {
+			width: '70%',
+		},
+		'@media (max-width: 700px)': {
+			width: '85%',
+			border: 'none',
+			backgroundColor: 'transparent',
+			padding: '1rem',
+		},
+	},
+	PersonalInformation: {
+		justifyContent: 'center',
+		margin: 'auto',
+		marginTop: '1rem',
+		marginLeft: '2rem',
+		color: 'white',
+		p: {
+			display: 'flex',
+			gap: '0.4rem',
+		},
+		'@media (max-width: 1200px)': {
+			width: '70%',
+		},
+		'@media (max-width: 700px)': {
+			width: '85%',
+			border: 'none',
+			backgroundColor: 'transparent',
+			padding: '1rem',
+		},
+	},
+	applicationText: {
+		justifyContent: 'center',
+		margin: 'auto',
+		marginTop: '1rem',
+		marginLeft: '2rem',
+		color: 'white',
+		'@media (max-width: 1200px)': {
+			width: '70%',
+		},
+		'@media (max-width: 700px)': {
+			width: '85%',
+			border: 'none',
+			backgroundColor: 'transparent',
+			padding: '1rem',
+		},
+	},
+	applicationInsideText: {
+		justifyContent: 'center',
+		margin: 'auto',
+		marginTop: '1rem',
+		marginLeft: '2rem',
+		color: 'white',
+		'@media (max-width: 1200px)': {
+			width: '70%',
+		},
+		'@media (max-width: 700px)': {
+			width: '85%',
+			border: 'none',
+			backgroundColor: 'transparent',
+			padding: '1rem',
+		},
+	},
+	applicationHeader: {
+		justifyContent: 'center',
+		textAlign: 'center',
+		fontWeight: 'lighter',
+		margin: 'auto',
+		marginBottom: '1rem',
 		color: 'white',
 		'@media (max-width: 1200px)': {
 			width: '70%',
@@ -77,6 +156,7 @@ const useStyles = createStyles((theme) => ({
 		fontWeight: 'lighter',
 		fontSize: 'x-large',
 		textAlign: 'left',
+		gap: '0.4rem',
 		margin: '1.5rem auto 0 auto',
 		'*': {
 			// Icon
@@ -115,11 +195,10 @@ const useStyles = createStyles((theme) => ({
 	},
 	dashboard: {
 		backgroundColor: 'blue',
-        display: 'flex',
-        justifyContent: 'flex-end',
+		display: 'flex',
+		marginLeft: 'auto',
 		fontWeight: 'normal',
 		borderRadius: '5px 0 0 5px',
-		borderRight: '0',
 		transition: '0.3s',
 		'@media (max-width: 700px)': {
 			'&:hover': {
@@ -133,10 +212,10 @@ const useStyles = createStyles((theme) => ({
 			gridRow: 1,
 		},
 	},
-    logout: {
+	logout: {
 		backgroundColor: 'blue',
-        display: 'flex',
-        justifyContent: 'space-between',
+		display: 'flex',
+		justifyContent: 'space-between',
 		fontWeight: 'normal',
 		borderRadius: '5px 0 0 5px',
 		borderRight: '0',
@@ -159,35 +238,38 @@ function ApplicationBox() {
 	const { classes } = useStyles()
 	return (
 		<>
-			<Box className={classes.header}>
-				<Box className={classes.logo}>
-					<img alt='NTNUI logo' src='/images/ntnui.svg' />
-					<h1>OPPTAK</h1>
-				</Box>
-				<Button uppercase className={classes.dashboard}>
-					<Home size={20} />
-					Dashboard
-				</Button>
-				<Button uppercase className={classes.logout}>
-					<Logout size={20} />
-					Logg ut
-				</Button>
-			</Box>
+			<div></div>
+			<h1 className={classes.applicationHeader}>Søknad fra {application.name}</h1>
 			<Box className={classes.warningBox}>
 				<h4 className={classes.formTitle}>
 					<AlertTriangle size={40} />
-					Har søkt Sprint og Blits
+					Har søkt {application.committees.map(committee => committee.name)}
 				</h4>
-				<p>Koordiner for å unngå å konkurrere internt</p>
 			</Box>
-            <Box className={classes.warningBox}>
-				<h4 className={classes.formTitle}>
-					<AlertTriangle size={40} />
-					Har søkt Sprint og Blits
-				</h4>
-				<p>Koordiner for å unngå å konkurrere internt</p>
+			<Box className={classes.ApplicationBox}>
+				<Box className={classes.PersonalInformation}>
+					<h1 className={classes.formTitle}>
+						<ClipboardList /> Personinformasjon
+					</h1>
+					<p>
+						<User size={24} /> <b>Navn:</b> {application.name}
+					</p>
+					<p>
+						<Phone size={24} /> <b>Telefon:</b> {application.phone_number}
+					</p>
+					<p>
+						<Mail size={24} /> <b>E-post:</b> {application.email}
+					</p>
+				</Box>
+				<Box className={classes.applicationText}>
+					<h1 className={classes.formTitle}>
+						<CursorText /> Søknadstekst
+					</h1>
+					<p>
+						{application.text}
+					</p>
+				</Box>
 			</Box>
-			<Box className={classes.ApplicationBox}></Box>
 		</>
 	)
 }
