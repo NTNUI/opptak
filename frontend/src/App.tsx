@@ -4,6 +4,7 @@ import axios from 'axios'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.css'
 import Navbar from './components/Navbar'
+import ApplicationDetailPage from './pages/ApplicationDetails'
 import ApplicationOverview from './pages/ApplicationOverview'
 import Dashboard from './pages/Dashboard'
 import FormPage from './pages/FormPage'
@@ -58,6 +59,16 @@ function App() {
 										<>
 											<Navbar />
 											<h1>Opptaksperiode</h1>
+										</>
+									}
+								/>
+								{/* TODO: remove this and move to navigate onclick item in list */}
+								<Route
+									path='applications/:id'
+									element={
+										<>
+											<Navbar />
+											<ApplicationDetailPage />
 										</>
 									}
 								/>
