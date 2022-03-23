@@ -1,7 +1,8 @@
-import { Box, Button, createStyles } from '@mantine/core'
-import { useEffect } from 'react'
+import { Box, Button, createStyles, Loader } from '@mantine/core'
+import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
+	AlertTriangle,
 	AlignJustified,
 	ArrowLeft,
 	ClipboardList,
@@ -9,28 +10,8 @@ import {
 	Phone,
 	User,
 } from 'tabler-icons-react'
-
-const application = {
-	_id: '6234871c96f988e3595d1d49',
-	name: 'Sander Arntzen',
-	phone_number: '123456778',
-	email: 'sander@arn.no',
-	text: "I'm super sporty!",
-	committees: [
-		{
-			_id: 2,
-			name: 'Triatlon',
-			slug: 'triatlon',
-		},
-		{
-			_id: 2,
-			name: 'Sprint',
-			slug: 'sprint',
-		},
-	],
-	submitted_date: '2022-03-18T13:20:28.742Z',
-	__v: 0,
-}
+import { getApplication } from '../services/Applications'
+import { IApplication } from '../types/types'
 
 const useStyles = createStyles((theme) => ({
 	pageWrapper: {
@@ -126,56 +107,119 @@ const useStyles = createStyles((theme) => ({
 			fontSize: 'large',
 		},
 	},
+	errorMessage: {
+		color: theme.colors.ntnui_red[9],
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
+		h1: {
+			fontWeight: 'lighter',
+			fontSize: 'x-large',
+		},
+		svg: {
+			color: theme.colors.ntnui_red[9],
+			margin: '0 5px 0 0',
+		},
+	},
 }))
+
+function YellowDotLoader() {
+	return <Loader color='yellow' variant='dots' />
+}
 
 function ApplicationDetailPage() {
 	const { classes } = useStyles()
 	const navigate = useNavigate()
+	const [application, setApplication] = useState<IApplication | null>(null)
+	const [isLoading, setIsLoading] = useState<boolean>(false)
+	const [isError, setIsError] = useState<boolean>(false)
+	const [errorMessage, setErrorMessage] = useState('')
 	const { id } = useParams()
 
 	useEffect(() => {
-		// TODO: Load application details from endpoint
-		console.log(id)
-	}, [id])
+		setIsLoading(true)
+		if (id) {
+			const getApplicationAsync = async () => {
+				try {
+					const response = await getApplication(id)
+					setApplication(response.application)
+					setIsLoading(false)
+				} catch (error: any) {
+					setIsLoading(false)
+					if (error.response.status === 403) {
+						setIsError(true)
+						setErrorMessage('Du har ikke tilgang til denne søknaden')
+					} else if (error.response.status === 404) {
+						setIsError(true)
+						setErrorMessage('Kunne ikke finne søknaden')
+					} else {
+						navigate('/login')
+					}
+				}
+			}
+			getApplicationAsync()
+		}
+	}, [id, navigate])
 
 	return (
 		<>
-			<div className={classes.pageHeader}>
-				<Button
-					onClick={() => navigate('/applications')}
-					size='md'
-					variant='subtle'
-					className={classes.backButton}
-					leftIcon={<ArrowLeft size={50} />}
-				>
-					Tilbake
-				</Button>
-				<h1 className={classes.headerText}>
-					Søknad fra <b>Bolle {application.name}</b>
-				</h1>
-			</div>
-			<Box className={classes.pageWrapper}>
-				<Box className={classes.personalInfo}>
-					<h2 className={classes.formTitle}>
-						<ClipboardList size={32} /> Personinformasjon
-					</h2>
-					<p>
-						<User size={24} /> <b>Navn:</b> {application.name}
-					</p>
-					<p>
-						<Phone size={24} /> <b>Telefon:</b> {application.phone_number}
-					</p>
-					<p>
-						<Mail size={24} /> <b>E-post:</b> {application.email}
-					</p>
-				</Box>
-				<Box className={classes.applicationText}>
-					<h2 className={classes.formTitle}>
-						<AlignJustified size={32} /> Søknadstekst
-					</h2>
-					<p>{application.text}</p>
-				</Box>
-			</Box>
+			{!isError ? (
+				<>
+					<div className={classes.pageHeader}>
+						<Button
+							onClick={() => navigate('/applications')}
+							size='md'
+							variant='subtle'
+							className={classes.backButton}
+							leftIcon={<ArrowLeft size={50} />}
+						>
+							Tilbake
+						</Button>
+						<h1 className={classes.headerText}>
+							<>Søknad fra </>
+							<b>
+								{isLoading || !application ? <YellowDotLoader /> : application.name}
+							</b>
+						</h1>
+					</div>
+					<Box className={classes.pageWrapper}>
+						<Box className={classes.personalInfo}>
+							<h2 className={classes.formTitle}>
+								<ClipboardList size={32} /> Personinformasjon
+							</h2>
+							<p>
+								<User size={24} /> <b>Navn:</b>{' '}
+								{isLoading || !application ? <YellowDotLoader /> : application.name}
+							</p>
+							<p>
+								<Phone size={24} /> <b>Telefon:</b>{' '}
+								{isLoading || !application ? (
+									<YellowDotLoader />
+								) : (
+									application.phone_number
+								)}
+							</p>
+							<p>
+								<Mail size={24} /> <b>E-post:</b>{' '}
+								{isLoading || !application ? <YellowDotLoader /> : application.email}
+							</p>
+						</Box>
+						<Box className={classes.applicationText}>
+							<h2 className={classes.formTitle}>
+								<AlignJustified size={32} /> Søknadstekst
+							</h2>
+							<p>
+								{isLoading || !application ? <YellowDotLoader /> : application.text}
+							</p>
+						</Box>
+					</Box>
+				</>
+			) : (
+				<div className={classes.errorMessage}>
+					<AlertTriangle size={35} />
+					<h1>{errorMessage}</h1>
+				</div>
+			)}
 		</>
 	)
 }
