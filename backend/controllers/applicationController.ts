@@ -38,7 +38,7 @@ const getApplicationById = async (
 			.populate<IPopulatedApplication>('committees', 'name slug')
 			.then((applicationRes) => applicationRes)
 			.catch(() => {
-				throw new CustomError('Kunne ikke finne søknaden', 404)
+				throw new CustomError('Could not find application', 404)
 			})
 		if (!application) throw new CustomError('Could not find application', 404)
 		const applicationCommittees: ICommittee[] = application.committees
@@ -49,7 +49,7 @@ const getApplicationById = async (
 				return res.status(200).json({ application })
 			}
 		}
-		throw new CustomError('Du har ikke tilgang til denne søknaden', 401)
+		throw new CustomError('You do not have access to this application', 403)
 	} catch (error) {
 		return next(error)
 	}
