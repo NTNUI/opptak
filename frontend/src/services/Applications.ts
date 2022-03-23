@@ -1,11 +1,16 @@
 import axios from 'axios'
-import { IApplicationResponse } from '../types/types'
+import { IApplicationsResponse, IApplicationResponse } from '../types/types'
 
 const getApplications = async (
 	currentPage: number
-): Promise<IApplicationResponse> => {
+): Promise<IApplicationsResponse> => {
 	const response = await axios.get(`/applications/?page=${currentPage}`)
 	return response.data
 }
 
-export default getApplications
+const getApplication = async (id: String): Promise<IApplicationResponse> => {
+	const response = await axios.get(`/applications/${id}`)
+	return response.data
+}
+
+export { getApplications, getApplication }
