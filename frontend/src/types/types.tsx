@@ -8,10 +8,14 @@ interface IApplication {
 	submitted_date: Date
 }
 
-interface IApplicationResponse {
+interface IApplicationsResponse {
 	applications: IApplication[]
 	currentPage: number
 	numberOfPages: number
+}
+
+interface IApplicationResponse {
+	application: IApplication
 }
 
 interface ICommittee {
@@ -27,4 +31,4 @@ interface IAdmissionPeriod {
 	end_date: string
 }
 
-export type { IApplication, ICommittee, IApplicationResponse, IAdmissionPeriod }
+export type { IApplication, ICommittee, IApplicationResponse, IApplicationsResponse, IAdmissionPeriod }
