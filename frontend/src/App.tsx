@@ -6,7 +6,6 @@ import './App.css'
 import Navbar from './components/Navbar'
 import ApplicationDetailPage from './pages/ApplicationDetails'
 import ApplicationOverview from './pages/ApplicationOverview'
-import AdmissionPeriod from './pages/AdmissionPeriod'
 import Dashboard from './pages/Dashboard'
 import FormPage from './pages/FormPage'
 import Login from './pages/Login'
@@ -26,9 +25,9 @@ function App() {
 						<BrowserRouter>
 							<Routes>
 								<Route path='/' element={<FormPage />} />
-								<Route path='login' element={<Login />} />
+								<Route path='/login' element={<Login />} />
 								<Route
-									path='dashboard'
+									path='/dashboard'
 									element={
 										<>
 											<Navbar />
@@ -37,7 +36,7 @@ function App() {
 									}
 								/>
 								<Route
-									path='applications'
+									path='/applications'
 									element={
 										<>
 											<Navbar />
@@ -46,7 +45,16 @@ function App() {
 									}
 								/>
 								<Route
-									path='admission-status'
+									path='/applications/:id'
+									element={
+										<>
+											<Navbar />
+											<ApplicationDetailPage />
+										</>
+									}
+								/>
+								<Route
+									path='/admission-status'
 									element={
 										<>
 											<Navbar />
@@ -55,21 +63,11 @@ function App() {
 									}
 								/>
 								<Route
-									path='application-period'
+									path='/application-period'
 									element={
 										<>
 											<Navbar />
-											<AdmissionPeriod />
-										</>
-									}
-								/>
-								{/* TODO: remove this and move to navigate onclick item in list */}
-								<Route
-									path='applications/:id'
-									element={
-										<>
-											<Navbar />
-											<ApplicationDetailPage />
+											<h1>Opptaksperiode</h1>
 										</>
 									}
 								/>
