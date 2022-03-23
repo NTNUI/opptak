@@ -14,26 +14,6 @@ import { getApplication } from '../services/Applications'
 import { IApplication } from '../types/types'
 
 const useStyles = createStyles((theme) => ({
-	pageWrapper: {
-		boxSizing: 'border-box',
-		width: '60%',
-		margin: 'auto',
-		border: '2px solid ' + theme.colors.ntnui_yellow[9],
-		color: 'white',
-		padding: '3rem',
-		'@media (max-width: 1200px)': {
-			width: '70%',
-		},
-		'@media (max-width: 700px)': {
-			width: '85%',
-			border: 'none',
-			backgroundColor: 'transparent',
-			padding: '0',
-		},
-		display: 'flex',
-		flexDirection: 'column',
-		gap: '2rem',
-	},
 	pageHeader: {
 		display: 'grid',
 		width: '60%',
@@ -77,7 +57,27 @@ const useStyles = createStyles((theme) => ({
 			gridColumn: 1,
 		},
 	},
-	personalInfo: {
+	pageWrapper: {
+		boxSizing: 'border-box',
+		width: '60%',
+		margin: 'auto',
+		padding: '3rem',
+		border: '2px solid ' + theme.colors.ntnui_yellow[9],
+		color: 'white',
+		'@media (max-width: 1200px)': {
+			width: '70%',
+		},
+		'@media (max-width: 700px)': {
+			width: '85%',
+			border: 'none',
+			backgroundColor: 'transparent',
+			padding: '0',
+		},
+		display: 'flex',
+		flexDirection: 'column',
+		gap: '2rem',
+	},
+	personalInfoSection: {
 		color: 'white',
 		p: {
 			display: 'flex',
@@ -85,14 +85,14 @@ const useStyles = createStyles((theme) => ({
 			margin: '0 0 0.5rem 0',
 		},
 	},
-	applicationText: {
+	applicationTextSection: {
 		color: 'white',
 		p: {
 			// Adjusted for icons
 			margin: '0 0 0 4px',
 		},
 	},
-	formTitle: {
+	sectionTitle: {
 		margin: '0 0 1rem 0',
 		fontWeight: 'lighter',
 		display: 'flex',
@@ -183,16 +183,16 @@ function ApplicationDetailPage() {
 						</h1>
 					</div>
 					<Box className={classes.pageWrapper}>
-						<Box className={classes.personalInfo}>
-							<h2 className={classes.formTitle}>
+						<Box className={classes.personalInfoSection}>
+							<h2 className={classes.sectionTitle}>
 								<ClipboardList size={32} /> Personinformasjon
 							</h2>
 							<p>
-								<User size={24} /> <b>Navn:</b>{' '}
+								<User size={24} /> <b>Navn:</b>
 								{isLoading || !application ? <YellowDotLoader /> : application.name}
 							</p>
 							<p>
-								<Phone size={24} /> <b>Telefon:</b>{' '}
+								<Phone size={24} /> <b>Telefon:</b>
 								{isLoading || !application ? (
 									<YellowDotLoader />
 								) : (
@@ -200,12 +200,12 @@ function ApplicationDetailPage() {
 								)}
 							</p>
 							<p>
-								<Mail size={24} /> <b>E-post:</b>{' '}
+								<Mail size={24} /> <b>E-post:</b>
 								{isLoading || !application ? <YellowDotLoader /> : application.email}
 							</p>
 						</Box>
-						<Box className={classes.applicationText}>
-							<h2 className={classes.formTitle}>
+						<Box className={classes.applicationTextSection}>
+							<h2 className={classes.sectionTitle}>
 								<AlignJustified size={32} /> Søknadstekst
 							</h2>
 							<p>
