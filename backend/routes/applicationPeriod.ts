@@ -5,6 +5,7 @@ import {
 	putApplicationPeriod,
 	isApplicationPeriodActive,
 } from '../controllers/applicationPeriodController'
+import authorization from '../utils/authorizationMiddleware'
 
 const applicationPeriodRouter = express.Router()
 
@@ -21,7 +22,7 @@ applicationPeriodRouter.post('/', postApplicationPeriod)
 // @route PUT applicationPeriod
 // @description Updated application period
 // @access Public
-applicationPeriodRouter.put('/', putApplicationPeriod)
+applicationPeriodRouter.put('/', authorization, putApplicationPeriod)
 
 // @route GET applicationPeriod/active
 // @description Get if application period is open or not
