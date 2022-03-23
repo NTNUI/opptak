@@ -56,8 +56,4 @@ const isApplicationPeriodActive = async (req: Request, res: Response) => {
 	}
 }
 
-export {
-	getApplicationPeriod,
-	putApplicationPeriod,
-	isApplicationPeriodActive,
-}
+export { getApplicationPeriod, putApplicationPeriod, isApplicationPeriodActive }
