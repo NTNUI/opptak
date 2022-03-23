@@ -65,11 +65,15 @@ function ApplicationList() {
 		getApplicationsAsync()
 	}, [currentPage, navigate])
 
+	function itemClickHandler(id: string) {
+		navigate(id)
+	}
+
 	const { classes } = useStyles()
 	return applications.length ? (
 		<Container className={classes.container}>
 			{applications.map((item: IApplication, idx: number) => (
-				<ApplicationItem key={idx} {...item} />
+				<ApplicationItem key={idx} handleClick={itemClickHandler} {...item} />
 			))}
 			<Pagination
 				className={classes.pagination}

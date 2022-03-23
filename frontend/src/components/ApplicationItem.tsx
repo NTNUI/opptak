@@ -62,7 +62,16 @@ const useStyles = createStyles((theme) => ({
 	},
 }))
 
-function ApplicationItem({ name, committees, submitted_date }: IApplication) {
+interface IApplicationItem extends IApplication {
+	handleClick(id: string): void
+}
+function ApplicationItem({
+	_id,
+	name,
+	committees,
+	submitted_date,
+	handleClick,
+}: IApplicationItem) {
 	const { classes } = useStyles()
 
 	const date = new Date(submitted_date)
@@ -89,7 +98,7 @@ function ApplicationItem({ name, committees, submitted_date }: IApplication) {
 	)
 
 	return (
-		<Box className={classes.box}>
+		<Box className={classes.box} onClick={() => handleClick(_id)}>
 			<div className={classes.grid}>
 				<div className={classes.nameDiv}>{name}</div>
 				<div id='committee' className={classes.committeeDiv}>
