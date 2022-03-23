@@ -1,7 +1,6 @@
 import express from 'express'
 import {
 	getApplicationPeriod,
-	postApplicationPeriod,
 	putApplicationPeriod,
 	isApplicationPeriodActive,
 } from '../controllers/applicationPeriodController'
@@ -14,14 +13,9 @@ const applicationPeriodRouter = express.Router()
 // @access Public
 applicationPeriodRouter.get('/', getApplicationPeriod)
 
-// @route POST applicationPeriod
-// @description Add application period
-// @access Public
-applicationPeriodRouter.post('/', postApplicationPeriod)
-
 // @route PUT applicationPeriod
 // @description Updated application period
-// @access Public
+// @access Private
 applicationPeriodRouter.put('/', authorization, putApplicationPeriod)
 
 // @route GET applicationPeriod/active

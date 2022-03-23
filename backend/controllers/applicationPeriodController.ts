@@ -16,17 +16,6 @@ const getApplicationPeriod = async (req: Request, res: Response) => {
 		.json({ message: 'There is no application period in the db' })
 }
 
-const postApplicationPeriod = async (req: Request, res: Response) => {
-	const applicationPeriod = new ApplicationPeriodModel(req.body)
-
-	applicationPeriod
-		.save()
-		.then((newApplicationPeriod) =>
-			res.status(200).json({ applicationPeriod: newApplicationPeriod })
-		)
-		.catch((err) => res.status(400).json({ message: err.message }))
-}
-
 const putApplicationPeriod = async (req: RequestWithNtnuiNo, res: Response) => {
 	const mainBoardID = 9
 
@@ -69,7 +58,6 @@ const isApplicationPeriodActive = async (req: Request, res: Response) => {
 
 export {
 	getApplicationPeriod,
-	postApplicationPeriod,
 	putApplicationPeriod,
 	isApplicationPeriodActive,
 }
