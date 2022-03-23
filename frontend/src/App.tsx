@@ -58,7 +58,7 @@ function App() {
 									element={
 										<>
 											<Navbar />
-											<ApplicationPeriod/>
+											<ApplicationPeriod />
 										</>
 									}
 								/>
