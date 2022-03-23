@@ -8,11 +8,12 @@ import { RequestWithNtnuiNo } from '../utils/request'
 const getApplicationPeriod = async (req: Request, res: Response) => {
 	// Only one application period in the db at any time, so findOne() returns only the one object
 	const applicationPeriod = await ApplicationPeriodModel.findOne()
-	if (applicationPeriod !== null) {
+	if (applicationPeriod) {
 		return res.status(200).json({ applicationPeriod })
 	}
+
 	return res
-		.status(200)
+		.status(404)
 		.json({ message: 'There is no application period in the db' })
 }
 
@@ -23,7 +24,7 @@ const putApplicationPeriod = async (req: RequestWithNtnuiNo, res: Response) => {
 	if (!ntnuiNo) throw UnauthorizedUserError
 	const committeeIds: number[] = await getUserCommitteeIdsByUserId(ntnuiNo)
 
-	if (committeeIds.find((id) => id === mainBoardID)) {
+	if (committeeIds.includes(mainBoardID)) {
 		const update = {
 			start_date: req.body.start_date,
 			end_date: req.body.end_date,

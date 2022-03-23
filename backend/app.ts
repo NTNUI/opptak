@@ -6,7 +6,6 @@ import connectDB from './config/db'
 import testRoute from './routes/test'
 import committeeRouter from './routes/committees'
 import applicationRouter from './routes/applications'
-import applicationPeriodRouter from './routes/applicationPeriod'
 import authRouter from './routes/auth'
 import userRouter from './routes/user'
 import errorHandler from './utils/errorHandler'
@@ -28,7 +27,6 @@ app.use('/test', testRoute)
 app.use('/applications', applicationRouter)
 app.use('/committees', committeeRouter)
 app.use('/user', userRouter)
-app.use('/applicationPeriod', applicationPeriodRouter)
 
 // Error handling middleware
 app.use(errorHandler)
