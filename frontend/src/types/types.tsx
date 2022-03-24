@@ -31,10 +31,15 @@ interface IAdmissionPeriod {
 	end_date: string
 }
 
+interface ICommitteeResponse {
+	accepts_applicants: boolean
+}
+
 export type {
 	IApplication,
 	ICommittee,
 	IApplicationResponse,
 	IApplicationsResponse,
 	IAdmissionPeriod,
+	ICommitteeResponse,
 }

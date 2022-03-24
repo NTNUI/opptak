@@ -130,6 +130,7 @@ function FormBox() {
 				</h2>
 				<Form />
 			</Box>
+			<Button onClick={() => navigate('/admission-status')}>Opptaksstatus</Button>
 		</>
 	)
 }
