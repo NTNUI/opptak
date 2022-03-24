@@ -6,6 +6,7 @@ import './App.css'
 import Navbar from './components/Navbar'
 import ApplicationDetailPage from './pages/ApplicationDetails'
 import ApplicationOverview from './pages/ApplicationOverview'
+import { ClosedApplicationPage } from './pages/ClosedApplication'
 import Dashboard from './pages/Dashboard'
 import FormPage from './pages/FormPage'
 import Login from './pages/Login'
@@ -32,6 +33,15 @@ function App() {
 										<>
 											<Navbar />
 											<Dashboard />
+										</>
+									}
+								/>
+								<Route
+									path='/closedperiod'
+									element={
+										<>
+											<Navbar />
+											<ClosedApplicationPage />
 										</>
 									}
 								/>
