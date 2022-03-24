@@ -1,12 +1,12 @@
 import { CustomError } from 'ntnui-tools/customError'
 import { ApplicationPeriodModel } from '../models/ApplicationPeriod'
 
-const applicationPeriodStatus = async () => {
+const isApplicationPeriodActive = async () => {
 	const applicationPeriod = await ApplicationPeriodModel.findOne()
 	if (applicationPeriod) {
 		if (
 			applicationPeriod.start_date.getTime() <= Date.now() &&
-			applicationPeriod.end_date.getTime() + 86400000 >= Date.now()
+			applicationPeriod.end_date.getTime() + 86400000 > Date.now()
 		) {
 			return true
 		}
@@ -19,4 +19,4 @@ const applicationPeriodStatus = async () => {
 	)
 }
 
-export default applicationPeriodStatus
+export default isApplicationPeriodActive

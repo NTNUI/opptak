@@ -4,7 +4,7 @@ import { RequestWithNtnuiNo } from '../utils/request'
 import { ApplicationModel, IApplication } from '../models/Application'
 import { UserModel } from '../models/User'
 import { CommitteeModel, ICommittee } from '../models/Committee'
-import applicationPeriodStatus from '../utils/applicationPeriodStatus'
+import isApplicationPeriodActive from '../utils/isApplicationPeriodActive'
 
 async function getUserCommitteeIdsByUserId(userId: number | string) {
 	let committeeIds: number[] = []
@@ -104,8 +104,7 @@ const postApplication = async (
 	next: NextFunction
 ) => {
 	try {
-		// Check if application period is active
-		if (!(await applicationPeriodStatus())) {
+		if (!(await isApplicationPeriodActive())) {
 			throw new CustomError('Application period is not active', 403)
 		}
 
