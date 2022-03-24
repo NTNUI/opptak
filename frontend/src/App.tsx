@@ -40,7 +40,6 @@ function App() {
 									path='/closedperiod'
 									element={
 										<>
-											<Navbar />
 											<ClosedApplicationPage />
 										</>
 									}

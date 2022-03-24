@@ -5,13 +5,12 @@ import {
 	createStyles,
 	MultiSelect,
 	Loader,
-    Box,
 } from '@mantine/core'
 import { useForm } from '@mantine/hooks'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useNotifications } from '@mantine/notifications'
-import { AlignJustified, Check, ChevronDown, X } from 'tabler-icons-react'
+import { Check, ChevronDown, X } from 'tabler-icons-react'
 import { ICommittee } from '../types/types'
 
 interface ISubmissionApplication {
@@ -165,71 +164,78 @@ export function DisabledForm() {
 		},
 	})
 	return (
-        <form
-            className={classes.form}
-            onSubmit={form.onSubmit((values: ISubmissionApplication) => submitForm(values)
-            )}
-        >
-            <TextInput
-                disabled={true}
-                autoComplete='name'
-                classNames={{ label: classes.labelText, input: classes.formField }}
-                label={'Fullt navn'}
-                onBlur={() => form.validateField('name')}
-                {...form.getInputProps('name')} />
-            <TextInput
-                autoComplete='email'
-                disabled={true}
-                classNames={{ label: classes.labelText, input: classes.formField }}
-                label={'E-post'}
-                onBlur={() => form.validateField('email')}
-                {...form.getInputProps('email')} />
-            <TextInput
-                autoComplete='tel'
-                disabled={true}
-                classNames={{ label: classes.labelText, input: classes.formField }}
-                label={'Telefonnummer'}
-                onBlur={() => form.validateField('phone_number')}
-                {...form.getInputProps('phone_number')} />
-            {!committeesFailed ? (
-                <MultiSelect
-                    data={committees}
-                    disabled
-                    searchable
-                    rightSection={<ChevronDown size={14} />}
-                    rightSectionWidth={40}
-                    nothingFound='Kunne ikke finne utvalget du søker etter'
-                    className={classes.multiSelectRightSection}
-                    classNames={{ label: classes.multiSelectInput, input: classes.formField }}
-                    label={<span className={classes.labelText}>Hva ønsker du å søke?</span>}
-                    onBlur={() => form.validateField('committees')}
-                    {...form.getInputProps('committees')} />
-            ) : (
-                <MultiSelect
-                    data={committees}
-                    disabled
-                    icon={<X size={18} />}
-                    placeholder='Kunne ikke laste inn kommitteer'
-                    classNames={{ label: classes.multiSelectInput, input: classes.formField }}
-                    label={<span className={classes.labelText}>Hva ønsker du å søke?</span>} />
-            )}
-            <Textarea
-                classNames={{ label: classes.labelText, input: classes.formField }}
-                label={'Søknadstekst'}
-                autosize
-                disabled={true}
-                minRows={3}
-                onBlur={() => form.validateField('text')}
-                {...form.getInputProps('text')} />
+		<form
+			className={classes.form}
+			onSubmit={form.onSubmit((values: ISubmissionApplication) =>
+				submitForm(values)
+			)}
+		>
+			<TextInput
+				disabled={true}
+				autoComplete='name'
+				classNames={{ label: classes.labelText, input: classes.formField }}
+				label={'Fullt navn'}
+				onBlur={() => form.validateField('name')}
+				{...form.getInputProps('name')}
+			/>
+			<TextInput
+				autoComplete='email'
+				disabled={true}
+				classNames={{ label: classes.labelText, input: classes.formField }}
+				label={'E-post'}
+				onBlur={() => form.validateField('email')}
+				{...form.getInputProps('email')}
+			/>
+			<TextInput
+				autoComplete='tel'
+				disabled={true}
+				classNames={{ label: classes.labelText, input: classes.formField }}
+				label={'Telefonnummer'}
+				onBlur={() => form.validateField('phone_number')}
+				{...form.getInputProps('phone_number')}
+			/>
+			{!committeesFailed ? (
+				<MultiSelect
+					data={committees}
+					disabled
+					searchable
+					rightSection={<ChevronDown size={14} />}
+					rightSectionWidth={40}
+					nothingFound='Kunne ikke finne utvalget du søker etter'
+					className={classes.multiSelectRightSection}
+					classNames={{ label: classes.multiSelectInput, input: classes.formField }}
+					label={<span className={classes.labelText}>Hva ønsker du å søke?</span>}
+					onBlur={() => form.validateField('committees')}
+					{...form.getInputProps('committees')}
+				/>
+			) : (
+				<MultiSelect
+					data={committees}
+					disabled
+					icon={<X size={18} />}
+					placeholder='Kunne ikke laste inn kommitteer'
+					classNames={{ label: classes.multiSelectInput, input: classes.formField }}
+					label={<span className={classes.labelText}>Hva ønsker du å søke?</span>}
+				/>
+			)}
+			<Textarea
+				classNames={{ label: classes.labelText, input: classes.formField }}
+				label={'Søknadstekst'}
+				autosize
+				disabled={true}
+				minRows={3}
+				onBlur={() => form.validateField('text')}
+				{...form.getInputProps('text')}
+			/>
 
-            <Button
-                leftIcon={isLoading ? <Loader size={18} /> : <Check size={18} />}
-                className={classes.submitButton}
-                type='submit'
-                disabled={true}
-            >
-                Send søknad
-            </Button>
-        </form>
+			<Button
+				leftIcon={isLoading ? <Loader size={18} /> : <Check size={18} />}
+				className={classes.submitButton}
+				type='submit'
+				disabled={true}
+			>
+				Send søknad
+			</Button>
+		</form>
 	)
 }

@@ -23,13 +23,13 @@ const useStyles = createStyles((theme) => ({
 			padding: '1rem',
 		},
 	},
-    closedPeriod: {
+	closedPeriod: {
 		backgroundColor: '#0a0a0a',
 		width: '40%',
 		margin: 'auto',
-        marginBottom: '1.5rem',
+		marginBottom: '1.5rem',
 		border: '2px solid ' + theme.colors.ntnui_red[9],
-        background: 'rgba(255, 149, 71, 0.3)',
+		background: 'rgba(255, 149, 71, 0.3)',
 		color: 'white',
 		'@media (max-width: 1200px)': {
 			width: '70%',
@@ -69,8 +69,8 @@ const useStyles = createStyles((theme) => ({
 			marginBottom: '1rem',
 		},
 	},
-    closedText: {
-        textAlign: 'center',
+	closedText: {
+		textAlign: 'center',
 		'*': {
 			// Icon
 			margin: '0 0 -3px 0',
@@ -140,7 +140,7 @@ export function ClosedApplicationPage() {
 					<img alt='NTNUI logo' src='/images/ntnui.svg' />
 					<h1>OPPTAK</h1>
 				</Box>
-                
+
 				<Button
 					onClick={() => navigate('/login')}
 					uppercase
@@ -150,14 +150,13 @@ export function ClosedApplicationPage() {
 					Intern
 				</Button>
 			</Box>
-            <Box className={classes.closedPeriod} >
-                <h1 className={classes.formTitle}>
-                    Hei, kjære søker!
-                </h1>
-                <p className={classes.closedText}>
-                    Så gøy at du vil være en del av NTNUI. Opptaket er for tiden stengt, men gjerne sjekk igjen ved en senere anledning!
-                </p>
-            </Box>
+			<Box className={classes.closedPeriod}>
+				<h1 className={classes.formTitle}>Hei, kjære søker!</h1>
+				<p className={classes.closedText}>
+					Så gøy at du vil være en del av NTNUI. Opptaket er for tiden stengt, men
+					gjerne sjekk igjen ved en senere anledning!
+				</p>
+			</Box>
 			<Box className={classes.formTitleAndBodyWrapper}>
 				<h2 className={classes.formTitle}>
 					<FileText />
