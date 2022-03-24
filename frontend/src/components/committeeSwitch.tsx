@@ -35,7 +35,7 @@ function CommitteeSwitch({ name, accepts_applicants, slug }: ICommittee) {
 	/**
 	 * Toggles if the committee is open on server
 	 *
-	 * Sets new status
+	 * Set new status
 	 *
 	 * Returns Void
 	 */
@@ -72,10 +72,14 @@ function CommitteeSwitch({ name, accepts_applicants, slug }: ICommittee) {
 	useEffect(() => {
 		getCommitteeStatus() // Get server statuses
 		setChecked(committeeStatus) // Sets all committee statuses to match server
-
-		// let obj: responseObj = JSON.parse(JSON.stringify(response))
 	}, [committeeStatus, getCommitteeStatus, checked])
 
+	/**
+	 * On toggle, check input value and compare it to value on server
+	 *
+	 * If local is not equal to server, then change on server and setChecked with this value
+	 * @param event
+	 */
 	function handleToggle(event: ChangeEvent<HTMLInputElement>) {
 		getCommitteeStatus()
 		if (event.currentTarget.checked !== committeeStatus) {

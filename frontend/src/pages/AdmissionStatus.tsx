@@ -6,10 +6,6 @@ import CommitteeSwitch from '../components/CommitteeSwitch'
 import { ICommittee } from '../types/types'
 
 const useStyles = createStyles((theme) => ({
-	// modal: {
-	// 	border: '1px solid ' + theme.colors.ntnui_yellow[9],
-	// 	backgroundColor: theme.colors.ntnui_background[9],
-	// },
 	container: {
 		display: 'flex',
 		width: '100%',
@@ -65,7 +61,6 @@ const useStyles = createStyles((theme) => ({
 			},
 		},
 	},
-	icons: {},
 }))
 
 function AdmissionStatus() {
