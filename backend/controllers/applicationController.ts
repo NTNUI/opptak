@@ -4,6 +4,7 @@ import { RequestWithNtnuiNo } from '../utils/request'
 import { ApplicationModel, IApplication } from '../models/Application'
 import { UserModel } from '../models/User'
 import { CommitteeModel, ICommittee } from '../models/Committee'
+import applicationPeriodStatus from '../utils/applicationPeriodStatus'
 
 async function getUserCommitteeIdsByUserId(userId: number | string) {
 	let committeeIds: number[] = []
@@ -103,7 +104,13 @@ const postApplication = async (
 	next: NextFunction
 ) => {
 	try {
+		// Check if application period is active
+		if (!(await applicationPeriodStatus())) {
+			throw new CustomError('Application period is not active', 403)
+		}
+
 		const application = new ApplicationModel(req.body)
+
 		// Check that all applied committees accepts applicants
 		const closedCommittees = await CommitteeModel.findOne({
 			_id: { $in: application.committees },

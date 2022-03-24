@@ -7,10 +7,13 @@ interface IApplicationPeriod {
 
 const ApplicationPeriodModel = mongoose.model<IApplicationPeriod>(
 	'ApplicationPeriod',
-	new mongoose.Schema<IApplicationPeriod>({
-		start_date: { type: Date, required: true },
-		end_date: { type: Date, required: true },
-	})
+	new mongoose.Schema<IApplicationPeriod>(
+		{
+			start_date: { type: Date, required: true },
+			end_date: { type: Date, required: true },
+		},
+		{ collection: 'applicationperiod' }
+	)
 )
 
 export { ApplicationPeriodModel }

@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import { UnauthorizedUserError } from 'ntnui-tools/customError'
 import { ApplicationPeriodModel } from '../models/ApplicationPeriod'
 import getUserCommitteeIdsByUserId from '../utils/userCommittee'
-import applicationPeriodStatus from '../utils/periodForApplication'
+import applicationPeriodStatus from '../utils/applicationPeriodStatus'
 import { RequestWithNtnuiNo } from '../utils/request'
 
 const getApplicationPeriod = async (req: Request, res: Response) => {
