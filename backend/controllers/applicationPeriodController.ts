@@ -57,4 +57,8 @@ const getApplicationPeriodStatus = async (req: Request, res: Response) => {
 	}
 }
 
-export { getApplicationPeriod, putApplicationPeriod, getApplicationPeriodStatus }
+export {
+	getApplicationPeriod,
+	putApplicationPeriod,
+	getApplicationPeriodStatus,
+}
