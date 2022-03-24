@@ -21,4 +21,14 @@ interface ICommittee {
 	access_roles: string[]
 }
 
-export type { IApplication, ICommittee, IApplicationResponse }
+interface IApplicationPeriod {
+	start_date: string
+	end_date: string
+}
+
+export type {
+	IApplication,
+	ICommittee,
+	IApplicationResponse,
+	IApplicationPeriod,
+}
