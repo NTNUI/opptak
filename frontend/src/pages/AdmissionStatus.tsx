@@ -1,8 +1,8 @@
 import { Container, createStyles, Loader } from '@mantine/core'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import CommitteeSwitch from '../components/CommitteeSwitch'
-
 import { ICommittee } from '../types/types'
 
 const useStyles = createStyles((theme) => ({
@@ -61,13 +61,28 @@ const useStyles = createStyles((theme) => ({
 			},
 		},
 	},
+	date: {
+		fontWeight: '600',
+	},
 }))
 
 function AdmissionStatus() {
 	const { classes } = useStyles()
-
+	let navigate = useNavigate()
 	const [committees, setCommittees] = useState<ICommittee[]>([])
 	const [isLoading, setIsLoading] = useState<boolean>(false)
+	const [fromPeriod, setFromPeriod] = useState<string>('None')
+	const [toPeriod, setToPeriod] = useState<string>('None')
+
+	function formatDate(dateString: string) {
+		const date = new Date(dateString)
+		const formattedDate = date.toLocaleDateString('en-GB', {
+			year: 'numeric',
+			month: 'numeric',
+			day: 'numeric',
+		})
+		return formattedDate
+	}
 
 	useEffect(() => {
 		setIsLoading(true)
@@ -79,8 +94,28 @@ function AdmissionStatus() {
 			})
 			.catch((error: any) => {
 				setIsLoading(false)
+				if (error.response.status !== 200) {
+					navigate('/login')
+				}
 			})
-	}, [])
+
+		function getApplicationPeriod() {
+			axios
+				.get('/applications/period')
+				.then((res) => {
+					setFromPeriod(res.data.applicationPeriod.start_date)
+					setToPeriod(res.data.applicationPeriod.end_date)
+					console.log(res.data.applicationPeriod)
+				})
+				.catch((error: any) => {
+					if (error.response.status !== 200) {
+						navigate('/login')
+					}
+				})
+		}
+
+		getApplicationPeriod()
+	}, [navigate])
 
 	return (
 		<>
@@ -88,7 +123,9 @@ function AdmissionStatus() {
 				<h1>Opptaksstatus</h1>
 				<div className={classes.text}>
 					Opptaksstatus avgjør om det skal være mulig for studenter å søke i den
-					gitte opptaksperioden DD.MM.YYYY til DD.MM.YYYY
+					gitte opptaksperioden{' '}
+					<span className={classes.date}>{formatDate(fromPeriod)}</span> til
+					<span className={classes.date}> {formatDate(toPeriod)}</span>
 				</div>
 				<div className={classes.committeesWrapper}>
 					{committees.length ? (

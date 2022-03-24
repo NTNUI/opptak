@@ -1,6 +1,7 @@
 import { createStyles, Switch } from '@mantine/core'
 import axios from 'axios'
 import { ChangeEvent, useCallback, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { ICommittee } from '../types/types'
 
 const useStyles = createStyles((theme) => ({
@@ -29,6 +30,7 @@ const useStyles = createStyles((theme) => ({
 
 function CommitteeSwitch({ name, accepts_applicants, slug }: ICommittee) {
 	const { classes } = useStyles()
+	let navigate = useNavigate()
 	const [checked, setChecked] = useState<boolean>(accepts_applicants)
 	const [committeeStatus, setCommitteeStatus] = useState<boolean>(false)
 
@@ -66,8 +68,12 @@ function CommitteeSwitch({ name, accepts_applicants, slug }: ICommittee) {
 
 				setCommitteeStatus(committee.accepts_applicants)
 			})
-			.catch(() => {})
-	}, [slug])
+			.catch((error: any) => {
+				if (error.response.status !== 200) {
+					navigate('/login')
+				}
+			})
+	}, [navigate, slug])
 
 	useEffect(() => {
 		getCommitteeStatus() // Get server statuses
