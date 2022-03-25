@@ -4,13 +4,14 @@ import { useNavigate } from 'react-router-dom'
 import { useForm } from '@mantine/form'
 import { DateRangePicker } from '@mantine/dates'
 import 'dayjs/locale/nb'
-import { Calendar, Check, History } from 'tabler-icons-react'
+import { Calendar, Check, History, X } from 'tabler-icons-react'
 import {
 	getApplicationPeriod,
 	putApplicationPeriod,
 } from '../services/Applications'
 import { IApplicationPeriod } from '../types/types'
 import dayjs from 'dayjs'
+import { useNotifications } from '@mantine/notifications'
 
 const useStyles = createStyles((theme) => ({
 	pageWrapper: {
@@ -89,6 +90,7 @@ const useStyles = createStyles((theme) => ({
 function ApplicationPeriod() {
 	const { classes } = useStyles()
 	const navigate = useNavigate()
+	const notifications = useNotifications()
 	const [isLoading, setIsLoading] = useState(false)
 	// Has period been set in the db before
 	const [isPeriodSet, setisPeriodSet] = useState(false)
@@ -125,13 +127,16 @@ function ApplicationPeriod() {
 				setisPeriodSet(true)
 			} catch (error: any) {
 				setIsLoading(false)
-				if (error.response.status === 403) {
-					console.log('Unauthorized')
-					// TODO: Inform user that is not authorized
-				} else if (error.response.status === 404) {
+				if (error.response.status !== 404) {
 					// TODO: Application period not set
-				} else {
-					navigate('/login')
+					notifications.showNotification({
+						loading: false,
+						color: 'red',
+						icon: <X size={18} />,
+						title: 'En feil oppstod!',
+						message: 'Klarte ikke å hente opptaksperioden',
+						autoClose: false,
+					})
 				}
 			}
 		}
@@ -146,16 +151,53 @@ function ApplicationPeriod() {
 				start_date: dayjs(start).toString(),
 				end_date: dayjs(end).toString(),
 			}
+			const id = notifications.showNotification({
+				loading: true,
+				color: 'green',
+				icon: <Check size={18} />,
+				title: 'Oppdaterer opptaksperiode',
+				message: '',
+				autoClose: false,
+			})
 			putApplicationPeriod(applicationPeriod)
 				.then(() => {
-					// TODO: Show success-notification
 					setChanged(false)
 					setisPeriodSet(true)
 					setPreviousDates([start, end])
+					notifications.updateNotification(id, {
+						id,
+						loading: false,
+						color: 'green',
+						icon: <Check size={18} />,
+						title: `Opptaksperiode ${isPeriodSet ? 'oppdatert' : 'satt'}!`,
+						message: '',
+						autoClose: 7000,
+					})
 				})
 				.catch((err) => {
-					// TODO: Show error-notification
+					if (err.response.status === 403) {
+						console.log('Unauthorized')
+						// TODO: Inform user that is not authorized
+						notifications.updateNotification(id, {
+							id,
+							title: 'Du har ikke tilgang til å endre opptaksperiode!',
+							message: 'Du må være med i hovedstyret for å kunne endre opptaksperiode',
+							color: 'red',
+							autoClose: false,
+							icon: <X size={18} />,
+						})
+					} else{
 					console.log(err)
+						notifications.updateNotification(id, {
+							id,
+							loading: false,
+							color: 'red',
+							icon: <X size={18} />,
+							title: 'En feil oppstod!',
+							message: 'Klarte ikke å oppdatere opptaksperioden',
+							autoClose: false,
+						})
+					}
 				})
 		}
 	}
@@ -179,29 +221,37 @@ function ApplicationPeriod() {
 		}
 	}, [form.values.dateRangeInput, previousDates])
 
-	const applicationPeriodStatusText = isPeriodSet
-		? `Opptaksperioden er satt fra ${previousDates[0]?.toLocaleDateString(
-				'no-No',
-				{
+	const applicationPeriodStatusText = isPeriodSet ? (
+		<>
+			Opptaksperioden er satt fra
+			<b>
+				{previousDates[0]?.toLocaleDateString('no-No', {
 					month: 'long',
 					day: '2-digit',
 					year: 'numeric',
-				}
-		  )} til ${previousDates[1]?.toLocaleDateString('no-No', {
-				month: 'long',
-				day: '2-digit',
-				year: 'numeric',
-		  })}`
-		: 'Det er ikke satt noen opptaksperiode enda'
+				})}
+			</b>
+			til
+			<b>
+				{previousDates[1]?.toLocaleDateString('no-No', {
+					month: 'long',
+					day: '2-digit',
+					year: 'numeric',
+				})}
+			</b>
+		</>
+	) : (
+		<>Det er ikke satt noen opptaksperiode enda.</>
+	)
 
 	return (
 		<div className={classes.pageWrapper}>
 			<div className={classes.header}>
 				<h1>Opptaksperiode</h1>
 				<p>
-					Opptaksperioden bestemmer når studenter har mulighet til å sende inn søknad
+					Opptaksperioden bestemmer når studenter har mulighet til å sende inn
+					søknad. {applicationPeriodStatusText}
 				</p>
-				<p>{applicationPeriodStatusText}</p>
 			</div>
 			{isLoading ? (
 				<Loader color='yellow' variant='dots' />
@@ -242,7 +292,7 @@ function ApplicationPeriod() {
 					leftIcon={<Check />}
 					onClick={saveApplicationPeriod}
 				>
-					Lagre
+					{isPeriodSet ? 'Oppdater' : 'Lagre'}
 				</Button>
 			</div>
 		</div>
