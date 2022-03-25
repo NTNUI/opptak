@@ -1,6 +1,6 @@
 import { Box, Button, createStyles } from '@mantine/core'
 import { useNavigate } from 'react-router-dom'
-import { CalendarEvent, FileText, Users } from 'tabler-icons-react'
+import { CalendarEvent, FileText, Lock, Scale, Trash, Users } from 'tabler-icons-react'
 
 const useStyles = createStyles((theme) => ({
 	dashboardWrapper: {
@@ -8,9 +8,28 @@ const useStyles = createStyles((theme) => ({
 		height: '100%',
 		display: 'flex',
 		flexDirection: 'column',
-		justifyContent: 'center',
 		alignItems: 'center',
 		color: 'white',
+	},
+	metroBoxWrapper: {
+		margin: 0,
+		height: '100%',
+		display: 'flex',
+		flexDirection:'row',
+		gap: '1.5rem',
+		alignItems: 'center',
+		color: theme.colors.ntnui_yellow[9],
+	},
+	metroBoxes: {
+		border: '2px solid ' + theme.colors.ntnui_yellow[9],
+		cursor: 'pointer',
+		'&:hover': {
+			transform: 'translateY(-0.3rem)',
+		},
+		'&:active': {
+			transform: 'scale(0.98)'
+		}
+
 	},
 }))
 
@@ -20,16 +39,21 @@ function Dashboard() {
 
 	return (
 		<Box className={classes.dashboardWrapper}>
-			<h1>Hei, Bolle bollesen!</h1>
-			<Button onClick={() => navigate('/applications')}>
-				<FileText size={18} /> Søknader
-			</Button>
-			<Button onClick={() => navigate('/admission-status')}>
-				<Users size={18} /> Opptaksstatus
-			</Button>
-			<Button onClick={() => navigate('/admission-period')}>
-				<CalendarEvent size={18} /> Opptaksperiode
-			</Button>
+			<h1>Hei, Bolle Bollesen!</h1>
+			<div className={classes.metroBoxWrapper}>
+			<Box className={classes.metroBoxes} onClick={() => navigate('/applications')}>
+				<FileText size={150} /> Søknader 
+			</Box>
+			<Box className={classes.metroBoxes} onClick={() => navigate('/admission-status')}>
+				<Users size={150} /> Opptaksstatus
+			</Box>
+			<Box className={classes.metroBoxes} onClick={() => navigate('/application-period')}>
+				<CalendarEvent size={150} /> Opptaksperiode
+			</Box>
+			<Box className={classes.metroBoxes} onClick={() => navigate('/application-period')}>
+				<Lock size={150} /> Tilganger
+			</Box>
+			</div>
 		</Box>
 	)
 }
