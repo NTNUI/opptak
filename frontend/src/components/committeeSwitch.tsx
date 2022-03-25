@@ -7,7 +7,7 @@ import { ICommittee } from '../types/types'
 const useStyles = createStyles((theme) => ({
 	committees: {
 		color: theme.colors.gray[2],
-		border: '2px solid #F8F082',
+		border: '2px solid' + theme.colors.ntnui_yellow[9],
 		padding: '0.75rem 1.25rem',
 		borderRadius: theme.radius.sm,
 		whiteSpace: 'nowrap',
@@ -16,6 +16,7 @@ const useStyles = createStyles((theme) => ({
 		display: 'flex',
 		justifyContent: 'space-between',
 		width: '100%',
+		boxShadow: '0rem 0.2rem 0.4rem ' + theme.colors.dark[7],
 	},
 	switch: {
 		input: {
@@ -65,7 +66,6 @@ function CommitteeSwitch({ name, accepts_applicants, slug }: ICommittee) {
 				const committee = data.find(
 					(committee: { slug: string }) => committee.slug === slug
 				)
-
 				setCommitteeStatus(committee.accepts_applicants)
 			})
 			.catch((error: any) => {

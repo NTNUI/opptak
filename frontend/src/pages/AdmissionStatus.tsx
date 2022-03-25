@@ -64,6 +64,9 @@ const useStyles = createStyles((theme) => ({
 	date: {
 		fontWeight: '600',
 	},
+	loader: {
+		margin: '2rem auto',
+	},
 }))
 
 function AdmissionStatus() {
@@ -71,11 +74,14 @@ function AdmissionStatus() {
 	let navigate = useNavigate()
 	const [committees, setCommittees] = useState<ICommittee[]>([])
 	const [isLoading, setIsLoading] = useState<boolean>(false)
-	const [fromPeriod, setFromPeriod] = useState<string>('None')
-	const [toPeriod, setToPeriod] = useState<string>('None')
+	const [fromPeriod, setFromPeriod] = useState<string>('DD/MM/YYYY')
+	const [toPeriod, setToPeriod] = useState<string>('DD/MM/YYYY')
 
 	function formatDate(dateString: string) {
 		const date = new Date(dateString)
+		if (dateString === 'DD/MM/YYYY') {
+			return 'DD/MM/YYYY'
+		}
 		const formattedDate = date.toLocaleDateString('en-GB', {
 			year: 'numeric',
 			month: 'numeric',
@@ -95,6 +101,7 @@ function AdmissionStatus() {
 			.catch((error: any) => {
 				setIsLoading(false)
 				if (error.response.status !== 200) {
+					// If client is not able to load committees, navigate to login-page
 					navigate('/login')
 				}
 			})
@@ -108,6 +115,7 @@ function AdmissionStatus() {
 					console.log(res.data.applicationPeriod)
 				})
 				.catch((error: any) => {
+					// If client is not able to get application period, navigate to login-page
 					if (error.response.status !== 200) {
 						navigate('/login')
 					}
@@ -135,9 +143,11 @@ function AdmissionStatus() {
 							))}
 						</Container>
 					) : isLoading ? (
-						<Loader color='yellow' />
+						<Loader className={classes.loader} color='yellow' size='xl' />
 					) : (
-						<span>No committees found</span>
+						<span>
+							Du har ikke rettigheter til å endre opptaksstatus på noen komiteer.
+						</span>
 					)}
 				</div>
 			</Container>
