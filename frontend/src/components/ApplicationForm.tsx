@@ -7,7 +7,7 @@ import {
 	Loader,
 } from '@mantine/core'
 import { useForm } from '@mantine/hooks'
-import axios, { Axios } from 'axios'
+import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useNotifications } from '@mantine/notifications'
 import { Check, ChevronDown, X } from 'tabler-icons-react'
@@ -71,7 +71,6 @@ export function Form() {
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const notifications = useNotifications()
 	const committeeNotification = useNotifications()
-	const [periodOpen, setPeriodOpen] = useState<boolean>(true)
 
 	useEffect(() => {
 		if (!committeesFailed) {
@@ -93,17 +92,6 @@ export function Form() {
 				})
 		}
 	}, [committeeNotification, committeesFailed])
-
-	useEffect(() => {
-		axios
-			.get('/applications/period/active')
-			.then((res) => {
-				setPeriodOpen(res.data)
-			})
-			.catch((err) => {
-				setPeriodOpen(false)
-			})
-	})
 
 	const submitForm = (values: ISubmissionApplication) => {
 		setIsLoading(true)
@@ -215,7 +203,10 @@ export function Form() {
 					rightSectionWidth={40}
 					nothingFound='Kunne ikke finne utvalget du søker etter'
 					className={classes.multiSelectRightSection}
-					classNames={{ label: classes.multiSelectInput, input: classes.formField }}
+					classNames={{
+						label: classes.multiSelectInput,
+						input: classes.formField,
+					}}
 					label={<span className={classes.labelText}>Hva ønsker du å søke?</span>}
 					onBlur={() => form.validateField('committees')}
 					{...form.getInputProps('committees')}
@@ -227,7 +218,10 @@ export function Form() {
 					disabled
 					icon={<X size={18} />}
 					placeholder='Kunne ikke laste inn kommitteer'
-					classNames={{ label: classes.multiSelectInput, input: classes.formField }}
+					classNames={{
+						label: classes.multiSelectInput,
+						input: classes.formField,
+					}}
 					label={<span className={classes.labelText}>Hva ønsker du å søke?</span>}
 				/>
 			)}

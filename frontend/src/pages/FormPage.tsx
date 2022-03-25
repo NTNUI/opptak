@@ -1,7 +1,9 @@
-import { Box, Button, createStyles } from '@mantine/core'
+import { Box, Button, createStyles, Loader } from '@mantine/core'
 import { FileText, Login } from 'tabler-icons-react'
 import { Form } from '../components/ApplicationForm'
 import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
 
 const useStyles = createStyles((theme) => ({
 	formTitleAndBodyWrapper: {
@@ -98,11 +100,62 @@ const useStyles = createStyles((theme) => ({
 			gridRow: 1,
 		},
 	},
+	closedPeriod: {
+		backgroundColor: '#0a0a0a',
+		width: '40%',
+		margin: 'auto',
+		marginBottom: '1.5rem',
+		border: '2px solid ' + theme.colors.ntnui_red[9],
+		background: 'rgba(255, 149, 71, 0.3)',
+		color: 'white',
+		'@media (max-width: 1200px)': {
+			width: '70%',
+		},
+		'@media (max-width: 700px)': {
+			width: '85%',
+			border: 'none',
+			backgroundColor: 'transparent',
+			padding: '1rem',
+		},
+	},
+	closedText: {
+		textAlign: 'center',
+		'*': {
+			// Icon
+			margin: '0 0 -3px 0',
+		},
+		'@media (max-width: 700px)': {
+			fontSize: 'large',
+			marginBottom: '1rem',
+		},
+	},
+	loading: {
+		margin: 'auto',
+		width: '100%',
+	}
 }))
 
 function FormBox() {
 	const { classes } = useStyles()
+	const [periodOpen, setPeriodOpen] = useState<boolean>(false)
+	const [isLoading, setIsLoading] = useState<boolean>(false)
 	let navigate = useNavigate()
+
+	useEffect(() => {
+		setIsLoading(true)
+		axios
+			.get('/applications/period/active')
+			.then((res) => {
+				setPeriodOpen(res.data.response)
+				console.log(res)
+				setIsLoading(false)
+			})
+			.catch((err) => {
+				setPeriodOpen(false)
+				setIsLoading(false)
+				console.log(err)
+			})
+	}, [])
 
 	return (
 		<>
@@ -120,15 +173,24 @@ function FormBox() {
 					Intern
 				</Button>
 			</Box>
-			<Box className={classes.formTitleAndBodyWrapper}>
-				<h2 className={classes.formTitle}>
-					<FileText />
-					Søknad til NTNUI Admin
-				</h2>
-				<Form />
-			</Box>
-		</>
+				{isLoading ? <Loader size='xl' color='yellow' className={classes.loading} /> : periodOpen  ? (
+					<Box className={classes.formTitleAndBodyWrapper}>
+						<h2 className={classes.formTitle}>
+							<FileText />
+							Søknad til NTNUI Admin
+						</h2>
+						<Form />
+					</Box>
+				) : (
+					<Box className={classes.closedPeriod}>
+						<h1 className={classes.formTitle}>Hei, kjære søker!</h1>
+						<p className={classes.closedText}>
+							Så gøy at du vil være en del av NTNUI. Opptaket er for tiden stengt, men
+							gjerne sjekk igjen ved en senere anledning!
+						</p>
+					</Box>
+				)}
+			</>
 	)
 }
-
 export default FormBox
