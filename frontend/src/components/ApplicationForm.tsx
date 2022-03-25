@@ -7,7 +7,7 @@ import {
 	Loader,
 } from '@mantine/core'
 import { useForm } from '@mantine/hooks'
-import axios from 'axios'
+import axios, { Axios } from 'axios'
 import { useEffect, useState } from 'react'
 import { useNotifications } from '@mantine/notifications'
 import { Check, ChevronDown, X } from 'tabler-icons-react'
@@ -71,6 +71,7 @@ export function Form() {
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const notifications = useNotifications()
 	const committeeNotification = useNotifications()
+	const [periodOpen, setPeriodOpen] = useState<boolean>(true)
 
 	useEffect(() => {
 		if (!committeesFailed) {
@@ -92,6 +93,17 @@ export function Form() {
 				})
 		}
 	}, [committeeNotification, committeesFailed])
+
+	useEffect(() => {
+		axios
+			.get('/applications/period/active')
+			.then((res) => {
+				setPeriodOpen(res.data)
+			})
+			.catch((err) => {
+				setPeriodOpen(false)
+			})
+	})
 
 	const submitForm = (values: ISubmissionApplication) => {
 		setIsLoading(true)
