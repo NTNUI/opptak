@@ -5,6 +5,7 @@ import { ApplicationModel, IApplication } from '../models/Application'
 import { UserModel } from '../models/User'
 import { CommitteeModel, ICommittee } from '../models/Committee'
 import isApplicationPeriodActive from '../utils/isApplicationPeriodActive'
+import { ApplicationPeriodModel } from '../models/ApplicationPeriod'
 
 async function getUserCommitteeIdsByUserId(userId: number | string) {
 	let committeeIds: number[] = []
@@ -104,7 +105,7 @@ const postApplication = async (
 	next: NextFunction
 ) => {
 	try {
-		if (!(await isApplicationPeriodActive())) {
+		if (!await ApplicationPeriodModel.findOne() || !(await isApplicationPeriodActive())) {
 			throw new CustomError('Application period is not active', 403)
 		}
 
