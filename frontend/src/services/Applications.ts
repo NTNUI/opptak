@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { IApplicationPeriod, IApplicationResponse } from '../types/types'
+import { IAdmissionPeriod, IApplicationResponse } from '../types/types'
 
 const getApplications = async (
 	currentPage: number
@@ -8,16 +8,16 @@ const getApplications = async (
 	return response.data
 }
 
-const getApplicationPeriod = async () => {
+const getAdmissionPeriod = async () => {
 	const response = await axios.get(`/applications/period`)
 	return response.data
 }
 
-const putApplicationPeriod = async (applicationPeriod: IApplicationPeriod) => {
+const putAdmissionPeriod = async (admissionPeriod: IAdmissionPeriod) => {
 	const response = await axios.put(`/applications/period/`, {
-		...applicationPeriod,
+		...admissionPeriod,
 	})
 	return response.data
 }
 
-export { getApplications, getApplicationPeriod, putApplicationPeriod }
+export { getApplications, getAdmissionPeriod, putAdmissionPeriod }

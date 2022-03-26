@@ -5,7 +5,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.css'
 import Navbar from './components/Navbar'
 import ApplicationOverview from './pages/ApplicationOverview'
-import ApplicationPeriod from './pages/ApplicationPeriod'
+import AdmissionPeriod from './pages/AdmissionPeriod'
 import Dashboard from './pages/Dashboard'
 import FormPage from './pages/FormPage'
 import Login from './pages/Login'
@@ -58,7 +58,7 @@ function App() {
 									element={
 										<>
 											<Navbar />
-											<ApplicationPeriod />
+											<AdmissionPeriod />
 										</>
 									}
 								/>

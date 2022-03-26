@@ -6,10 +6,10 @@ import { DateRangePicker } from '@mantine/dates'
 import 'dayjs/locale/nb'
 import { Calendar, Check, History, X } from 'tabler-icons-react'
 import {
-	getApplicationPeriod,
-	putApplicationPeriod,
+	getAdmissionPeriod,
+	putAdmissionPeriod,
 } from '../services/Applications'
-import { IApplicationPeriod } from '../types/types'
+import { IAdmissionPeriod } from '../types/types'
 import dayjs from 'dayjs'
 import { useNotifications } from '@mantine/notifications'
 import isOrganizer from '../utils/isOrganizer'
@@ -37,7 +37,7 @@ const useStyles = createStyles((theme) => ({
 			margin: '10px 0 0 0',
 		},
 	},
-	applicationPeriodStatusText: {
+	admissionPeriodStatusText: {
 		fontWeight: 'lighter',
 		b: {
 			color: theme.colors.ntnui_yellow[9],
@@ -101,7 +101,7 @@ const useStyles = createStyles((theme) => ({
 	},
 }))
 
-function ApplicationPeriod() {
+function AdmissionPeriod() {
 	const { classes } = useStyles()
 	const navigate = useNavigate()
 	const notifications = useNotifications()
@@ -131,15 +131,15 @@ function ApplicationPeriod() {
 
 	useEffect(() => {
 		setIsLoading(true)
-		const getApplicationPeriodAsync = async () => {
+		const getAdmissionPeriodAsync = async () => {
 			try {
 				if (!(await isOrganizer())) {
 					return navigate('/dashboard')
 				}
-				const response = await getApplicationPeriod()
+				const response = await getAdmissionPeriod()
 				const retrievedPeriod = [
-					new Date(response.applicationPeriod.start_date),
-					new Date(response.applicationPeriod.end_date),
+					new Date(response.admissionPeriod.start_date),
+					new Date(response.admissionPeriod.end_date),
 				]
 				form.setValues({ dateRangeInput: retrievedPeriod })
 				setPreviousDates(retrievedPeriod)
@@ -162,14 +162,14 @@ function ApplicationPeriod() {
 				setIsLoading(false)
 			}
 		}
-		getApplicationPeriodAsync()
+		getAdmissionPeriodAsync()
 	}, [navigate])
 
-	const saveApplicationPeriod = () => {
+	const saveAdmissionPeriod = () => {
 		if (!form.validate().hasErrors) {
 			const start = form.values.dateRangeInput[0]
 			const end = form.values.dateRangeInput[1]
-			const applicationPeriod: IApplicationPeriod = {
+			const admissionPeriod: IAdmissionPeriod = {
 				start_date: dayjs(start).toString(),
 				end_date: dayjs(end).toString(),
 			}
@@ -181,7 +181,7 @@ function ApplicationPeriod() {
 				message: '',
 				autoClose: false,
 			})
-			putApplicationPeriod(applicationPeriod)
+			putAdmissionPeriod(admissionPeriod)
 				.then(() => {
 					setChanged(false)
 					setisPeriodSet(true)
@@ -242,7 +242,7 @@ function ApplicationPeriod() {
 		setHasError(form.validate().hasErrors)
 	}, [form.values.dateRangeInput, previousDates])
 
-	const applicationPeriodStatusText = isPeriodSet ? (
+	const admissionPeriodStatusText = isPeriodSet ? (
 		<>
 			Lagret opptaksperiode: <br />
 			<b>
@@ -271,8 +271,8 @@ function ApplicationPeriod() {
 					Opptaksperioden bestemmer når studenter har mulighet til å sende inn
 					søknad.
 				</p>
-				<h3 className={classes.applicationPeriodStatusText}>
-					{applicationPeriodStatusText}
+				<h3 className={classes.admissionPeriodStatusText}>
+					{admissionPeriodStatusText}
 				</h3>
 			</div>
 			{isLoading ? (
@@ -314,7 +314,7 @@ function ApplicationPeriod() {
 					className={classes.confirmButton}
 					disabled={(isPeriodSet && !differentFromDb) || hasError}
 					leftIcon={<Check />}
-					onClick={saveApplicationPeriod}
+					onClick={saveAdmissionPeriod}
 				>
 					{isPeriodSet ? 'Oppdater' : 'Lagre'}
 				</Button>
@@ -323,4 +323,4 @@ function ApplicationPeriod() {
 	)
 }
 
-export default ApplicationPeriod
+export default AdmissionPeriod
