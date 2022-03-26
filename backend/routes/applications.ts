@@ -7,7 +7,7 @@ import {
 import {
 	getApplicationPeriod,
 	putApplicationPeriod,
-	isApplicationPeriodActive,
+	getApplicationPeriodStatus,
 } from '../controllers/applicationPeriodController'
 import authorization from '../utils/authorizationMiddleware'
 
@@ -31,7 +31,7 @@ applicationRouter.put('/period', authorization, putApplicationPeriod)
 // @route GET applications/period/active
 // @description Get if application period is active
 // @access Public
-applicationRouter.get('/period/active', isApplicationPeriodActive)
+applicationRouter.get('/period/active', getApplicationPeriodStatus)
 
 // @route GET applications/:application-id
 // @description Get application by id if user has access
