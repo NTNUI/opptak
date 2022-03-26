@@ -142,7 +142,9 @@ function ApplicationPeriod() {
 				setisPeriodSet(true)
 				setIsLoading(false)
 			} catch (error: any) {
-				if (error.response.status !== 404) {
+				if (error.response.status === 401) {
+					navigate('/login')
+				} else if (error.response.status !== 404) {
 					notifications.showNotification({
 						loading: false,
 						color: 'red',
@@ -151,8 +153,8 @@ function ApplicationPeriod() {
 						message: 'Kunne ikke hente opptaksperioden',
 						autoClose: false,
 					})
+					setIsLoading(false)
 				}
-				setIsLoading(false)
 			}
 		}
 		getApplicationPeriodAsync()
