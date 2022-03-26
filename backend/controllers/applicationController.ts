@@ -125,6 +125,12 @@ const postApplication = async (
 			.then((newApplication) =>
 				res.status(200).json({ application: newApplication })
 			)
+			.catch((err) => {
+				if (err.name === 'ValidationError') {
+					return res.status(400).json({ message: err.message })
+				}
+				return res.status(500).json({ message: 'Unable to save application' })
+			})
 	} catch (error) {
 		return next(error)
 	}
