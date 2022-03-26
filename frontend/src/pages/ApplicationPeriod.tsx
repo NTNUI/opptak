@@ -115,8 +115,9 @@ function ApplicationPeriod() {
 		today.add(7, 'day').toDate(),
 	])
 	// Is period different from what is in db
-	const [changed, setChanged] = useState<boolean>(false)
+	const [differentFromDb, setChanged] = useState<boolean>(false)
 	const [hasError, setHasError] = useState<boolean>(false)
+	const [initialChange, setHasInitialChange] = useState<boolean>(false)
 
 	const form = useForm({
 		initialValues: {
@@ -144,6 +145,7 @@ function ApplicationPeriod() {
 				setPreviousDates(retrievedPeriod)
 				setisPeriodSet(true)
 				setIsLoading(false)
+				setHasInitialChange(false)
 			} catch (error: any) {
 				if (error.response.status === 401) {
 					navigate('/login')
@@ -223,14 +225,18 @@ function ApplicationPeriod() {
 	}
 
 	useEffect(() => {
+		setHasInitialChange(true)
+	}, [form.values.dateRangeInput])
+
+	useEffect(() => {
 		// Check if dates are different than what is saved in db
 		if (
 			dayjs(form.values.dateRangeInput[0]).isSame(previousDates[0]) &&
 			dayjs(form.values.dateRangeInput[1]).isSame(previousDates[1])
 		) {
-			if (changed) setChanged(false)
+			if (differentFromDb) setChanged(false)
 		} else {
-			if (!changed) setChanged(true)
+			if (!differentFromDb) setChanged(true)
 		}
 		// Check error state
 		setHasError(form.validate().hasErrors)
@@ -292,12 +298,12 @@ function ApplicationPeriod() {
 					onBlur={() => form.validateField('dateRangeInput')}
 				/>
 			)}
-			{isPeriodSet && !changed && (
+			{isPeriodSet && !differentFromDb && initialChange && (
 				<i className={classes.unchangedText}>Endre opptaksperioden for å lagre</i>
 			)}
 			<div className={classes.buttonWrapper}>
 				<Button
-					disabled={isPeriodSet && !changed}
+					disabled={isPeriodSet && !differentFromDb}
 					className={classes.cancelButton}
 					leftIcon={<History />}
 					onClick={undoChanges}
@@ -306,7 +312,7 @@ function ApplicationPeriod() {
 				</Button>
 				<Button
 					className={classes.confirmButton}
-					disabled={(isPeriodSet && !changed) || hasError}
+					disabled={(isPeriodSet && !differentFromDb) || hasError}
 					leftIcon={<Check />}
 					onClick={saveApplicationPeriod}
 				>
