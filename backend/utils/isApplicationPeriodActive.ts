@@ -12,11 +12,7 @@ const isApplicationPeriodActive = async () => {
 		}
 		return false
 	}
-
-	throw new CustomError(
-		'Something went wrong when trying to find the application period status',
-		500
-	)
+	throw new CustomError('No application period exists', 404)
 }
 
 export default isApplicationPeriodActive
