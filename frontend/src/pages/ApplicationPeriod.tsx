@@ -12,6 +12,7 @@ import {
 import { IApplicationPeriod } from '../types/types'
 import dayjs from 'dayjs'
 import { useNotifications } from '@mantine/notifications'
+import isOrganizer from '../utils/isOrganizer'
 
 const useStyles = createStyles((theme) => ({
 	pageWrapper: {
@@ -30,6 +31,16 @@ const useStyles = createStyles((theme) => ({
 		textAlign: 'center',
 		h1: {
 			fontWeight: 'lighter',
+			margin: '1rem 0 0 0',
+		},
+		p: {
+			margin: '10px 0 0 0',
+		},
+	},
+	applicationPeriodStatusText: {
+		fontWeight: 'lighter',
+		b: {
+			color: theme.colors.ntnui_yellow[9],
 		},
 	},
 	dateRangeInput: {
@@ -91,16 +102,18 @@ function ApplicationPeriod() {
 	const { classes } = useStyles()
 	const navigate = useNavigate()
 	const notifications = useNotifications()
-	const [isLoading, setIsLoading] = useState(false)
+	const [isLoading, setIsLoading] = useState<boolean>(false)
 	// Has period been set in the db before
-	const [isPeriodSet, setisPeriodSet] = useState(false)
+	const [isPeriodSet, setisPeriodSet] = useState<boolean>(false)
 	// Save previous dates to allow resetting
 	const today = new Date()
 	const [previousDates, setPreviousDates] = useState<Date[]>([
 		new Date(),
 		new Date(today.getTime() + 432000000),
 	])
+	// Is period different from what is in db
 	const [changed, setChanged] = useState<boolean>(false)
+	const [hasError, setHasError] = useState<boolean>(false)
 
 	const form = useForm({
 		initialValues: {
@@ -116,28 +129,30 @@ function ApplicationPeriod() {
 		setIsLoading(true)
 		const getApplicationPeriodAsync = async () => {
 			try {
+				if (!(await isOrganizer())) {
+					navigate('/dashboard')
+				}
 				const response = await getApplicationPeriod()
 				const retrievedPeriod = [
 					new Date(response.applicationPeriod.start_date),
 					new Date(response.applicationPeriod.end_date),
 				]
-				setPreviousDates(retrievedPeriod)
 				form.setValues({ dateRangeInput: retrievedPeriod })
-				setIsLoading(false)
+				setPreviousDates(retrievedPeriod)
 				setisPeriodSet(true)
-			} catch (error: any) {
 				setIsLoading(false)
+			} catch (error: any) {
 				if (error.response.status !== 404) {
-					// TODO: Application period not set
 					notifications.showNotification({
 						loading: false,
 						color: 'red',
 						icon: <X size={18} />,
-						title: 'En feil oppstod!',
-						message: 'Klarte ikke å hente opptaksperioden',
+						title: 'En feil oppstod',
+						message: 'Kunne ikke hente opptaksperioden',
 						autoClose: false,
 					})
 				}
+				setIsLoading(false)
 			}
 		}
 		getApplicationPeriodAsync()
@@ -175,29 +190,25 @@ function ApplicationPeriod() {
 					})
 				})
 				.catch((err) => {
+					let title = ''
+					let message = ''
+					// Set error message content based on error-type
 					if (err.response.status === 403) {
-						console.log('Unauthorized')
-						// TODO: Inform user that is not authorized
-						notifications.updateNotification(id, {
-							id,
-							title: 'Du har ikke tilgang til å endre opptaksperiode!',
-							message: 'Du må være med i hovedstyret for å kunne endre opptaksperiode',
-							color: 'red',
-							autoClose: false,
-							icon: <X size={18} />,
-						})
-					} else{
-					console.log(err)
-						notifications.updateNotification(id, {
-							id,
-							loading: false,
-							color: 'red',
-							icon: <X size={18} />,
-							title: 'En feil oppstod!',
-							message: 'Klarte ikke å oppdatere opptaksperioden',
-							autoClose: false,
-						})
+						title = 'Du har ikke tilgang til å endre opptaksperioden!'
+						message = 'Du må være med i hovedstyret for å kunne endre opptaksperioden'
+					} else {
+						title = 'En feil oppstod!'
+						message = 'Klarte ikke å oppdatere opptaksperioden'
 					}
+					notifications.updateNotification(id, {
+						id: id,
+						loading: false,
+						color: 'red',
+						icon: <X size={18} />,
+						title: title,
+						message: message,
+						autoClose: false,
+					})
 				})
 		}
 	}
@@ -208,35 +219,32 @@ function ApplicationPeriod() {
 
 	useEffect(() => {
 		// Check if dates are different than what is saved in db
-		setChanged(false)
-		if (form.values.dateRangeInput[0] && form.values.dateRangeInput[1]) {
-			if (
-				!dayjs(form.values.dateRangeInput[0]).isSame(previousDates[0]) ||
-				!dayjs(form.values.dateRangeInput[1]).isSame(previousDates[1])
-			) {
-				setChanged(true)
-			}
+		if (
+			dayjs(form.values.dateRangeInput[0]).isSame(previousDates[0]) &&
+			dayjs(form.values.dateRangeInput[1]).isSame(previousDates[1])
+		) {
+			if (changed) setChanged(false)
 		} else {
-			setChanged(true)
+			if (!changed) setChanged(true)
 		}
+		// Check error state
+		setHasError(form.validate().hasErrors)
 	}, [form.values.dateRangeInput, previousDates])
 
 	const applicationPeriodStatusText = isPeriodSet ? (
 		<>
-			Opptaksperioden er satt fra
+			Lagret opptaksperiode: <br />
 			<b>
 				{previousDates[0]?.toLocaleDateString('no-No', {
-					month: 'long',
+					month: '2-digit',
 					day: '2-digit',
-					year: 'numeric',
+					year: '2-digit',
 				})}
-			</b>
-			til
-			<b>
+				-
 				{previousDates[1]?.toLocaleDateString('no-No', {
-					month: 'long',
+					month: '2-digit',
 					day: '2-digit',
-					year: 'numeric',
+					year: '2-digit',
 				})}
 			</b>
 		</>
@@ -250,8 +258,11 @@ function ApplicationPeriod() {
 				<h1>Opptaksperiode</h1>
 				<p>
 					Opptaksperioden bestemmer når studenter har mulighet til å sende inn
-					søknad. {applicationPeriodStatusText}
+					søknad.
 				</p>
+				<h3 className={classes.applicationPeriodStatusText}>
+					{applicationPeriodStatusText}
+				</h3>
 			</div>
 			{isLoading ? (
 				<Loader color='yellow' variant='dots' />
@@ -288,7 +299,7 @@ function ApplicationPeriod() {
 				</Button>
 				<Button
 					className={classes.confirmButton}
-					disabled={isPeriodSet && !changed}
+					disabled={(isPeriodSet && !changed) || hasError}
 					leftIcon={<Check />}
 					onClick={saveApplicationPeriod}
 				>
