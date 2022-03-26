@@ -43,6 +43,9 @@ const useStyles = createStyles((theme) => ({
 			color: theme.colors.ntnui_yellow[9],
 		},
 	},
+	loaderWrapper: {
+		alignSelf: 'center',
+	},
 	dateRangeInput: {
 		backgroundColor: 'transparent',
 		color: 'white',
@@ -106,10 +109,10 @@ function ApplicationPeriod() {
 	// Has period been set in the db before
 	const [isPeriodSet, setisPeriodSet] = useState<boolean>(false)
 	// Save previous dates to allow resetting
-	const today = new Date()
+	const today = dayjs(new Date()).startOf('day')
 	const [previousDates, setPreviousDates] = useState<Date[]>([
-		new Date(),
-		new Date(today.getTime() + 432000000),
+		today.toDate(),
+		today.add(7, 'day').toDate(),
 	])
 	// Is period different from what is in db
 	const [changed, setChanged] = useState<boolean>(false)
@@ -117,7 +120,7 @@ function ApplicationPeriod() {
 
 	const form = useForm({
 		initialValues: {
-			dateRangeInput: [new Date(), new Date()],
+			dateRangeInput: [previousDates[0], previousDates[1]],
 		},
 		validate: {
 			dateRangeInput: (value) =>
@@ -153,8 +156,8 @@ function ApplicationPeriod() {
 						message: 'Kunne ikke hente opptaksperioden',
 						autoClose: false,
 					})
-					setIsLoading(false)
 				}
+				setIsLoading(false)
 			}
 		}
 		getApplicationPeriodAsync()
@@ -227,7 +230,7 @@ function ApplicationPeriod() {
 		) {
 			if (changed) setChanged(false)
 		} else {
-		 	if (!changed) setChanged(true)
+			if (!changed) setChanged(true)
 		}
 		// Check error state
 		setHasError(form.validate().hasErrors)
@@ -267,7 +270,9 @@ function ApplicationPeriod() {
 				</h3>
 			</div>
 			{isLoading ? (
-				<Loader color='yellow' variant='dots' />
+				<div className={classes.loaderWrapper}>
+					<Loader color='yellow' variant='dots' />
+				</div>
 			) : (
 				<DateRangePicker
 					locale='nb'
