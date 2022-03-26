@@ -6,6 +6,7 @@ import {
 	AlignJustified,
 	ArrowLeft,
 	ClipboardList,
+	Clock,
 	Mail,
 	Phone,
 	User,
@@ -76,13 +77,22 @@ const useStyles = createStyles((theme) => ({
 		display: 'flex',
 		flexDirection: 'column',
 		gap: '2rem',
+		borderRadius: theme.radius.sm,
 	},
 	personalInfoSection: {
 		color: 'white',
 		p: {
+			wordBreak: 'break-all',
 			display: 'flex',
 			gap: '0.4rem',
 			margin: '0 0 0.5rem 0',
+			svg: {
+				minWidth: '24px',
+			},
+			b: {
+				whiteSpace: 'nowrap',
+				justifySelf: 'end',
+			},
 		},
 	},
 	applicationTextSection: {
@@ -90,6 +100,14 @@ const useStyles = createStyles((theme) => ({
 		p: {
 			// Adjusted for icons
 			margin: '0 0 0 4px',
+		},
+		backgroundColor: theme.colors.ntnui_yellow[9] + '0F',
+		borderRadius: theme.radius.sm,
+		padding: '1rem',
+		'@media (max-width: 700px)': {
+			backgroundColor: 'transparent',
+			borderRadius: '0',
+			padding: '0',
 		},
 	},
 	sectionTitle: {
@@ -124,7 +142,7 @@ const useStyles = createStyles((theme) => ({
 }))
 
 function YellowDotLoader() {
-	return <Loader color='yellow' variant='dots' />
+	return <Loader color='white' variant='dots' />
 }
 
 function ApplicationDetailPage() {
@@ -160,6 +178,15 @@ function ApplicationDetailPage() {
 			getApplicationAsync()
 		}
 	}, [id, navigate])
+
+	function stringifyDate(date: Date) {
+		return new Date(date).toLocaleString('no-NO', {
+			month: 'long',
+			day: '2-digit',
+			hour: 'numeric',
+			minute: 'numeric',
+		})
+	}
 
 	return (
 		<>
@@ -202,6 +229,14 @@ function ApplicationDetailPage() {
 							<p>
 								<Mail size={24} /> <b>E-post:</b>
 								{isLoading || !application ? <YellowDotLoader /> : application.email}
+							</p>
+							<p>
+								<Clock size={24} /> <b>Sendt inn:</b>
+								{isLoading || !application ? (
+									<YellowDotLoader />
+								) : (
+									stringifyDate(application.submitted_date)
+								)}
 							</p>
 						</Box>
 						<Box className={classes.applicationTextSection}>
