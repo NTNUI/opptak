@@ -130,7 +130,7 @@ function ApplicationPeriod() {
 		const getApplicationPeriodAsync = async () => {
 			try {
 				if (!(await isOrganizer())) {
-					navigate('/dashboard')
+					return navigate('/dashboard')
 				}
 				const response = await getApplicationPeriod()
 				const retrievedPeriod = [
@@ -197,10 +197,10 @@ function ApplicationPeriod() {
 					// Set error message content based on error-type
 					if (err.response.status === 403) {
 						title = 'Du har ikke tilgang til å endre opptaksperioden!'
-						message = 'Du må være med i hovedstyret for å kunne endre opptaksperioden'
+						message = 'Du må være i Hovedstyret for å kunne endre opptaksperioden'
 					} else {
 						title = 'En feil oppstod!'
-						message = 'Klarte ikke å oppdatere opptaksperioden'
+						message = 'Kunne ikke oppdatere opptaksperioden'
 					}
 					notifications.updateNotification(id, {
 						id: id,
@@ -227,7 +227,7 @@ function ApplicationPeriod() {
 		) {
 			if (changed) setChanged(false)
 		} else {
-			if (!changed) setChanged(true)
+		 	if (!changed) setChanged(true)
 		}
 		// Check error state
 		setHasError(form.validate().hasErrors)
