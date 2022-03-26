@@ -3,6 +3,8 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import CommitteeSwitch from '../components/CommitteeSwitch'
+import { getUserCommittees, ICommitteeCollection } from '../services/Committees'
+
 import { ICommittee } from '../types/types'
 
 const useStyles = createStyles((theme) => ({
@@ -92,27 +94,25 @@ function AdmissionStatus() {
 
 	useEffect(() => {
 		setIsLoading(true)
-		axios
-			.get('/committees')
-			.then((res) => {
-				setCommittees(res.data)
-				setIsLoading(false)
+		async function getCommittees() {
+			const committeesRes = await getUserCommittees()
+			let allCommittees: ICommittee[] = []
+			committeesRes.committees.forEach((item: ICommitteeCollection) => {
+				allCommittees.push(item.committee)
 			})
-			.catch((error: any) => {
-				setIsLoading(false)
-				if (error.response.status !== 200) {
-					// If client is not able to load committees, navigate to login-page
-					navigate('/login')
-				}
-			})
+			setCommittees(allCommittees)
+			setIsLoading(false)
+		}
+		getCommittees()
+	}, [])
 
+	useEffect(() => {
 		function getApplicationPeriod() {
 			axios
 				.get('/applications/period')
 				.then((res) => {
 					setFromPeriod(res.data.applicationPeriod.start_date)
 					setToPeriod(res.data.applicationPeriod.end_date)
-					console.log(res.data.applicationPeriod)
 				})
 				.catch((error: any) => {
 					// If client is not able to get application period, navigate to login-page

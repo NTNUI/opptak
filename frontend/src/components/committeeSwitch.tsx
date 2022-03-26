@@ -1,6 +1,6 @@
 import { createStyles, Switch } from '@mantine/core'
 import axios from 'axios'
-import { ChangeEvent, useCallback, useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ICommittee } from '../types/types'
 
@@ -33,7 +33,6 @@ function CommitteeSwitch({ name, accepts_applicants, slug }: ICommittee) {
 	const { classes } = useStyles()
 	let navigate = useNavigate()
 	const [checked, setChecked] = useState<boolean>(accepts_applicants)
-	const [committeeStatus, setCommitteeStatus] = useState<boolean>(false)
 
 	/**
 	 * Toggles if the committee is open on server
@@ -47,38 +46,17 @@ function CommitteeSwitch({ name, accepts_applicants, slug }: ICommittee) {
 			.put(`/committees/${slug}/accept-applicants`)
 			.then((response) => {
 				const status = response.data.accept_applicants
-				setCommitteeStatus(status)
+				setChecked(status)
 				console.log(`${slug} was toggled to ${status}`)
 			})
-			.catch((err) => {})
+			.catch((err) => {
+				navigate('/login')
+			})
 	}
 
-	/**
-	 * Get committee status from server and set state
-	 *
-	 * Returns Void
-	 */
-	const getCommitteeStatus = useCallback(() => {
-		axios
-			.get('/committees/')
-			.then((response) => {
-				const data = response.data
-				const committee = data.find(
-					(committee: { slug: string }) => committee.slug === slug
-				)
-				setCommitteeStatus(committee.accepts_applicants)
-			})
-			.catch((error: any) => {
-				if (error.response.status !== 200) {
-					navigate('/login')
-				}
-			})
-	}, [navigate, slug])
-
 	useEffect(() => {
-		getCommitteeStatus() // Get server statuses
-		setChecked(committeeStatus) // Sets all committee statuses to match server
-	}, [committeeStatus, getCommitteeStatus, checked])
+		setChecked(accepts_applicants)
+	}, [])
 
 	/**
 	 * On toggle, check input value and compare it to value on server
@@ -86,12 +64,9 @@ function CommitteeSwitch({ name, accepts_applicants, slug }: ICommittee) {
 	 * If local is not equal to server, then change on server and setChecked with this value
 	 * @param event
 	 */
-	function handleToggle(event: ChangeEvent<HTMLInputElement>) {
-		getCommitteeStatus()
-		if (event.currentTarget.checked !== committeeStatus) {
-			toggleAcceptApplicationsAsync()
-			setChecked(committeeStatus)
-		}
+	async function handleToggle(event: ChangeEvent<HTMLInputElement>) {
+		setChecked(event.currentTarget.checked)
+		await toggleAcceptApplicationsAsync()
 	}
 
 	return (
