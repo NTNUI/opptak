@@ -31,4 +31,10 @@ interface IAdmissionPeriod {
 	end_date: string
 }
 
-export type { IApplication, ICommittee, IApplicationResponse, IApplicationsResponse, IAdmissionPeriod }
+export type {
+	IApplication,
+	ICommittee,
+	IApplicationResponse,
+	IApplicationsResponse,
+	IAdmissionPeriod,
+}

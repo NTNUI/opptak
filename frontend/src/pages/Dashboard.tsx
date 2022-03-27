@@ -27,7 +27,7 @@ function Dashboard() {
 			<Button onClick={() => navigate('/admission-status')}>
 				<Users size={18} /> Opptaksstatus
 			</Button>
-			<Button onClick={() => navigate('/application-period')}>
+			<Button onClick={() => navigate('/admission-period')}>
 				<CalendarEvent size={18} /> Opptaksperiode
 			</Button>
 		</Box>

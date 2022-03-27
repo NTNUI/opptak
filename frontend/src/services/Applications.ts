@@ -1,5 +1,9 @@
 import axios from 'axios'
-import { IAdmissionPeriod, IApplicationsResponse, IApplicationResponse } from '../types/types'
+import {
+	IAdmissionPeriod,
+	IApplicationsResponse,
+	IApplicationResponse,
+} from '../types/types'
 
 const getApplications = async (
 	currentPage: number
@@ -25,4 +29,9 @@ const getApplication = async (id: String): Promise<IApplicationResponse> => {
 	return response.data
 }
 
-export { getApplications, getApplication, getAdmissionPeriod, putAdmissionPeriod }
+export {
+	getApplications,
+	getApplication,
+	getAdmissionPeriod,
+	putAdmissionPeriod,
+}

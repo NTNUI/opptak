@@ -4,6 +4,7 @@ import axios from 'axios'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.css'
 import Navbar from './components/Navbar'
+import AdmissionPeriod from './pages/AdmissionPeriod'
 import ApplicationDetailPage from './pages/ApplicationDetails'
 import ApplicationOverview from './pages/ApplicationOverview'
 import Dashboard from './pages/Dashboard'
@@ -63,11 +64,11 @@ function App() {
 									}
 								/>
 								<Route
-									path='/application-period'
+									path='/admission-period'
 									element={
 										<>
 											<Navbar />
-											<h1>Opptaksperiode</h1>
+											<AdmissionPeriod />
 										</>
 									}
 								/>
