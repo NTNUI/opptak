@@ -3,7 +3,7 @@ import ApplicationItem from './ApplicationItem'
 import { IApplication } from '../types/types'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import getApplications from '../services/Applications'
+import { getApplications } from '../services/Applications'
 
 const useStyles = createStyles((theme) => ({
 	container: {
