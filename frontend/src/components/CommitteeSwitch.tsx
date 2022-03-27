@@ -1,9 +1,9 @@
 import { createStyles, Switch } from '@mantine/core'
 import { useNotifications } from '@mantine/notifications'
-import axios from 'axios'
 import { ChangeEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { AlertTriangle, X } from 'tabler-icons-react'
+import { AlertTriangle } from 'tabler-icons-react'
+import { toggleAcceptApplicationsAsync } from '../services/Committees'
 import { ICommittee } from '../types/types'
 
 const useStyles = createStyles((theme) => ({
@@ -39,38 +39,22 @@ function CommitteeSwitch({ name, accepts_applicants, slug }: ICommittee) {
 	const committeeNotification = useNotifications()
 
 	/**
-	 * Toggles if the committee is open on server
+	 * On toggle, check input value and compare it to value on server
 	 *
-	 * Set new status
-	 *
-	 * Returns Void
+	 * If local is not equal to server, then change on server and setChecked with this value
+	 * @param event
 	 */
-	const toggleAcceptApplicationsAsync = async () => {
+	async function handleToggle(event: ChangeEvent<HTMLInputElement>) {
+		setChecked(event.currentTarget.checked)
+		setSwitchStatus(true)
+
 		try {
-			axios.put(`/committees/${slug}/accept-applicants`).then((response) => {
-				const status = response.data.accept_applicants
-				setChecked(status)
-				setSwitchStatus(false)
-			})
+			const status = await toggleAcceptApplicationsAsync(slug)
+			setChecked(status)
+			setSwitchStatus(false)
 		} catch (error: any) {
-			if (error.response.status === 403) {
-				committeeNotification.showNotification({
-					title: 'Du har ikke tilgang til å endre denne komiteestatusen!',
-					message:
-						'Du er logget inn med en bruker som ikke har rettighet til å endre denne komiteestatusen. Logg inn med en annen bruker for å endre.',
-					color: 'red',
-					autoClose: false,
-					icon: <X size={18} />,
-				})
-			} else if (error.response.status === 404) {
-				committeeNotification.showNotification({
-					title: 'Kunne ikke finne komiteen!',
-					message:
-						'Last inn siden på nytt og prøv igjen. Ta kontakt med sprint@ntnui.no dersom problemet vedvarer',
-					color: 'red',
-					autoClose: false,
-					icon: <X size={18} />,
-				})
+			if (error.response.status === 401) {
+				navigate('/login')
 			} else {
 				committeeNotification.showNotification({
 					title: 'Det skjedde en feil!',
@@ -80,22 +64,8 @@ function CommitteeSwitch({ name, accepts_applicants, slug }: ICommittee) {
 					autoClose: false,
 					icon: <AlertTriangle size={18} />,
 				})
-				navigate('/login')
 			}
 		}
-		setSwitchStatus(false)
-	}
-
-	/**
-	 * On toggle, check input value and compare it to value on server
-	 *
-	 * If local is not equal to server, then change on server and setChecked with this value
-	 * @param event
-	 */
-	async function handleToggle(event: ChangeEvent<HTMLInputElement>) {
-		setChecked(event.currentTarget.checked)
-		setSwitchStatus(true)
-		await toggleAcceptApplicationsAsync()
 	}
 
 	return (

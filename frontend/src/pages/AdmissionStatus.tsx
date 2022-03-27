@@ -1,13 +1,18 @@
 import { Container, createStyles, Loader } from '@mantine/core'
 import { useNotifications } from '@mantine/notifications'
-import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AlertTriangle, X } from 'tabler-icons-react'
 import CommitteeSwitch from '../components/CommitteeSwitch'
-import { getUserCommittees, IRoleInCommittee } from '../services/Committees'
+import { getAdmissionPeriod } from '../services/Applications'
+import {
+	getAllCommittees,
+	getUserCommittees,
+	IRoleInCommittee,
+} from '../services/Committees'
 
 import { ICommittee } from '../types/types'
+import isOrganizer from '../utils/isOrganizer'
 
 const useStyles = createStyles((theme) => ({
 	container: {
@@ -102,11 +107,17 @@ function AdmissionStatus() {
 		setIsLoading(true)
 		async function getCommittees() {
 			try {
-				const committeesRes = await getUserCommittees()
 				let allCommittees: ICommittee[] = []
-				committeesRes.forEach((item: IRoleInCommittee) => {
-					allCommittees.push(item.committee)
-				})
+
+				if (await isOrganizer()) {
+					allCommittees = await getAllCommittees()
+				} else {
+					const committeesRes = await getUserCommittees()
+					committeesRes.forEach((item: IRoleInCommittee) => {
+						allCommittees.push(item.committee)
+					})
+				}
+
 				setCommittees(allCommittees)
 				setIsLoading(false)
 			} catch (error: any) {
@@ -128,29 +139,26 @@ function AdmissionStatus() {
 	}, [])
 
 	useEffect(() => {
-		function getApplicationPeriod() {
-			axios
-				.get('/applications/period')
-				.then((res) => {
-					setFromPeriod(res.data.applicationPeriod.start_date)
-					setToPeriod(res.data.applicationPeriod.end_date)
-				})
-				.catch((error: any) => {
-					// If client is not able to get application period, navigate to login-page
-					if (error.response.status === 404) {
-						setIsError(true)
-						setErrorMessage('Kunne ikke finne opptaksperioden')
-					} else if (error.response.status === 500) {
-						setIsError(true)
-						setErrorMessage('Det skjedde en feil på serveren')
-					} else {
-						navigate('/dashboard')
-					}
-					setIsLoading(false)
-				})
+		async function getAdmissionPeriodData() {
+			try {
+				const admissionPeriodData = await getAdmissionPeriod()
+				setFromPeriod(admissionPeriodData.applicationPeriod.start_date)
+				setToPeriod(admissionPeriodData.applicationPeriod.end_date)
+			} catch (error: any) {
+				if (error.response.status === 404) {
+					setIsError(true)
+					setErrorMessage('Kunne ikke finne opptaksperioden')
+				} else if (error.response.status === 500) {
+					setIsError(true)
+					setErrorMessage('Det skjedde en feil på serveren')
+				} else {
+					navigate('/dashboard')
+				}
+				setIsLoading(false)
+			}
 		}
 
-		getApplicationPeriod()
+		getAdmissionPeriodData()
 	}, [navigate])
 
 	return (
