@@ -1,6 +1,6 @@
-import { Box, Button, createStyles } from '@mantine/core'
+import { Box, createStyles } from '@mantine/core'
 import { useNavigate } from 'react-router-dom'
-import { CalendarEvent, FileText, Lock, Scale, Trash, Users } from 'tabler-icons-react'
+import { CalendarEvent, FileText, Lock, Users } from 'tabler-icons-react'
 
 const useStyles = createStyles((theme) => ({
 	dashboardWrapper: {
