@@ -1,7 +1,9 @@
 import { createStyles, Switch } from '@mantine/core'
+import { useNotifications } from '@mantine/notifications'
 import axios from 'axios'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { AlertTriangle, X } from 'tabler-icons-react'
 import { ICommittee } from '../types/types'
 
 const useStyles = createStyles((theme) => ({
@@ -33,6 +35,8 @@ function CommitteeSwitch({ name, accepts_applicants, slug }: ICommittee) {
 	const { classes } = useStyles()
 	let navigate = useNavigate()
 	const [checked, setChecked] = useState<boolean>(accepts_applicants)
+	const [switchStatus, setSwitchStatus] = useState<boolean>(false)
+	const committeeNotification = useNotifications()
 
 	/**
 	 * Toggles if the committee is open on server
@@ -42,21 +46,45 @@ function CommitteeSwitch({ name, accepts_applicants, slug }: ICommittee) {
 	 * Returns Void
 	 */
 	const toggleAcceptApplicationsAsync = async () => {
-		axios
-			.put(`/committees/${slug}/accept-applicants`)
-			.then((response) => {
+		try {
+			axios.put(`/committees/${slug}/accept-applicants`).then((response) => {
 				const status = response.data.accept_applicants
 				setChecked(status)
-				console.log(`${slug} was toggled to ${status}`)
+				setSwitchStatus(false)
 			})
-			.catch((err) => {
+		} catch (error: any) {
+			if (error.response.status === 403) {
+				committeeNotification.showNotification({
+					title: 'Du har ikke tilgang til å endre denne komiteestatusen!',
+					message:
+						'Du er logget inn med en bruker som ikke har rettighet til å endre denne komiteestatusen. Logg inn med en annen bruker for å endre.',
+					color: 'red',
+					autoClose: false,
+					icon: <X size={18} />,
+				})
+			} else if (error.response.status === 404) {
+				committeeNotification.showNotification({
+					title: 'Kunne ikke finne komiteen!',
+					message:
+						'Last inn siden på nytt og prøv igjen. Ta kontakt med sprint@ntnui.no dersom problemet vedvarer',
+					color: 'red',
+					autoClose: false,
+					icon: <X size={18} />,
+				})
+			} else {
+				committeeNotification.showNotification({
+					title: 'Det skjedde en feil!',
+					message:
+						'Last inn siden på nytt og prøv igjen. Ta kontakt med sprint@ntnui.no dersom problemet vedvarer',
+					color: 'red',
+					autoClose: false,
+					icon: <AlertTriangle size={18} />,
+				})
 				navigate('/login')
-			})
+			}
+		}
+		setSwitchStatus(false)
 	}
-
-	useEffect(() => {
-		setChecked(accepts_applicants)
-	}, [])
 
 	/**
 	 * On toggle, check input value and compare it to value on server
@@ -66,6 +94,7 @@ function CommitteeSwitch({ name, accepts_applicants, slug }: ICommittee) {
 	 */
 	async function handleToggle(event: ChangeEvent<HTMLInputElement>) {
 		setChecked(event.currentTarget.checked)
+		setSwitchStatus(true)
 		await toggleAcceptApplicationsAsync()
 	}
 
@@ -78,6 +107,7 @@ function CommitteeSwitch({ name, accepts_applicants, slug }: ICommittee) {
 				onChange={(event) => handleToggle(event)}
 				size='md'
 				radius='lg'
+				disabled={switchStatus}
 			/>
 		</div>
 	)

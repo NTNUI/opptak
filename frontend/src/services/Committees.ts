@@ -1,16 +1,12 @@
 import axios from 'axios'
 import { ICommittee } from '../types/types'
 
-export interface ICommitteeCollection {
+export interface IRoleInCommittee {
 	committee: ICommittee
 	role: string
 }
 
-export interface IUserCommitteeResponse {
-	committees: ICommitteeCollection[]
-}
-
-export const getUserCommittees = async (): Promise<IUserCommitteeResponse> => {
+export const getUserCommittees = async (): Promise<IRoleInCommittee[]> => {
 	const response = await axios.get('/user/committees')
-	return response.data
+	return response.data.committees
 }
