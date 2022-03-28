@@ -172,7 +172,8 @@ function AdmissionStatus() {
 					setIsError(true)
 					setErrorMessage('Det skjedde en feil på serveren')
 				} else {
-					navigate('/dashboard')
+					setIsError(true)
+					setErrorMessage('Klarte ikke å hente opptaksstatus')
 				}
 				setIsLoading(false)
 			}
