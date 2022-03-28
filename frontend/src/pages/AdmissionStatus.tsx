@@ -76,7 +76,24 @@ const useStyles = createStyles((theme) => ({
 	loader: {
 		margin: '2rem auto',
 	},
-	errorMessage: {},
+	errorMessage: {
+		color: 'white',
+		margin: '2rem auto',
+		width: '90%',
+		display: 'flex',
+		flexDirection: 'column',
+		justifyContent: 'center',
+		alignItems: 'center',
+		textAlign: 'center',
+		h1: {
+			fontWeight: 'lighter',
+			fontSize: 'x-large',
+		},
+		svg: {
+			color: theme.colors.ntnui_yellow[9],
+			margin: '0 5px 0 0',
+		},
+	},
 }))
 
 function AdmissionStatus() {
@@ -133,6 +150,7 @@ function AdmissionStatus() {
 					})
 					setErrorMessage('Det finnes ingen komiteer å vise')
 				}
+				setIsLoading(false)
 			}
 		}
 		getCommittees()
@@ -147,7 +165,9 @@ function AdmissionStatus() {
 			} catch (error: any) {
 				if (error.response.status === 404) {
 					setIsError(true)
-					setErrorMessage('Kunne ikke finne opptaksperioden')
+					setErrorMessage(
+						'Opptaksperioden er ikke satt. Når den er satt vil søknader kunne sendes til ditt utvalg dersom det er åpent'
+					)
 				} else if (error.response.status === 500) {
 					setIsError(true)
 					setErrorMessage('Det skjedde en feil på serveren')
@@ -164,46 +184,43 @@ function AdmissionStatus() {
 	return (
 		<>
 			<Container className={classes.container}>
-				{!isError ? (
-					<>
-						<h1>Opptaksstatus</h1>
-						<div className={classes.text}>
-							Opptaksstatus avgjør om det skal være mulig for studenter å søke i den
-							gitte opptaksperioden{' '}
-							{isLoading ? (
-								<Loader color='white' variant='dots' />
-							) : (
-								<span className={classes.date}>{formatDate(fromPeriod)}</span>
-							)}{' '}
-							til{' '}
-							{isLoading ? (
-								<Loader color='white' variant='dots' />
-							) : (
-								<span className={classes.date}>{formatDate(toPeriod)}</span>
-							)}
-						</div>
-						<div className={classes.committeesWrapper}>
-							{committees.length ? (
-								<Container className={classes.container}>
-									{committees.map((item: ICommittee, idx: number) => (
-										<CommitteeSwitch key={idx} {...item} />
-									))}
-								</Container>
-							) : isLoading ? (
-								<Loader className={classes.loader} color='yellow' size='xl' />
-							) : (
-								<span>
-									Du har ikke rettigheter til å endre opptaksstatus på noen komiteer.
-								</span>
-							)}
-						</div>
-					</>
-				) : (
-					<div className={classes.errorMessage}>
-						<AlertTriangle size={35} />
-						<h1>{errorMessage}</h1>
+				<>
+					<h1>Opptaksstatus</h1>
+					<div className={classes.text}>
+						Opptaksstatus avgjør om det skal være mulig for studenter å søke i den
+						gitte opptaksperioden{' '}
+						{isLoading ? (
+							<Loader color='white' variant='dots' />
+						) : (
+							<span className={classes.date}>{formatDate(fromPeriod)}</span>
+						)}{' '}
+						til{' '}
+						{isLoading ? (
+							<Loader color='white' variant='dots' />
+						) : (
+							<span className={classes.date}>{formatDate(toPeriod)}</span>
+						)}
 					</div>
-				)}
+
+					<div className={classes.committeesWrapper}>
+						{isError ? (
+							<div className={classes.errorMessage}>
+								<AlertTriangle size={35} />
+								<h1>{errorMessage}</h1>
+							</div>
+						) : committees.length ? (
+							<Container className={classes.container}>
+								{committees.map((item: ICommittee, idx: number) => (
+									<CommitteeSwitch key={idx} {...item} />
+								))}
+							</Container>
+						) : isLoading ? (
+							<Loader className={classes.loader} color='yellow' size='xl' />
+						) : (
+							<span>Ingen komiteer å vise.</span>
+						)}
+					</div>
+				</>
 			</Container>
 		</>
 	)
