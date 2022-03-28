@@ -5,14 +5,17 @@ import { useNavigate } from 'react-router-dom'
 
 const useStyles = createStyles((theme) => ({
 	formTitleAndBodyWrapper: {
-		backgroundColor: '#0a0a0a',
-		width: '40%',
+		backgroundColor: 'transparent',
+		width: '35%',
 		justifyContent: 'center',
 		margin: 'auto',
 		border: '2px solid ' + theme.colors.ntnui_yellow[9],
 		borderRadius: '20px',
 		textAlign: 'left',
 		color: 'white',
+		'@media (max-width: 1550px)': {
+			width: '50%',
+		},
 		'@media (max-width: 1200px)': {
 			width: '70%',
 		},

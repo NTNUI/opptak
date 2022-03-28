@@ -174,11 +174,11 @@ function Navbar() {
 					<Menu.Item
 						icon={<CalendarEvent size={18} />}
 						className={
-							location.pathname === '/application-period'
+							location.pathname === '/admission-period'
 								? classes.active
 								: classes.menuItemBody
 						}
-						onClick={() => navigate('/application-period')}
+						onClick={() => navigate('/admission-period')}
 					>
 						Opptaksperiode
 					</Menu.Item>
