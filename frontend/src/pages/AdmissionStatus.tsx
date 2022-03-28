@@ -94,6 +94,9 @@ const useStyles = createStyles((theme) => ({
 			margin: '0 5px 0 0',
 		},
 	},
+	warningAlertIcon: {
+		color: theme.colors.ntnui_yellow[9],
+	},
 }))
 
 function AdmissionStatus() {
@@ -103,6 +106,7 @@ function AdmissionStatus() {
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const [fromPeriod, setFromPeriod] = useState<string>('DD/MM/YYYY')
 	const [toPeriod, setToPeriod] = useState<string>('DD/MM/YYYY')
+	const [periodIsMissing, setPeriodIsMissing] = useState<boolean>(false)
 	const [isError, setIsError] = useState<boolean>(false)
 	const [errorMessage, setErrorMessage] = useState('')
 	const committeeNotification = useNotifications()
@@ -134,7 +138,6 @@ function AdmissionStatus() {
 						allCommittees.push(item.committee)
 					})
 				}
-
 				setCommittees(allCommittees)
 				setIsLoading(false)
 			} catch (error: any) {
@@ -164,10 +167,7 @@ function AdmissionStatus() {
 				setToPeriod(admissionPeriodData.applicationPeriod.end_date)
 			} catch (error: any) {
 				if (error.response.status === 404) {
-					setIsError(true)
-					setErrorMessage(
-						'Opptaksperioden er ikke satt. Når den er satt vil søknader kunne sendes til ditt utvalg dersom det er åpent'
-					)
+					setPeriodIsMissing(true)
 				} else if (error.response.status === 500) {
 					setIsError(true)
 					setErrorMessage('Det skjedde en feil på serveren')
@@ -186,21 +186,29 @@ function AdmissionStatus() {
 			<Container className={classes.container}>
 				<>
 					<h1>Opptaksstatus</h1>
-					<div className={classes.text}>
-						Opptaksstatus avgjør om det skal være mulig for studenter å søke i den
-						gitte opptaksperioden{' '}
-						{isLoading ? (
-							<Loader color='white' variant='dots' />
-						) : (
-							<span className={classes.date}>{formatDate(fromPeriod)}</span>
-						)}{' '}
-						til{' '}
-						{isLoading ? (
-							<Loader color='white' variant='dots' />
-						) : (
-							<span className={classes.date}>{formatDate(toPeriod)}</span>
-						)}
-					</div>
+					{!periodIsMissing ? (
+						<div className={classes.text}>
+							Opptaksstatus avgjør om det skal være mulig for studenter å søke i den
+							gitte opptaksperioden{' '}
+							{isLoading ? (
+								<Loader color='white' variant='dots' />
+							) : (
+								<span className={classes.date}>{formatDate(fromPeriod)}</span>
+							)}{' '}
+							til{' '}
+							{isLoading ? (
+								<Loader color='white' variant='dots' />
+							) : (
+								<span className={classes.date}>{formatDate(toPeriod)}</span>
+							)}
+						</div>
+					) : (
+						<div className={classes.text}>
+							<AlertTriangle size={35} className={classes.warningAlertIcon} /> <br />
+							Opptaksperioden er ikke satt. Når den er satt vil søknader kunne sendes
+							til ditt utvalg dersom det er åpent.
+						</div>
+					)}
 
 					<div className={classes.committeesWrapper}>
 						{isError ? (
@@ -214,10 +222,8 @@ function AdmissionStatus() {
 									<CommitteeSwitch key={idx} {...item} />
 								))}
 							</Container>
-						) : isLoading ? (
-							<Loader className={classes.loader} color='yellow' size='xl' />
 						) : (
-							<span>Ingen komiteer å vise.</span>
+							<Loader className={classes.loader} color='yellow' size='xl' />
 						)}
 					</div>
 				</>
