@@ -4,9 +4,10 @@ import axios from 'axios'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.css'
 import Navbar from './components/Navbar'
+import AdmissionStatus from './pages/AdmissionStatus'
+import ApplicationOverview from './pages/ApplicationOverview'
 import AdmissionPeriod from './pages/AdmissionPeriod'
 import ApplicationDetailPage from './pages/ApplicationDetails'
-import ApplicationOverview from './pages/ApplicationOverview'
 import Dashboard from './pages/Dashboard'
 import FormPage from './pages/FormPage'
 import Login from './pages/Login'
@@ -59,7 +60,7 @@ function App() {
 									element={
 										<>
 											<Navbar />
-											<h1>Opptaksstatus</h1>
+											<AdmissionStatus />
 										</>
 									}
 								/>
