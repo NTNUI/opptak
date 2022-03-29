@@ -11,7 +11,7 @@ const getUserCommittees = async (
 	try {
 		const { ntnuiNo } = req
 		if (!ntnuiNo) throw UnauthorizedUserError
-		const user = await UserModel.findOne({ ntnuiNo }).populate(
+		const user = await UserModel.findOne({ _id: ntnuiNo }).populate(
 			'committees.committee'
 		)
 		if (!user) throw UnauthorizedUserError

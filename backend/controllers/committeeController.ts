@@ -1,5 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
+import { CustomError, UnauthorizedUserError } from 'ntnui-tools/customError'
 import { CommitteeModel } from '../models/Committee'
+import MAIN_BOARD_ID from '../utils/constants'
+import { RequestWithNtnuiNo } from '../utils/request'
+import { getUserRoleInCommitteeByUserId } from '../utils/userCommittee'
 
 const getCommittees = (_req: Request, res: Response) => {
 	CommitteeModel.find()
@@ -8,27 +12,44 @@ const getCommittees = (_req: Request, res: Response) => {
 }
 
 async function acceptApplicants(
-	req: Request,
+	req: RequestWithNtnuiNo,
 	res: Response,
 	next: NextFunction
 ) {
 	try {
-		// Toggle accepts_applicants for a committee
+		const { ntnuiNo } = req
+		if (!ntnuiNo) throw UnauthorizedUserError
+		// Retrieve committee that is accepting applicants
 		const { slug } = req.params
 		const committee = await CommitteeModel.findOne({ slug })
 		if (!committee) {
 			return res.status(404).json({ message: 'Committee not found' })
 		}
-		committee.accepts_applicants = !committee.accepts_applicants
+		// Check if user is organizer or committee leader
+		const rolesInCommittees = await getUserRoleInCommitteeByUserId(ntnuiNo)
+		const isOrganizerOrLeader = rolesInCommittees.some(
+			(roleInCommittee) =>
+				roleInCommittee.committee === MAIN_BOARD_ID ||
+				(roleInCommittee.committee === committee._id &&
+					roleInCommittee.role === 'leader')
+		)
+		if (isOrganizerOrLeader) {
+			// Toggle accepts_applicants for a committee
+			committee.accepts_applicants = !committee.accepts_applicants
 
-		return committee
-			.save()
-			.then(() =>
-				res.status(200).json({
-					accept_applicants: committee.accepts_applicants,
-				})
-			)
-			.catch((err) => res.status(500).json({ message: err.message }))
+			return committee
+				.save()
+				.then(() =>
+					res.status(200).json({
+						accept_applicants: committee.accepts_applicants,
+					})
+				)
+				.catch((err) => res.status(500).json({ message: err.message }))
+		}
+		throw new CustomError(
+			'You are not authorized to change the admission status of this committee',
+			403
+		)
 	} catch (error) {
 		return next(error)
 	}

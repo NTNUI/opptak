@@ -1,9 +1,10 @@
 import { Request, Response } from 'express'
 import { UnauthorizedUserError } from 'ntnui-tools/customError'
 import { ApplicationPeriodModel } from '../models/ApplicationPeriod'
-import getUserCommitteeIdsByUserId from '../utils/userCommittee'
+import { getUserCommitteeIdsByUserId } from '../utils/userCommittee'
 import isApplicationPeriodActive from '../utils/isApplicationPeriodActive'
 import { RequestWithNtnuiNo } from '../utils/request'
+import MAIN_BOARD_ID from '../utils/constants'
 
 const getApplicationPeriod = async (req: Request, res: Response) => {
 	// Only one application period in the db at any time, so findOne() returns only the one object
@@ -18,13 +19,11 @@ const getApplicationPeriod = async (req: Request, res: Response) => {
 }
 
 const putApplicationPeriod = async (req: RequestWithNtnuiNo, res: Response) => {
-	const mainBoardID = 9
-
 	const { ntnuiNo } = req
 	if (!ntnuiNo) throw UnauthorizedUserError
 	const committeeIds: number[] = await getUserCommitteeIdsByUserId(ntnuiNo)
 
-	if (committeeIds.includes(mainBoardID)) {
+	if (committeeIds.includes(MAIN_BOARD_ID)) {
 		const update = {
 			start_date: req.body.start_date,
 			end_date: req.body.end_date,
