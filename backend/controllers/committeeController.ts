@@ -25,15 +25,14 @@ async function acceptApplicants(
 		if (!committee) {
 			return res.status(404).json({ message: 'Committee not found' })
 		}
-		// Check if user is organizer or committee leader
+		// Check if user is organizer or board member of the committee
 		const rolesInCommittees = await getUserRoleInCommitteeByUserId(ntnuiNo)
-		const isOrganizerOrLeader = rolesInCommittees.some(
+		const isOrganizerOrBoardMember = rolesInCommittees.some(
 			(roleInCommittee) =>
 				roleInCommittee.committee === MAIN_BOARD_ID ||
-				(roleInCommittee.committee === committee._id &&
-					roleInCommittee.role === 'leader')
+				roleInCommittee.committee === committee._id
 		)
-		if (isOrganizerOrLeader) {
+		if (isOrganizerOrBoardMember) {
 			// Toggle accepts_applicants for a committee
 			committee.accepts_applicants = !committee.accepts_applicants
 
