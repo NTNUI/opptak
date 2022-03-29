@@ -22,6 +22,11 @@ const useStyles = createStyles((theme) => ({
 	},
 	metroBoxes: {
 		border: '2px solid ' + theme.colors.ntnui_yellow[9],
+		display: 'flex',
+		flexDirection: 'column',
+		alignItems: 'center',
+		gap: '1rem',
+		padding: '1rem',
 		cursor: 'pointer',
 		'&:hover': {
 			transform: 'translateY(-0.3rem)',
@@ -42,16 +47,16 @@ function Dashboard() {
 			<h1>Hei, Bolle Bollesen!</h1>
 			<div className={classes.metroBoxWrapper}>
 			<Box className={classes.metroBoxes} onClick={() => navigate('/applications')}>
-				<FileText size={150} /> Søknader 
+				<FileText size={150} strokeWidth={0.5} /> Søknader 
 			</Box>
 			<Box className={classes.metroBoxes} onClick={() => navigate('/admission-status')}>
-				<Users size={150} /> Opptaksstatus
+				<Users size={150} strokeWidth={0.5} /> Opptaksstatus
 			</Box>
 			<Box className={classes.metroBoxes} onClick={() => navigate('/application-period')}>
-				<CalendarEvent size={150} /> Opptaksperiode
+				<CalendarEvent size={150} strokeWidth={0.5} /> Opptaksperiode
 			</Box>
 			<Box className={classes.metroBoxes} onClick={() => navigate('/application-period')}>
-				<Lock size={150} /> Tilganger
+				<Lock size={150} strokeWidth={0.5} /> Tilganger
 			</Box>
 			</div>
 		</Box>
