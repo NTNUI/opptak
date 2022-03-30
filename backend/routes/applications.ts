@@ -5,10 +5,10 @@ import {
 	postApplication,
 } from '../controllers/applicationController'
 import {
-	getApplicationPeriod,
-	putApplicationPeriod,
-	getApplicationPeriodStatus,
-} from '../controllers/applicationPeriodController'
+	getAdmissionPeriod,
+	putAdmissionPeriod,
+	getAdmissionPeriodStatus,
+} from '../controllers/admissionPeriodController'
 import authorization from '../utils/authorizationMiddleware'
 
 const applicationRouter = express.Router()
@@ -21,17 +21,17 @@ applicationRouter.get('/', authorization, getApplications)
 // @route GET applications/period
 // @description Get the application period
 // @access Public
-applicationRouter.get('/period', getApplicationPeriod)
+applicationRouter.get('/period', getAdmissionPeriod)
 
 // @route PUT applications/period
 // @description Update/set application period
 // @access Private
-applicationRouter.put('/period', authorization, putApplicationPeriod)
+applicationRouter.put('/period', authorization, putAdmissionPeriod)
 
 // @route GET applications/period/active
-// @description Get if application period is active
+// @description Get if admission period is active
 // @access Public
-applicationRouter.get('/period/active', getApplicationPeriodStatus)
+applicationRouter.get('/period/active', getAdmissionPeriodStatus)
 
 // @route GET applications/:application-id
 // @description Get application by id if user has access

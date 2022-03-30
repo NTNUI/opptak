@@ -11,7 +11,7 @@ const getCommittees = (_req: Request, res: Response) => {
 		.catch((err) => res.status(404).json({ message: err.message }))
 }
 
-async function acceptApplicants(
+async function acceptAdmissions(
 	req: RequestWithNtnuiNo,
 	res: Response,
 	next: NextFunction
@@ -19,7 +19,7 @@ async function acceptApplicants(
 	try {
 		const { ntnuiNo } = req
 		if (!ntnuiNo) throw UnauthorizedUserError
-		// Retrieve committee that is accepting applicants
+		// Retrieve committee that is accepting admissions
 		const { slug } = req.params
 		const committee = await CommitteeModel.findOne({ slug })
 		if (!committee) {
@@ -33,14 +33,14 @@ async function acceptApplicants(
 				roleInCommittee.committee === committee._id
 		)
 		if (isOrganizerOrBoardMember) {
-			// Toggle accepts_applicants for a committee
-			committee.accepts_applicants = !committee.accepts_applicants
+			// Toggle accepts_admissions for a committee
+			committee.accepts_admissions = !committee.accepts_admissions
 
 			return committee
 				.save()
 				.then(() =>
 					res.status(200).json({
-						accept_applicants: committee.accepts_applicants,
+						accepts_admissions: committee.accepts_admissions,
 					})
 				)
 				.catch((err) => res.status(500).json({ message: err.message }))
@@ -54,4 +54,4 @@ async function acceptApplicants(
 	}
 }
 
-export { getCommittees, acceptApplicants }
+export { getCommittees, acceptAdmissions }

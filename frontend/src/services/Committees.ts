@@ -16,11 +16,11 @@ export const getUserCommittees = async (): Promise<IRoleInCommittee[]> => {
 	return response.data.committees
 }
 
-export const toggleAcceptApplicationsAsync = async (slug: string) => {
+export const toggleAcceptsAdmissions = async (slug: string) => {
 	const response = axios
-		.put(`/committees/${slug}/accept-applicants`)
+		.put(`/committees/${slug}/accept-admissions`)
 		.then((response) => {
-			return response.data.accept_applicants
+			return response.data.accepts_admissions
 		})
 	return response
 }

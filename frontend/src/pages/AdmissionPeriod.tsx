@@ -139,8 +139,8 @@ function AdmissionPeriod() {
 				const response = await getAdmissionPeriod()
 				// TODO: Refactor response.admissionPeriod when backend matches
 				const retrievedPeriod = [
-					new Date(response.applicationPeriod.start_date),
-					new Date(response.applicationPeriod.end_date),
+					new Date(response.admissionPeriod.start_date),
+					new Date(response.admissionPeriod.end_date),
 				]
 				form.setValues({ dateRangeInput: retrievedPeriod })
 				setPreviousDates(retrievedPeriod)
