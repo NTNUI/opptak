@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import { CustomError, UnauthorizedUserError } from 'ntnui-tools/customError'
 import { RequestWithNtnuiNo } from '../utils/request'
-import { ApplicationModel, IApplication } from '../models/Application'
+import { ApplicationModel, IApplication, IStatus } from '../models/Application'
 import { UserModel } from '../models/User'
 import { CommitteeModel, ICommittee } from '../models/Committee'
 import isAdmissionPeriodActive from '../utils/isApplicationPeriodActive'
@@ -20,8 +20,16 @@ async function getUserCommitteeIdsByUserId(userId: number | string) {
 	return committeeIds
 }
 
-interface IPopulatedApplication extends Omit<IApplication, 'committees'> {
+interface IPopulatedApplicationCommittees
+	extends Omit<IApplication, 'committees'> {
 	committees: ICommittee[]
+}
+interface IPopulatedApplicationStatuses extends Omit<IApplication, 'statuses'> {
+	statuses: IPopulatedStatus[]
+}
+
+interface IPopulatedStatus extends Omit<IStatus, 'committee'> {
+	committee: ICommittee
 }
 
 const getApplicationById = async (
@@ -36,7 +44,8 @@ const getApplicationById = async (
 		const userCommitteeIds: number[] = await getUserCommitteeIdsByUserId(ntnuiNo)
 		// Retrieve application and committees the application is sent to
 		const application = await ApplicationModel.findById(req.params.application_id)
-			.populate<IPopulatedApplication>('committees', 'name slug')
+			.populate<IPopulatedApplicationCommittees>('committees', 'name slug')
+			.populate<IPopulatedApplicationStatuses>('statuses.committee', 'name')
 			.then((applicationRes) => applicationRes)
 			.catch(() => {
 				throw new CustomError('Could not find application', 404)
@@ -79,6 +88,7 @@ const getApplications = async (
 			committees: { $in: committeeIds },
 		})
 			.populate('committees', 'name')
+			.select('-statuses')
 			.limit(LIMIT)
 			.skip(startIndex)
 			.then((applicationRes) => {
@@ -108,11 +118,9 @@ const postApplication = async (
 			throw new CustomError('Admission period is not active', 403)
 		}
 
-		const application = new ApplicationModel(req.body)
-
 		// Check that all applied committees accepts admissions
 		const closedCommittees = await CommitteeModel.findOne({
-			_id: { $in: application.committees },
+			_id: { $in: req.body.committees },
 			accepts_admissions: false,
 		})
 		if (closedCommittees) {
@@ -120,6 +128,11 @@ const postApplication = async (
 				.status(400)
 				.json({ message: 'A committee the application was sent to is closed' })
 		}
+		// Create status for each committee
+		const statuses = req.body.committees.map((committeeId: number) => ({
+			committee: committeeId,
+		}))
+		const application = new ApplicationModel({ ...req.body, statuses })
 		return application
 			.save()
 			.then((newApplication) =>
@@ -136,4 +149,55 @@ const postApplication = async (
 	}
 }
 
-export { getApplications, postApplication, getApplicationById }
+const putApplicationStatus = async (
+	req: RequestWithNtnuiNo,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		// Access control - retrieve committees that user is member of
+		const { ntnuiNo } = req
+		if (!ntnuiNo) throw UnauthorizedUserError
+		const userCommitteeIds: number[] = await getUserCommitteeIdsByUserId(ntnuiNo)
+		if (!userCommitteeIds.includes(parseInt(req.params.committee_id, 10))) {
+			throw new CustomError(
+				'You do not have access to change the status of this application for this committee',
+				403
+			)
+		}
+		// Retrieve application
+		const application = await ApplicationModel.findById(req.params.application_id)
+			.then((applicationRes) => applicationRes)
+			.catch(() => {
+				throw new CustomError('Could not find application', 404)
+			})
+		if (!application) throw new CustomError('Could not find application', 404)
+		// Find status to change
+		const status = application.statuses.find(
+			(stat: IStatus) => stat.committee.toString() === req.params.committee_id
+		)
+		if (!status) throw new CustomError('Could not find status', 404)
+		status.value = req.body.value
+		// TODO: Get users full name to set in setBy
+		status.setBy = 'Bolle Bollesen'
+		// Save application
+		return application
+			.save()
+			.then(() => res.status(200).json({ application }))
+			.catch((err) => {
+				if (err.name === 'ValidationError') {
+					return res.status(400).json({ message: err.message })
+				}
+				throw new CustomError('Could not save application', 500)
+			})
+	} catch (error) {
+		return next(error)
+	}
+}
+
+export {
+	getApplications,
+	postApplication,
+	putApplicationStatus,
+	getApplicationById,
+}

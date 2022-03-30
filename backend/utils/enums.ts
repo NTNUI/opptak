@@ -7,4 +7,15 @@ enum MembershipType {
 	volunteer = 'volunteer',
 	member = 'member',
 }
-export default MembershipType
+
+enum StatusEnum {
+	PENDING = 'Pending',
+	GIVEN_INTERVIEW = 'Given interview',
+	INTERVIEW_DECLINED = 'Interview declined',
+	GIVEN_OFFER = 'Given offer',
+	OFFER_DECLINED = 'Offer declined',
+	ACCEPTED = 'Accepted',
+	REJECTED = 'Rejected',
+}
+
+export { StatusEnum, MembershipType }

@@ -8,7 +8,7 @@ import {
 } from 'ntnui-tools'
 import { CustomError, UnauthorizedUserError } from 'ntnui-tools/customError'
 import { CommitteeModel } from '../models/Committee'
-import MembershipType from '../utils/enums'
+import { MembershipType } from '../utils/enums'
 import { IRoleInCommittee, UserModel } from '../models/User'
 
 async function updateOrCreateUserModel(

@@ -3,6 +3,7 @@ import {
 	getApplicationById,
 	getApplications,
 	postApplication,
+	putApplicationStatus,
 } from '../controllers/applicationController'
 import {
 	getAdmissionPeriod,
@@ -18,6 +19,25 @@ const applicationRouter = express.Router()
 // @access Private
 applicationRouter.get('/', authorization, getApplications)
 
+// @route POST applications
+// @description Add application
+// @access Public
+applicationRouter.post('/', postApplication)
+
+// @route PUT /:application_id/status/:committee_id
+// @description Update an applications status for a committee
+// @access Private
+applicationRouter.put(
+	'/:application_id/status/:committee_id',
+	authorization,
+	putApplicationStatus
+)
+
+// @route GET applications/:application_id
+// @description Get application by id if user has access
+// @access Private
+applicationRouter.get('/:application_id', authorization, getApplicationById)
+
 // @route GET applications/period
 // @description Get the application period
 // @access Public
@@ -32,15 +52,5 @@ applicationRouter.put('/period', authorization, putAdmissionPeriod)
 // @description Get if admission period is active
 // @access Public
 applicationRouter.get('/period/active', getAdmissionPeriodStatus)
-
-// @route GET applications/:application-id
-// @description Get application by id if user has access
-// @access Private
-applicationRouter.get('/:application_id', authorization, getApplicationById)
-
-// @route POST applications
-// @description Add application
-// @access Public
-applicationRouter.post('/', postApplication)
 
 export default applicationRouter

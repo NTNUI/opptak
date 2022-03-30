@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import MembershipType from '../utils/enums'
+import { MembershipType } from '../utils/enums'
 
 interface ICommittee {
 	_id: number
