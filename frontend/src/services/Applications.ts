@@ -39,5 +39,5 @@ export {
 	getApplication,
 	getAdmissionPeriod,
 	putAdmissionPeriod,
-	isApplicationPeriodActive
+	isApplicationPeriodActive,
 }

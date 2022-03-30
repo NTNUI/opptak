@@ -3,7 +3,6 @@ import { FileText, Login } from 'tabler-icons-react'
 import { Form } from '../components/ApplicationForm'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 import { isApplicationPeriodActive } from '../services/Applications'
 
 const useStyles = createStyles((theme) => ({
@@ -135,7 +134,7 @@ const useStyles = createStyles((theme) => ({
 	loading: {
 		margin: 'auto',
 		width: '100%',
-	}
+	},
 }))
 
 function FormBox() {
@@ -151,11 +150,10 @@ function FormBox() {
 				const response = await isApplicationPeriodActive()
 				setPeriodOpen(response)
 				setIsLoading(false)
-			} catch(err) {
+			} catch (err) {
 				setPeriodOpen(false)
 				setIsLoading(false)
 			}
-
 		}
 		getApplicationPeriodActiveAsync()
 	}, [])
@@ -176,24 +174,26 @@ function FormBox() {
 					Intern
 				</Button>
 			</Box>
-				{isLoading ? <Loader size='xl' color='yellow' className={classes.loading} /> : periodOpen  ? (
-					<Box className={classes.formTitleAndBodyWrapper}>
-						<h2 className={classes.formTitle}>
-							<FileText />
-							Søknad til NTNUI Admin
-						</h2>
-						<Form />
-					</Box>
-				) : (
-					<Box className={classes.closedPeriod}>
-						<h1 className={classes.formTitle}>Hei, kjære søker!</h1>
-						<p className={classes.closedText}>
-							Så gøy at du vil være en del av NTNUI. Opptaket er for tiden stengt, men
-							gjerne sjekk igjen ved en senere anledning!
-						</p>
-					</Box>
-				)}
-			</>
+			{isLoading ? (
+				<Loader size='xl' color='yellow' className={classes.loading} />
+			) : periodOpen ? (
+				<Box className={classes.formTitleAndBodyWrapper}>
+					<h2 className={classes.formTitle}>
+						<FileText />
+						Søknad til NTNUI Admin
+					</h2>
+					<Form />
+				</Box>
+			) : (
+				<Box className={classes.closedPeriod}>
+					<h1 className={classes.formTitle}>Hei, kjære søker!</h1>
+					<p className={classes.closedText}>
+						Så gøy at du vil være en del av NTNUI. Opptaket er for tiden stengt, men
+						gjerne sjekk igjen ved en senere anledning!
+					</p>
+				</Box>
+			)}
+		</>
 	)
 }
 export default FormBox
