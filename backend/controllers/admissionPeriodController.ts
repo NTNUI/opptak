@@ -6,6 +6,14 @@ import { RequestWithNtnuiNo } from '../utils/request'
 import MAIN_BOARD_ID from '../utils/constants'
 import isAdmissionPeriodActive from '../utils/isApplicationPeriodActive'
 
+function isValidDate(value: any) {
+	const regexDate = /^\d{4}-\d{2}-\d{2}$/
+	if (!regexDate.test(value)) {
+		return false
+	}
+	return true
+}
+
 const getAdmissionPeriod = async (req: Request, res: Response) => {
 	// Only one admission period in the db at any time, so findOne() returns only the one object
 	const admissionPeriod = await AdmissionPeriodModel.findOne()
@@ -22,6 +30,16 @@ const putAdmissionPeriod = async (req: RequestWithNtnuiNo, res: Response) => {
 	const { ntnuiNo } = req
 	if (!ntnuiNo) throw UnauthorizedUserError
 	const committeeIds: number[] = await getUserCommitteeIdsByUserId(ntnuiNo)
+
+	if (!(isValidDate(req.body.start_date) && isValidDate(req.body.end_date))) {
+		return res.status(500).json({ message: 'The dates are invalid' })
+	}
+
+	if (req.body.start_date > req.body.end_date) {
+		return res
+			.status(500)
+			.json({ message: "The start date can't be after the end date" })
+	}
 
 	if (committeeIds.includes(MAIN_BOARD_ID)) {
 		const update = {
