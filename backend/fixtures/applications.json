@@ -5,7 +5,15 @@
 		"email": "bolle@bolle.no",
 		"text": "Jeg forsøker å søke til Sprint",
 		"committees": [6],
-		"submitted_date": "2022-02-26T16:49:27.005Z"
+		"submitted_date": "2022-02-26T16:49:27.005Z",
+		"statuses": [
+			{
+				"value": "Pending",
+				"setBy": null,
+				"committee": 6,
+				"updated_date": "2022-03-31T20:11:09.657Z"
+			}
+		]
 	},
 	{
 		"name": "Navn Navnesen",
@@ -13,7 +21,15 @@
 		"email": "Navn@Navnesen.no",
 		"text": "Jeg forsøker å søke til Event",
 		"committees": [74],
-		"submitted_date": "2022-02-23T16:49:27.005Z"
+		"submitted_date": "2022-02-23T16:49:27.005Z",
+		"statuses": [
+			{
+				"value": "Accepted",
+				"setBy": "Bolle Bollesen",
+				"committee": 74,
+				"updated_date": "2022-03-31T20:11:09.657Z"
+			}
+		]
 	},
 	{
 		"name": "Cris P Bacon",
@@ -21,7 +37,15 @@
 		"email": "Bacon@IsGoodForMe.no",
 		"text": "Jeg forsøker å søke til Blits",
 		"committees": [44],
-		"submitted_date": "2022-02-19T16:49:27.005Z"
+		"submitted_date": "2022-02-19T16:49:27.005Z",
+		"statuses": [
+			{
+				"value": "Rejected",
+				"setBy": "Navn Navnesen",
+				"committee": 44,
+				"updated_date": "2022-03-31T20:11:09.657Z"
+			}
+		]
 	},
 	{
 		"name": "Olle Bolle",
@@ -29,6 +53,26 @@
 		"email": "Olle@Bolle.no",
 		"text": "Jeg forsøker å søke til Event, Blits og Sprint",
 		"committees": [74, 44, 6],
-		"submitted_date": "2022-02-22T16:49:27.005Z"
+		"submitted_date": "2022-02-22T16:49:27.005Z",
+		"statuses": [
+			{
+				"value": "Pending",
+				"setBy": null,
+				"committee": 74,
+				"updated_date": "2022-03-31T20:11:09.657Z"
+			},
+			{
+				"value": "Accepted",
+				"setBy": "Chris P Bacon",
+				"committee": 74,
+				"updated_date": "2022-03-31T20:11:09.657Z"
+			},
+			{
+				"value": "Pending",
+				"setBy": null,
+				"committee": 6,
+				"updated_date": "2022-03-31T20:11:09.657Z"
+			}
+		]
 	}
 ]
