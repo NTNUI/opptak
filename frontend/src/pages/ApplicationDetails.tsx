@@ -1,3 +1,4 @@
+import { MediaQuery } from '@mantine/core'
 import { Box, Button, createStyles, Loader } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -94,8 +95,16 @@ const useStyles = createStyles((theme) => ({
 		},
 		'@media (max-width: 700px)': {
 			width: '85%',
-			padding: '10px',
-			'p, h3': { margin: '0' },
+			padding: '5px',
+			borderWidth: '2px 0 2px 0',
+			'p, h3': {
+				margin: '0',
+			},
+			h3: {
+				overflow: 'hidden',
+				whiteSpace: 'nowrap',
+				textOverflow: 'ellipsis',
+			},
 			svg: {
 				display: 'none',
 			},
@@ -124,17 +133,38 @@ const useStyles = createStyles((theme) => ({
 	},
 	personalInfoSection: {
 		color: 'white',
+	},
+	personalInfoItem: {
+		margin: '0.5rem 0',
+		wordBreak: 'break-all',
+		display: 'flex',
+		alignItems: 'center',
+		gap: '0.1rem',
+		svg: {
+			minWidth: '24px',
+			alignSelf: 'start',
+		},
+		b: {
+			whiteSpace: 'nowrap',
+			justifySelf: 'end',
+			margin: '0 0.3rem 0 0',
+		},
 		p: {
-			wordBreak: 'break-all',
-			display: 'flex',
-			gap: '0.4rem',
-			margin: '0 0 0.5rem 0',
-			svg: {
-				minWidth: '24px',
+			margin: 0,
+		},
+	},
+	email: {
+		p: {
+			whiteSpace: 'nowrap',
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
+			color: theme.colors.ntnui_blue[9],
+			a: {
+				color: theme.colors.ntnui_blue[9],
+				textDecoration: 'none',
 			},
 			b: {
-				whiteSpace: 'nowrap',
-				justifySelf: 'end',
+				color: 'white',
 			},
 		},
 	},
@@ -235,7 +265,9 @@ function ApplicationDetailPage() {
 		committees: ICommittee[],
 		maxNum: number
 	): string {
-		if (committees.length > maxNum) {
+		if (committees.length === 2 && maxNum === 1) {
+			return `${committees[0].name} og ${committees.length - 1} annet utvalg`
+		} else if (committees.length > maxNum) {
 			return `${committees[0].name} og ${committees.length - 1} andre utvalg`
 		}
 		return committees
@@ -268,11 +300,22 @@ function ApplicationDetailPage() {
 					</div>
 					{application
 						? application.committees.length > 1 && (
-								<Box className={classes.banner}>
-									<AlertTriangle size={55} />
-									<h3>{`Søker ${stringifyCommittees(application.committees, 4)}`}</h3>
-									<p>Koordiner for å unngå å konkurrere internt</p>
-								</Box>
+								<>
+									<MediaQuery smallerThan='sm' styles={{ display: 'none' }}>
+										<Box className={classes.banner}>
+											<AlertTriangle size={55} />
+											<h3>{`Søker ${stringifyCommittees(application.committees, 4)}`}</h3>
+											<p>Koordiner for å unngå å konkurrere internt</p>
+										</Box>
+									</MediaQuery>
+									<MediaQuery largerThan='sm' styles={{ display: 'none' }}>
+										<Box className={classes.banner}>
+											<AlertTriangle size={55} />
+											<h3>{`Søker ${stringifyCommittees(application.committees, 2)}`}</h3>
+											<p>Koordiner for å unngå å konkurrere internt</p>
+										</Box>
+									</MediaQuery>
+								</>
 						  )
 						: null}
 					<Box className={classes.pageWrapper}>
@@ -280,29 +323,45 @@ function ApplicationDetailPage() {
 							<h2 className={classes.sectionTitle}>
 								<ClipboardList size={32} /> Personinformasjon
 							</h2>
-							<p>
-								<User size={24} /> <b>Navn:</b>
-								{isLoading || !application ? <YellowDotLoader /> : application.name}
+							<p className={classes.personalInfoItem}>
+								<User size={24} />
+								<p>
+									<b>Navn:</b>
+									{isLoading || !application ? <YellowDotLoader /> : application.name}
+								</p>
 							</p>
-							<p>
-								<Phone size={24} /> <b>Telefon:</b>
-								{isLoading || !application ? (
-									<YellowDotLoader />
-								) : (
-									application.phone_number
-								)}
+							<p className={classes.personalInfoItem}>
+								<Phone size={24} />
+								<p>
+									<b>Telefon:</b>
+									{isLoading || !application ? (
+										<YellowDotLoader />
+									) : (
+										application.phone_number
+									)}
+								</p>
 							</p>
-							<p>
-								<Mail size={24} /> <b>E-post:</b>
-								{isLoading || !application ? <YellowDotLoader /> : application.email}
+							<p className={`${classes.personalInfoItem} ${classes.email}`}>
+								<Mail size={24} />
+								<p>
+									<b>E-post:</b>
+									{isLoading || !application ? (
+										<YellowDotLoader />
+									) : (
+										<a href={`mailto:${application.email}`}>{application.email}</a>
+									)}
+								</p>
 							</p>
-							<p>
-								<Clock size={24} /> <b>Sendt inn:</b>
-								{isLoading || !application ? (
-									<YellowDotLoader />
-								) : (
-									stringifyDate(application.submitted_date)
-								)}
+							<p className={classes.personalInfoItem}>
+								<Clock size={24} />
+								<p>
+									<b>Sendt inn:</b>
+									{isLoading || !application ? (
+										<YellowDotLoader />
+									) : (
+										stringifyDate(application.submitted_date)
+									)}
+								</p>
 							</p>
 						</Box>
 						<Box className={classes.applicationTextSection}>
