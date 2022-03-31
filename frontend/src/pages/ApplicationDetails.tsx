@@ -1,4 +1,3 @@
-import { MediaQuery } from '@mantine/core'
 import { Box, Button, createStyles, Loader } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -12,8 +11,9 @@ import {
 	Phone,
 	User,
 } from 'tabler-icons-react'
+import CommitteBanner from '../components/CommitteeBanner'
 import { getApplication } from '../services/Applications'
-import { IApplication, ICommittee } from '../types/types'
+import { IApplication } from '../types/types'
 
 const useStyles = createStyles((theme) => ({
 	pageHeader: {
@@ -57,57 +57,6 @@ const useStyles = createStyles((theme) => ({
 		'@media (max-width: 1200px)': {
 			fontSize: 'x-large',
 			gridColumn: 1,
-		},
-	},
-	banner: {
-		boxSizing: 'border-box',
-		backgroundColor: theme.colors.ntnui_red[9] + '1A',
-		border: '2px solid ' + theme.colors.ntnui_red[9],
-		borderRadius: theme.radius.sm,
-		width: '60%',
-		margin: 'auto auto 15px auto',
-		padding: '0.7rem 0.5rem',
-		color: 'white',
-		display: 'grid',
-		gridTemplateColumns: 'auto 1fr',
-		gridTemplateRows: 'auto 1fr',
-		gridTemplateAreas: `
-			'icon title'
-			'icon description'
-		`,
-		h3: {
-			fontWeight: 'lighter',
-			gridArea: 'title',
-			margin: '0 0 0 10px',
-		},
-		p: {
-			gridArea: 'description',
-			margin: '0 0 0 10px',
-		},
-		svg: {
-			gridArea: 'icon',
-			alignSelf: 'center',
-			color: theme.colors.ntnui_red[9],
-			margin: '0 0 -7px 0',
-		},
-		'@media (max-width: 1200px)': {
-			width: '70%',
-		},
-		'@media (max-width: 700px)': {
-			width: '85%',
-			padding: '5px',
-			borderWidth: '2px 0 2px 0',
-			'p, h3': {
-				margin: '0',
-			},
-			h3: {
-				overflow: 'hidden',
-				whiteSpace: 'nowrap',
-				textOverflow: 'ellipsis',
-			},
-			svg: {
-				display: 'none',
-			},
 		},
 	},
 	pageWrapper: {
@@ -261,22 +210,6 @@ function ApplicationDetailPage() {
 		})
 	}
 
-	function stringifyCommittees(
-		committees: ICommittee[],
-		maxNum: number
-	): string {
-		if (committees.length === 2 && maxNum === 1) {
-			return `${committees[0].name} og ${committees.length - 1} annet utvalg`
-		} else if (committees.length > maxNum) {
-			return `${committees[0].name} og ${committees.length - 1} andre utvalg`
-		}
-		return committees
-			.map((committee) => committee.name)
-			.reduce((left, right, idx) =>
-				idx === committees.length - 1 ? left + ' og ' + right : left + ', ' + right
-			)
-	}
-
 	return (
 		<>
 			{!isError ? (
@@ -300,22 +233,7 @@ function ApplicationDetailPage() {
 					</div>
 					{application
 						? application.committees.length > 1 && (
-								<>
-									<MediaQuery smallerThan='sm' styles={{ display: 'none' }}>
-										<Box className={classes.banner}>
-											<AlertTriangle size={55} />
-											<h3>{`Søker ${stringifyCommittees(application.committees, 4)}`}</h3>
-											<p>Koordiner for å unngå å konkurrere internt</p>
-										</Box>
-									</MediaQuery>
-									<MediaQuery largerThan='sm' styles={{ display: 'none' }}>
-										<Box className={classes.banner}>
-											<AlertTriangle size={55} />
-											<h3>{`Søker ${stringifyCommittees(application.committees, 2)}`}</h3>
-											<p>Koordiner for å unngå å konkurrere internt</p>
-										</Box>
-									</MediaQuery>
-								</>
+								<CommitteBanner committees={application.committees} />
 						  )
 						: null}
 					<Box className={classes.pageWrapper}>
