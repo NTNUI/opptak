@@ -22,7 +22,7 @@ interface ICommittee {
 	_id: number
 	name: string
 	slug: string
-	accepts_applicants: boolean
+	accepts_admissions: boolean
 	access_roles: string[]
 }
 
@@ -32,7 +32,7 @@ interface IAdmissionPeriod {
 }
 
 interface ICommitteeResponse {
-	accepts_applicants: boolean
+	accepts_admissions: boolean
 }
 
 export type {

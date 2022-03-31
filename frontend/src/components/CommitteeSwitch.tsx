@@ -3,7 +3,7 @@ import { useNotifications } from '@mantine/notifications'
 import { ChangeEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AlertTriangle } from 'tabler-icons-react'
-import { toggleAcceptApplicationsAsync } from '../services/Committees'
+import { toggleAcceptsAdmissions } from '../services/Committees'
 import { ICommittee } from '../types/types'
 
 const useStyles = createStyles((theme) => ({
@@ -31,10 +31,10 @@ const useStyles = createStyles((theme) => ({
 	},
 }))
 
-function CommitteeSwitch({ name, accepts_applicants, slug }: ICommittee) {
+function CommitteeSwitch({ name, accepts_admissions, slug }: ICommittee) {
 	const { classes } = useStyles()
 	let navigate = useNavigate()
-	const [checked, setChecked] = useState<boolean>(accepts_applicants)
+	const [checked, setChecked] = useState<boolean>(accepts_admissions)
 	const [switchStatus, setSwitchStatus] = useState<boolean>(false)
 	const committeeNotification = useNotifications()
 
@@ -49,7 +49,7 @@ function CommitteeSwitch({ name, accepts_applicants, slug }: ICommittee) {
 		setSwitchStatus(true)
 
 		try {
-			const status = await toggleAcceptApplicationsAsync(slug)
+			const status = await toggleAcceptsAdmissions(slug)
 			setChecked(status)
 			setSwitchStatus(false)
 		} catch (error: any) {

@@ -132,7 +132,7 @@ export function Form() {
 
 	const mapCommitteeToSelect = (committees: ICommittee[]) => {
 		return committees
-			.filter((committee) => committee.accepts_applicants)
+			.filter((committee) => committee.accepts_admissions)
 			.map((committee: ICommittee) => {
 				return { value: committee._id.toString(), label: committee.name }
 			})

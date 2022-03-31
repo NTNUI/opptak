@@ -1,18 +1,18 @@
 import { CustomError } from 'ntnui-tools/customError'
-import { ApplicationPeriodModel } from '../models/ApplicationPeriod'
+import { AdmissionPeriodModel } from '../models/AdmissionPeriod'
 
-const isApplicationPeriodActive = async () => {
-	const applicationPeriod = await ApplicationPeriodModel.findOne()
-	if (applicationPeriod) {
+const isAdmissionPeriodActive = async () => {
+	const admissionPeriod = await AdmissionPeriodModel.findOne()
+	if (admissionPeriod) {
 		if (
-			applicationPeriod.start_date.getTime() <= Date.now() &&
-			applicationPeriod.end_date.getTime() + 86400000 > Date.now()
+			admissionPeriod.start_date.getTime() <= Date.now() &&
+			admissionPeriod.end_date.getTime() + 86400000 > Date.now()
 		) {
 			return true
 		}
 		return false
 	}
-	throw new CustomError('No application period exists', 404)
+	throw new CustomError('No admission period exists', 404)
 }
 
-export default isApplicationPeriodActive
+export default isAdmissionPeriodActive

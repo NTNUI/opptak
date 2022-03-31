@@ -163,8 +163,8 @@ function AdmissionStatus() {
 		async function getAdmissionPeriodData() {
 			try {
 				const admissionPeriodData = await getAdmissionPeriod()
-				setFromPeriod(admissionPeriodData.applicationPeriod.start_date)
-				setToPeriod(admissionPeriodData.applicationPeriod.end_date)
+				setFromPeriod(admissionPeriodData.admissionPeriod.start_date)
+				setToPeriod(admissionPeriodData.admissionPeriod.end_date)
 			} catch (error: any) {
 				if (error.response.status === 404) {
 					setPeriodIsMissing(true)
