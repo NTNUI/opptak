@@ -79,20 +79,16 @@ const CommitteeBanner = ({ committees }: ICommitteeBannerProps) => {
 	}
 	return (
 		<>
-			<MediaQuery smallerThan='sm' styles={{ display: 'none' }}>
-				<Box className={classes.banner}>
-					<AlertTriangle size={55} />
+			<Box className={classes.banner}>
+				<AlertTriangle size={55} />
+				<MediaQuery smallerThan='sm' styles={{ display: 'none' }}>
 					<h3>{`Søker ${stringifyCommittees(committees, 4)}`}</h3>
-					<p>Koordiner for å unngå å konkurrere internt</p>
-				</Box>
-			</MediaQuery>
-			<MediaQuery largerThan='sm' styles={{ display: 'none' }}>
-				<Box className={classes.banner}>
-					<AlertTriangle size={55} />
+				</MediaQuery>
+				<MediaQuery largerThan='sm' styles={{ display: 'none' }}>
 					<h3>{`Søker ${stringifyCommittees(committees, 2)}`}</h3>
-					<p>Koordiner for å unngå å konkurrere internt</p>
-				</Box>
-			</MediaQuery>
+				</MediaQuery>
+				<p>Koordiner for å unngå å konkurrere internt</p>
+			</Box>
 		</>
 	)
 }
