@@ -5,6 +5,7 @@ import {
 	getNtnuiToken,
 	isValidNtnuiToken,
 	refreshNtnuiToken,
+	getNtnuiProfile,
 } from 'ntnui-tools'
 import { CustomError, UnauthorizedUserError } from 'ntnui-tools/customError'
 import { CommitteeModel } from '../models/Committee'
@@ -13,12 +14,16 @@ import { IRoleInCommittee, UserModel } from '../models/User'
 
 async function updateOrCreateUserModel(
 	ntnui_no: number,
+	first_name: string,
+	last_name: string,
 	rolesInCommittees: IRoleInCommittee[]
 ) {
 	return UserModel.updateOne(
 		{ _id: ntnui_no },
 		{
 			_id: ntnui_no,
+			first_name,
+			last_name,
 			committees: rolesInCommittees,
 		},
 		{
@@ -88,7 +93,8 @@ export async function verify(req: Request, res: Response) {
  * 	   - For each committee, check role in group in NTNUI membership system by slug
  * 	   - Determine if role is in access roles of local committees OR is leader
  * 	     * If true, push to array of role in committee
- *     - Update user model in local database with roles in committees
+ * 	   - Retrieve NTNUI profile
+ *     - Update user model in local database with roles in committees and name
  *     - Set cookies and allow login
  * 4. If role in committees is empty, unauthorized user
  * @param req express Request object
@@ -126,7 +132,21 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 			}
 			const ntnuiNo = decodedToken.ntnui_no
 			if (rolesInCommittees.length) {
-				await updateOrCreateUserModel(ntnuiNo, rolesInCommittees)
+				// Retrieve profile from NTNUI
+				const profile = await getNtnuiProfile(tokens.access)
+					.then((profileRes) => profileRes.data)
+					.catch(() => {
+						throw new CustomError('Unable to log in', 500)
+					})
+				if (!profile) {
+					throw new CustomError('Could not get profile from NTNUI', 500)
+				}
+				await updateOrCreateUserModel(
+					ntnuiNo,
+					profile.first_name,
+					profile.last_name,
+					rolesInCommittees
+				)
 				return res
 					.cookie('accessToken', tokens.access, {
 						maxAge: 1800000, // 30 minutes

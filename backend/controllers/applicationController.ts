@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import { CustomError, UnauthorizedUserError } from 'ntnui-tools/customError'
 import { RequestWithNtnuiNo } from '../utils/request'
 import { ApplicationModel, IApplication, IStatus } from '../models/Application'
-import { UserModel } from '../models/User'
+import { IUser, UserModel } from '../models/User'
 import { CommitteeModel, ICommittee } from '../models/Committee'
 import isAdmissionPeriodActive from '../utils/isApplicationPeriodActive'
 
@@ -155,41 +155,53 @@ const putApplicationStatus = async (
 	next: NextFunction
 ) => {
 	try {
-		// Access control - retrieve committees that user is member of
+		// Access control - retrieve user
 		const { ntnuiNo } = req
 		if (!ntnuiNo) throw UnauthorizedUserError
-		const userCommitteeIds: number[] = await getUserCommitteeIdsByUserId(ntnuiNo)
-		if (!userCommitteeIds.includes(parseInt(req.params.committee_id, 10))) {
-			throw new CustomError(
-				'You do not have access to change the status of this application for this committee',
-				403
-			)
-		}
-		// Retrieve application
-		const application = await ApplicationModel.findById(req.params.application_id)
-			.then((applicationRes) => applicationRes)
+		const user: IUser | null = await UserModel.findById(ntnuiNo)
+			.then((userRes) => userRes)
 			.catch(() => {
-				throw new CustomError('Could not find application', 404)
+				throw new CustomError('Could not find user', 404)
 			})
-		if (!application) throw new CustomError('Could not find application', 404)
-		// Find status to change
-		const status = application.statuses.find(
-			(stat: IStatus) => stat.committee.toString() === req.params.committee_id
-		)
-		if (!status) throw new CustomError('Could not find status', 404)
-		status.value = req.body.value
-		// TODO: Get users full name to set in setBy
-		status.setBy = 'Bolle Bollesen'
-		// Save application
-		return application
-			.save()
-			.then(() => res.status(200).json({ application }))
-			.catch((err) => {
-				if (err.name === 'ValidationError') {
-					return res.status(400).json({ message: err.message })
-				}
-				throw new CustomError('Could not save application', 500)
-			})
+		if (user) {
+			// Check that user is in committee that status is set for
+			const userCommitteeIds = user.committees.map(
+				(committee) => committee.committee
+			)
+			if (!userCommitteeIds.includes(parseInt(req.params.committee_id, 10))) {
+				throw new CustomError(
+					'You do not have access to change the status of this application for this committee',
+					403
+				)
+			}
+			// Retrieve application
+			const application = await ApplicationModel.findById(
+				req.params.application_id
+			)
+				.then((applicationRes) => applicationRes)
+				.catch(() => {
+					throw new CustomError('Could not find application', 404)
+				})
+			if (!application) throw new CustomError('Could not find application', 404)
+			// Find status to change
+			const status = application.statuses.find(
+				(stat: IStatus) => stat.committee.toString() === req.params.committee_id
+			)
+			if (!status) throw new CustomError('Could not find status', 404)
+			status.value = req.body.value
+			status.setBy = `${user.first_name} ${user.last_name}`
+			// Save application
+			return application
+				.save()
+				.then(() => res.status(200).json({ application }))
+				.catch((err) => {
+					if (err.name === 'ValidationError') {
+						return res.status(400).json({ message: err.message })
+					}
+					throw new CustomError('Could not save application', 500)
+				})
+		}
+		throw new CustomError('Could not find user', 404)
 	} catch (error) {
 		return next(error)
 	}
