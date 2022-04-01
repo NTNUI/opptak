@@ -5,7 +5,21 @@
 		"email": "bolle@bolle.no",
 		"text": "Jeg forsøker å søke til Triatlon og Turn",
 		"committees": [2, 3],
-		"submitted_date": "2022-02-26T16:49:27.005Z"
+		"submitted_date": "2022-02-26T16:49:27.005Z",
+		"statuses": [
+			{
+				"value": "Given interview",
+				"setBy": "Chris P Bacon",
+				"committee": 2,
+				"updated_date": "2022-03-31T20:11:09.657Z"
+			},
+			{
+				"value": "Pending",
+				"setBy": null,
+				"committee": 3,
+				"updated_date": "2022-03-31T20:11:09.657Z"
+			}
+		]
 	},
 	{
 		"name": "Navn Navnesen",
@@ -13,7 +27,15 @@
 		"email": "Navn@Navnesen.no",
 		"text": "Jeg forsøker å søke til Ski og Fjellsport",
 		"committees": [4],
-		"submitted_date": "2022-02-23T16:49:27.005Z"
+		"submitted_date": "2022-02-23T16:49:27.005Z",
+		"statuses": [
+			{
+				"value": "Pending",
+				"setBy": null,
+				"committee": 4,
+				"updated_date": "2022-03-31T20:11:09.657Z"
+			}
+		]
 	},
 	{
 		"name": "Cris P Bacon",
@@ -21,7 +43,15 @@
 		"email": "Bacon@IsGoodForMe.no",
 		"text": "Jeg forsøker å søke til Hovedstyret",
 		"committees": [9],
-		"submitted_date": "2022-02-19T16:49:27.005Z"
+		"submitted_date": "2022-02-19T16:49:27.005Z",
+		"statuses": [
+			{
+				"value": "Rejected",
+				"setBy": "Navn Navnesen",
+				"committee": 9,
+				"updated_date": "2022-03-31T20:11:09.657Z"
+			}
+		]
 	},
 	{
 		"name": "Olle Bolle",
@@ -29,6 +59,20 @@
 		"email": "Olle@Bolle.no",
 		"text": "Jeg forsøker å søke til Hovedstyret og Sprint",
 		"committees": [9, 10],
-		"submitted_date": "2022-02-22T16:49:27.005Z"
+		"submitted_date": "2022-02-22T16:49:27.005Z",
+		"statuses": [
+			{
+				"value": "Accepted",
+				"setBy": "Bolle Bollesen",
+				"committee": 9,
+				"updated_date": "2022-03-31T20:11:09.657Z"
+			},
+			{
+				"value": "Pending",
+				"setBy": null,
+				"committee": 10,
+				"updated_date": "2022-03-31T20:11:09.657Z"
+			}
+		]
 	}
 ]
