@@ -66,9 +66,7 @@ const CommitteeBanner = ({ committees }: ICommitteeBannerProps) => {
 		committees: ICommittee[],
 		maxNum: number
 	): string {
-		if (committees.length === 2 && maxNum === 1) {
-			return `${committees[0].name} og ${committees.length - 1} annet utvalg`
-		} else if (committees.length > maxNum) {
+		if (committees.length > maxNum) {
 			return `${committees[0].name} og ${committees.length - 1} andre utvalg`
 		}
 		return committees
@@ -85,7 +83,7 @@ const CommitteeBanner = ({ committees }: ICommitteeBannerProps) => {
 					<h3>{`Søker ${stringifyCommittees(committees, 4)}`}</h3>
 				</MediaQuery>
 				<MediaQuery largerThan='sm' styles={{ display: 'none' }}>
-					<h3>{`Søker ${stringifyCommittees(committees, 2)}`}</h3>
+					<h3>{`Søker ${stringifyCommittees(committees, 3)}`}</h3>
 				</MediaQuery>
 				<p>Koordiner for å unngå å konkurrere internt</p>
 			</Box>
