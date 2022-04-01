@@ -1,10 +1,12 @@
 import { createStyles } from '@mantine/core'
 import ApplicationList from '../components/ApplicationList'
+import Filter from '../components/FilterSearch'
 
 const useStyles = createStyles((theme) => ({
 	overview: {
 		display: 'flex',
 		alignItems: 'center',
+		//gap: '1rem',
 		color: 'white',
 		padding: '0',
 		flexDirection: 'column',
@@ -25,6 +27,7 @@ function ApplicationOverview() {
 	return (
 		<div className={classes.overview}>
 			<h1>Søknadsoversikt</h1>
+			<Filter />
 			<ApplicationList />
 		</div>
 	)

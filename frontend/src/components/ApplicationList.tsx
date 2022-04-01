@@ -11,6 +11,16 @@ const useStyles = createStyles((theme) => ({
 		padding: '0',
 		flexDirection: 'column',
 		gap: '1rem',
+
+		'@media (max-width: 600px)': {
+			width: '90%',
+		},
+		'@media (min-width: 600px)': {
+			width: '80%',
+		},
+		'@media (min-width: 1200px)': {
+			width: '70%',
+		},
 	},
 	pagination: {
 		margin: '1rem auto 1rem auto',
@@ -28,7 +38,6 @@ const useStyles = createStyles((theme) => ({
 		},
 		'@media (max-width: 500px)': {
 			fontSize: theme.fontSizes.md,
-			minWidth: '1rem',
 		},
 	},
 	pagintationActive: {

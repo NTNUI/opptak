@@ -1,6 +1,18 @@
 import { Tuple } from '@mantine/core'
 
 const colors: Record<string, Tuple<string, 10>> = {
+	dark: [
+		'#e8e9ea',
+		'#e8e9ea',
+		'#d1d2d5',
+		'#bbbcc0',
+		'#323641',
+		'#323641',
+		'#181d28',
+		'#161a23',
+		'#13161f',
+		'#10131a',
+	],
 	ntnui_yellow: [
 		'#f1edc8',
 		'#f2edc1',
