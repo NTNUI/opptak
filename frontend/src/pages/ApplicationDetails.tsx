@@ -11,6 +11,7 @@ import {
 	Phone,
 	User,
 } from 'tabler-icons-react'
+import CommitteBanner from '../components/CommitteeBanner'
 import { getApplication } from '../services/Applications'
 import { IApplication } from '../types/types'
 
@@ -81,17 +82,38 @@ const useStyles = createStyles((theme) => ({
 	},
 	personalInfoSection: {
 		color: 'white',
+	},
+	personalInfoItem: {
+		margin: '0.5rem 0',
+		wordBreak: 'break-all',
+		display: 'flex',
+		alignItems: 'center',
+		gap: '0.1rem',
+		svg: {
+			minWidth: '24px',
+			alignSelf: 'start',
+		},
+		b: {
+			whiteSpace: 'nowrap',
+			justifySelf: 'end',
+			margin: '0 0.3rem 0 0',
+		},
 		p: {
-			wordBreak: 'break-all',
-			display: 'flex',
-			gap: '0.4rem',
-			margin: '0 0 0.5rem 0',
-			svg: {
-				minWidth: '24px',
+			margin: 0,
+		},
+	},
+	email: {
+		p: {
+			whiteSpace: 'nowrap',
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
+			color: theme.colors.ntnui_blue[9],
+			a: {
+				color: theme.colors.ntnui_blue[9],
+				textDecoration: 'none',
 			},
 			b: {
-				whiteSpace: 'nowrap',
-				justifySelf: 'end',
+				color: 'white',
 			},
 		},
 	},
@@ -209,34 +231,55 @@ function ApplicationDetailPage() {
 							</b>
 						</h1>
 					</div>
+					{application
+						? application.committees.length > 1 && (
+								<CommitteBanner committees={application.committees} />
+						  )
+						: null}
 					<Box className={classes.pageWrapper}>
 						<Box className={classes.personalInfoSection}>
 							<h2 className={classes.sectionTitle}>
 								<ClipboardList size={32} /> Personinformasjon
 							</h2>
-							<p>
-								<User size={24} /> <b>Navn:</b>
-								{isLoading || !application ? <YellowDotLoader /> : application.name}
+							<p className={classes.personalInfoItem}>
+								<User size={24} />
+								<p>
+									<b>Navn:</b>
+									{isLoading || !application ? <YellowDotLoader /> : application.name}
+								</p>
 							</p>
-							<p>
-								<Phone size={24} /> <b>Telefon:</b>
-								{isLoading || !application ? (
-									<YellowDotLoader />
-								) : (
-									application.phone_number
-								)}
+							<p className={classes.personalInfoItem}>
+								<Phone size={24} />
+								<p>
+									<b>Telefon:</b>
+									{isLoading || !application ? (
+										<YellowDotLoader />
+									) : (
+										application.phone_number
+									)}
+								</p>
 							</p>
-							<p>
-								<Mail size={24} /> <b>E-post:</b>
-								{isLoading || !application ? <YellowDotLoader /> : application.email}
+							<p className={`${classes.personalInfoItem} ${classes.email}`}>
+								<Mail size={24} />
+								<p>
+									<b>E-post:</b>
+									{isLoading || !application ? (
+										<YellowDotLoader />
+									) : (
+										<a href={`mailto:${application.email}`}>{application.email}</a>
+									)}
+								</p>
 							</p>
-							<p>
-								<Clock size={24} /> <b>Sendt inn:</b>
-								{isLoading || !application ? (
-									<YellowDotLoader />
-								) : (
-									stringifyDate(application.submitted_date)
-								)}
+							<p className={classes.personalInfoItem}>
+								<Clock size={24} />
+								<p>
+									<b>Sendt inn:</b>
+									{isLoading || !application ? (
+										<YellowDotLoader />
+									) : (
+										stringifyDate(application.submitted_date)
+									)}
+								</p>
 							</p>
 						</Box>
 						<Box className={classes.applicationTextSection}>
