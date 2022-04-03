@@ -9,7 +9,7 @@
 		"statuses": [
 			{
 				"value": "Pending",
-				"setBy": null,
+				"set_by": null,
 				"committee": 6,
 				"updated_date": "2022-03-31T20:11:09.657Z"
 			}
@@ -25,7 +25,7 @@
 		"statuses": [
 			{
 				"value": "Accepted",
-				"setBy": "Bolle Bollesen",
+				"set_by": "Bolle Bollesen",
 				"committee": 74,
 				"updated_date": "2022-03-31T20:11:09.657Z"
 			}
@@ -41,7 +41,7 @@
 		"statuses": [
 			{
 				"value": "Rejected",
-				"setBy": "Navn Navnesen",
+				"set_by": "Navn Navnesen",
 				"committee": 44,
 				"updated_date": "2022-03-31T20:11:09.657Z"
 			}
@@ -57,19 +57,19 @@
 		"statuses": [
 			{
 				"value": "Pending",
-				"setBy": null,
+				"set_by": null,
 				"committee": 74,
 				"updated_date": "2022-03-31T20:11:09.657Z"
 			},
 			{
 				"value": "Accepted",
-				"setBy": "Chris P Bacon",
+				"set_by": "Chris P Bacon",
 				"committee": 44,
 				"updated_date": "2022-03-31T20:11:09.657Z"
 			},
 			{
 				"value": "Pending",
-				"setBy": null,
+				"set_by": null,
 				"committee": 6,
 				"updated_date": "2022-03-31T20:11:09.657Z"
 			}

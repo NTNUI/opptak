@@ -9,13 +9,13 @@
 		"statuses": [
 			{
 				"value": "Given interview",
-				"setBy": "Chris P Bacon",
+				"set_by": "Chris P Bacon",
 				"committee": 2,
 				"updated_date": "2022-03-31T20:11:09.657Z"
 			},
 			{
 				"value": "Pending",
-				"setBy": null,
+				"set_by": null,
 				"committee": 3,
 				"updated_date": "2022-03-31T20:11:09.657Z"
 			}
@@ -31,7 +31,7 @@
 		"statuses": [
 			{
 				"value": "Pending",
-				"setBy": null,
+				"set_by": null,
 				"committee": 4,
 				"updated_date": "2022-03-31T20:11:09.657Z"
 			}
@@ -47,7 +47,7 @@
 		"statuses": [
 			{
 				"value": "Rejected",
-				"setBy": "Navn Navnesen",
+				"set_by": "Navn Navnesen",
 				"committee": 9,
 				"updated_date": "2022-03-31T20:11:09.657Z"
 			}
@@ -63,13 +63,13 @@
 		"statuses": [
 			{
 				"value": "Accepted",
-				"setBy": "Bolle Bollesen",
+				"set_by": "Bolle Bollesen",
 				"committee": 9,
 				"updated_date": "2022-03-31T20:11:09.657Z"
 			},
 			{
 				"value": "Pending",
-				"setBy": null,
+				"set_by": null,
 				"committee": 10,
 				"updated_date": "2022-03-31T20:11:09.657Z"
 			}

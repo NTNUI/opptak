@@ -196,11 +196,11 @@ const putApplicationStatus = async (
 			)
 			if (!status) throw new CustomError('Could not find status', 404)
 			status.value = req.body.value
-			status.setBy = `${user.first_name} ${user.last_name}`
+			status.set_by = `${user.first_name} ${user.last_name}`
 			// Save application
 			return application
 				.save()
-				.then(() => res.status(200).json({ application }))
+				.then(() => res.status(200).json({ status }))
 				.catch((err) => {
 					if (err.name === 'ValidationError') {
 						return res.status(400).json({ message: err.message })

@@ -13,7 +13,7 @@ interface IApplication {
 
 interface IStatus {
 	value: string
-	setBy: string | null
+	set_by: string | null
 	committee: number
 	updated_date: string
 }
@@ -45,7 +45,7 @@ const statusSchema = new mongoose.Schema<IStatus>(
 			required: true,
 			default: StatusTypes.PENDING,
 		},
-		setBy: {
+		set_by: {
 			type: String,
 			default: null,
 		},
