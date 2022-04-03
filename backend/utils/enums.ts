@@ -10,9 +10,10 @@ enum MembershipType {
 
 enum StatusTypes {
 	PENDING = 'Pending',
-	GIVEN_INTERVIEW = 'Given interview',
+	INVITED_TO_INTERVIEW = 'Invited to interview',
 	INTERVIEW_DECLINED = 'Interview declined',
-	GIVEN_OFFER = 'Given offer',
+	INTERVIEW_COMPLETED = 'Interview completed',
+	OFFER_GIVEN = 'Offer given',
 	OFFER_DECLINED = 'Offer declined',
 	ACCEPTED = 'Accepted',
 	REJECTED = 'Rejected',
