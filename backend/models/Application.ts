@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import { StatusEnum } from '../utils/enums'
+import { StatusTypes } from '../utils/enums'
 
 interface IApplication {
 	name: string
@@ -37,13 +37,13 @@ const statusSchema = new mongoose.Schema<IStatus>(
 		value: {
 			type: String,
 			enum: {
-				values: Object.values(StatusEnum),
+				values: Object.values(StatusTypes),
 				message: `{VALUE} is not a supported value. Valid values are ${stringifyEnum(
-					StatusEnum
+					StatusTypes
 				)}`,
 			},
 			required: true,
-			default: StatusEnum.PENDING,
+			default: StatusTypes.PENDING,
 		},
 		setBy: {
 			type: String,

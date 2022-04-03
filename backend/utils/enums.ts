@@ -8,7 +8,7 @@ enum MembershipType {
 	member = 'member',
 }
 
-enum StatusEnum {
+enum StatusTypes {
 	PENDING = 'Pending',
 	GIVEN_INTERVIEW = 'Given interview',
 	INTERVIEW_DECLINED = 'Interview declined',
@@ -18,4 +18,4 @@ enum StatusEnum {
 	REJECTED = 'Rejected',
 }
 
-export { StatusEnum, MembershipType }
+export { StatusTypes, MembershipType }
