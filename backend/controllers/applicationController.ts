@@ -161,14 +161,14 @@ const putApplicationStatus = async (
 		const user: IUser | null = await UserModel.findById(ntnuiNo)
 			.then((userRes) => userRes)
 			.catch(() => {
-				throw new CustomError('Could not find user', 404)
+				throw new CustomError('Something went wrong while retrieving the user', 500)
 			})
 		if (user) {
 			// Check that user is in committee that status is set for
-			const userCommitteeIds = user.committees.map(
-				(committee) => committee.committee
+			const isUserInCommittee = user.committees.find(
+				(committee) => committee.committee === parseInt(req.params.committee_id, 10)
 			)
-			if (!userCommitteeIds.includes(parseInt(req.params.committee_id, 10))) {
+			if (!isUserInCommittee) {
 				throw new CustomError(
 					'You do not have access to change the status of this application for this committee',
 					403
@@ -179,8 +179,15 @@ const putApplicationStatus = async (
 				req.params.application_id
 			)
 				.then((applicationRes) => applicationRes)
-				.catch(() => {
-					throw new CustomError('Could not find application', 404)
+				.catch((error) => {
+					// Error thrown on invalid ID
+					if(error.name === 'CastError') {
+						throw new CustomError('Could not find application', 404)
+					}
+					throw new CustomError(
+						'Something went wrong while retrieving the application',
+						500
+					)
 				})
 			if (!application) throw new CustomError('Could not find application', 404)
 			// Find status to change

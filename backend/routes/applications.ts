@@ -24,6 +24,11 @@ applicationRouter.get('/', authorization, getApplications)
 // @access Public
 applicationRouter.post('/', postApplication)
 
+// @route GET applications/:application_id
+// @description Get application by id if user has access
+// @access Private
+applicationRouter.get('/:application_id', authorization, getApplicationById)
+
 // @route PUT /:application_id/status/:committee_id
 // @description Update an applications status for a committee
 // @access Private
@@ -32,11 +37,6 @@ applicationRouter.put(
 	authorization,
 	putApplicationStatus
 )
-
-// @route GET applications/:application_id
-// @description Get application by id if user has access
-// @access Private
-applicationRouter.get('/:application_id', authorization, getApplicationById)
 
 // @route GET applications/period
 // @description Get the application period
