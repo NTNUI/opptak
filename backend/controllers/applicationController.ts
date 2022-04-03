@@ -181,7 +181,7 @@ const putApplicationStatus = async (
 				.then((applicationRes) => applicationRes)
 				.catch((error) => {
 					// Error thrown on invalid ID
-					if(error.name === 'CastError') {
+					if (error.name === 'CastError') {
 						throw new CustomError('Could not find application', 404)
 					}
 					throw new CustomError(
