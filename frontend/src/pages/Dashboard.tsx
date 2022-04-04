@@ -1,6 +1,8 @@
 import { Box, createStyles } from '@mantine/core'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { CalendarEvent, FileText, Lock, Users } from 'tabler-icons-react'
+import { CalendarEvent, FileText, Loader, Lock, Users } from 'tabler-icons-react'
+import { isApplicationPeriodActive, getAdmissionPeriod } from '../services/Applications'
 
 const useStyles = createStyles((theme) => ({
 	dashboardWrapper: {
@@ -41,6 +43,42 @@ const useStyles = createStyles((theme) => ({
 function Dashboard() {
 	const { classes } = useStyles()
 	const navigate = useNavigate()
+	const [periodOpen, setPeriodOpen] = useState<boolean>(false)
+	const [startDate, setStartDate] = useState<string>("")
+	const [endDate, setEndDate] = useState<string>("")
+	
+	useEffect(() => {
+		const getApplicationPeriodActiveAsync = async () => {
+			try {
+				const response = await isApplicationPeriodActive()
+				setPeriodOpen(response)
+				if (response) {
+					const getApplicationsPeriodAsync = async () => {
+						const response = await getAdmissionPeriod()
+						const parsedEndDate = new Date(
+							response.admissionPeriod.end_date
+						).toLocaleDateString('no-No', {
+							month: 'long',
+							day: '2-digit',
+							year: 'numeric',
+						})
+						const parsedStartDate = new Date(
+							response.admissionPeriod.start_date).toLocaleDateString('no-No', {
+							month: 'long',
+							day: '2-digit',
+							year: 'numeric',
+						})
+						setStartDate(parsedStartDate)
+						setEndDate(parsedEndDate)
+					}
+					getApplicationsPeriodAsync()
+				}
+			} catch (err) {
+				setPeriodOpen(false)
+			}
+		}
+		getApplicationPeriodActiveAsync()
+	}, [])
 
 	return (
 		<Box className={classes.dashboardWrapper}>
@@ -64,3 +102,4 @@ function Dashboard() {
 }
 
 export default Dashboard
+
