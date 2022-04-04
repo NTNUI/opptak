@@ -3,7 +3,7 @@ import { FileText, Login } from 'tabler-icons-react'
 import { Form } from '../components/ApplicationForm'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { isApplicationPeriodActive } from '../services/Applications'
+import { isApplicationPeriodActive, getAdmissionPeriod } from '../services/Applications'
 
 const useStyles = createStyles((theme) => ({
 	formTitleAndBodyWrapper: {
@@ -137,12 +137,17 @@ const useStyles = createStyles((theme) => ({
 		margin: 'auto',
 		width: '100%',
 	},
+	endOfSearchPeriodText: {
+		fontWeight: 'bold',
+		paddingBottom: '1rem',
+	}
 }))
 
 function FormBox() {
 	const { classes } = useStyles()
 	const [periodOpen, setPeriodOpen] = useState<boolean>(false)
 	const [isLoading, setIsLoading] = useState<boolean>(false)
+	const [endDate, setEndDate] = useState<string>("")
 	let navigate = useNavigate()
 
 	useEffect(() => {
@@ -151,6 +156,19 @@ function FormBox() {
 			try {
 				const response = await isApplicationPeriodActive()
 				setPeriodOpen(response)
+				if(response){
+					const getApplicationsPeriodAsync = async () => {
+							const response = await getAdmissionPeriod()
+							const parsedEndDate = new Date(response.admissionPeriod.end_date).toLocaleDateString('no-No', {
+								month: 'long',
+								day: '2-digit',
+								year: 'numeric',
+							})
+							setEndDate(parsedEndDate)
+							setIsLoading(false)
+					}
+					getApplicationsPeriodAsync()
+				}
 				setIsLoading(false)
 			} catch (err) {
 				setPeriodOpen(false)
@@ -160,6 +178,8 @@ function FormBox() {
 		getApplicationPeriodActiveAsync()
 	}, [])
 
+	
+		
 	return (
 		<>
 			<Box className={classes.header}>
@@ -181,6 +201,7 @@ function FormBox() {
 			) : periodOpen ? (
 				<Box className={classes.formTitleAndBodyWrapper}>
 					<h2 className={classes.formTitle}>
+						{endDate && <p className={classes.endOfSearchPeriodText}>Søknadsfrist: {endDate}</p>}
 						<FileText />
 						Søknad til NTNUI Admin
 					</h2>
