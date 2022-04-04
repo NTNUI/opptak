@@ -106,7 +106,7 @@ const useStyles = createStyles((theme) => ({
 	closedPeriod: {
 		width: '40%',
 		margin: 'auto',
-		marginBottom: '1.5rem',
+		
 		border: '2px solid ' + theme.colors.ntnui_yellow[9],
 		borderRadius: theme.radius.sm,
 		color: 'white',
@@ -122,6 +122,8 @@ const useStyles = createStyles((theme) => ({
 	},
 	closedText: {
 		textAlign: 'center',
+		marginLeft: '1rem',
+		marginRight: '1rem',
 		'*': {
 			// Icon
 			margin: '0 0 -3px 0',
@@ -186,10 +188,12 @@ function FormBox() {
 				</Box>
 			) : (
 				<Box className={classes.closedPeriod}>
-					<h1 className={classes.formTitle}>Hei, kjære søker!</h1>
+					<h1 className={classes.formTitle}>
+						NTNUI Admin har for tiden ingen opptak
+					</h1>
 					<p className={classes.closedText}>
-						Så gøy at du vil være en del av NTNUI. Opptaket er for tiden stengt, men
-						gjerne sjekk igjen ved en senere anledning!
+						Vi har vanligvis opptak på starten av hvert semester. Leter du etter
+						opptak til en NTNUI gruppe eller lag? Sjekk <a href="https://medlem.ntnui.no/">gruppens</a> egen nettside!
 					</p>
 				</Box>
 			)}
