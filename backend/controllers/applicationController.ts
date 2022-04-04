@@ -201,13 +201,11 @@ const putApplicationStatus = async (
 			return application
 				.save()
 				.then((newApplication) =>
-					res
-						.status(200)
-						.json({
-							status: newApplication.statuses.find(
-								(stat: IStatus) => stat.committee === status.committee
-							),
-						})
+					res.status(200).json({
+						status: newApplication.statuses.find(
+							(stat: IStatus) => stat.committee === status.committee
+						),
+					})
 				)
 				.catch((err) => {
 					if (err.name === 'ValidationError') {
