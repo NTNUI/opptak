@@ -1,15 +1,18 @@
 import { CustomError } from 'ntnui-tools/customError'
-import add from 'date-fns/add'
+import dayjs from 'dayjs'
 import { AdmissionPeriodModel } from '../models/AdmissionPeriod'
 
 const isAdmissionPeriodActive = async () => {
 	const admissionPeriod = await AdmissionPeriodModel.findOne()
 	if (admissionPeriod) {
 		if (
-			new Date(admissionPeriod.start_date_string).getTime() <= Date.now() &&
+			(
+				(dayjs(admissionPeriod.start_date).isBefore(dayjs(Date.now()))) ||
+				(dayjs(admissionPeriod.start_date).isSame(dayjs(Date.now())))
+			)
+			&&
 			// Creating a date of end date + 1 day
-			add(new Date(admissionPeriod.end_date_string), { days: 1 }).getTime() >
-				Date.now()
+			dayjs(admissionPeriod.end_date).add(1, 'day').isAfter(dayjs(Date.now()))
 		) {
 			return true
 		}

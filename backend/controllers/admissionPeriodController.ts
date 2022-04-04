@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { UnauthorizedUserError } from 'ntnui-tools/customError'
-import isBefore from 'date-fns/isBefore'
+import dayjs from 'dayjs'
 import { AdmissionPeriodModel } from '../models/AdmissionPeriod'
 import { getUserCommitteeIdsByUserId } from '../utils/userCommittee'
 import { RequestWithNtnuiNo } from '../utils/request'
@@ -19,8 +19,8 @@ const getAdmissionPeriod = async (req: Request, res: Response) => {
 
 	if (admissionPeriod) {
 		const admissionPeriodResponse = {
-			start_date: admissionPeriod.start_date_string,
-			end_date: admissionPeriod.end_date_string,
+			start_date: admissionPeriod.start_date,
+			end_date: admissionPeriod.end_date,
 		}
 		return res.status(200).json({ admissionPeriodResponse })
 	}
@@ -40,19 +40,14 @@ const putAdmissionPeriod = async (req: RequestWithNtnuiNo, res: Response) => {
 
 		try {
 			update = {
-				start_date_string: validateAndFormatDateString(req.body.start_date),
-				end_date_string: validateAndFormatDateString(req.body.end_date),
+				start_date: validateAndFormatDateString(req.body.start_date),
+				end_date: validateAndFormatDateString(req.body.end_date),
 			}
 		} catch (error) {
 			return res.status(400).json({ message: 'The dates are invalid' })
 		}
 
-		if (
-			!isBefore(
-				Date.parse(update.start_date_string),
-				Date.parse(update.end_date_string)
-			)
-		) {
+		if (!dayjs(update.start_date).isBefore(dayjs(update.end_date))) {
 			return res
 				.status(400)
 				.json({ message: "The start date can't be the same or after the end date" })
