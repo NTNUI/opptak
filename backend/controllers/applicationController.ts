@@ -121,19 +121,9 @@ const getApplications = async (
 		}
 
 		// Pagination
-		const { page } = req.query
-		let pageNum = 1 // default value
-
-		// validation of the page-query-param
-		if (undefined !== page) {
-			pageNum = Number(page)
-
-			if (pageNum < 1 || Number.isNaN(pageNum)) {
-				pageNum = 1
-			}
-		}
+		const { page, name } = req.query
 		const LIMIT = 4
-		const startIndex = (pageNum - 1) * LIMIT
+		const startIndex = (page - 1) * LIMIT
 
 		let filter
 
@@ -168,6 +158,19 @@ const getApplications = async (
 					}
 				}
 			}
+		}
+
+		// Filter applications by name
+		const nameString = name as string
+		if (nameString) {
+			applications = applications.filter((application) => application.name.toLowerCase().includes(nameString.toLowerCase()))
+		}
+
+		// Filter applications by committee
+		const { committee } = req.query
+		if (committee) {
+			const committeeId = Number(committee)
+			applications = applications.filter((application) => application.committees.some((committee) => committee === committeeId))
 		}
 
 		return res.status(200).json({
