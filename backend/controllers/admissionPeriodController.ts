@@ -8,8 +8,14 @@ import MAIN_BOARD_ID from '../utils/constants'
 import isAdmissionPeriodActive from '../utils/isApplicationPeriodActive'
 
 function validateAndFormatDateString(value: string): string {
-	// Typical ISOString, 2022-01-31T00:00:00.000Z, fetching only the 10 first characters
-	const dateString = new Date(Date.parse(value)).toISOString().substring(0, 10)
+	// Typical ISOString, 2022-01-31T00:00:00.000Z,
+	// Formatting the date value comming in to 'YYYY-MM-DD', and throw exception
+	// if not valid date
+	const dateString = dayjs(value).format('YYYY-MM-DD')
+
+	if (dateString === 'Invalid Date') {
+		throw Error(dateString)
+	}
 	return dateString
 }
 
@@ -18,11 +24,7 @@ const getAdmissionPeriod = async (req: Request, res: Response) => {
 	const admissionPeriod = await AdmissionPeriodModel.findOne()
 
 	if (admissionPeriod) {
-		const admissionPeriodResponse = {
-			start_date: admissionPeriod.start_date,
-			end_date: admissionPeriod.end_date,
-		}
-		return res.status(200).json({ admissionPeriodResponse })
+		return res.status(200).json({ admissionPeriod })
 	}
 
 	return res

@@ -1,3 +1,3 @@
-const MAIN_BOARD_ID = 1
+const MAIN_BOARD_ID = 9
 
 export default MAIN_BOARD_ID

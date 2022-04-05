@@ -171,8 +171,8 @@ function AdmissionPeriod() {
 			const start = form.values.dateRangeInput[0]
 			const end = form.values.dateRangeInput[1]
 			const admissionPeriod: IAdmissionPeriod = {
-				start_date: dayjs(start).toString(),
-				end_date: dayjs(end).toString(),
+				start_date: dayjs(start).format('YYYY-MM-DD'),
+				end_date: dayjs(end).format('YYYY-MM-DD'),
 			}
 			const id = notifications.showNotification({
 				loading: true,

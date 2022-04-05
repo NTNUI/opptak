@@ -6,13 +6,17 @@ const isAdmissionPeriodActive = async () => {
 	const admissionPeriod = await AdmissionPeriodModel.findOne()
 	if (admissionPeriod) {
 		if (
-			(
-				(dayjs(admissionPeriod.start_date).isBefore(dayjs(Date.now()))) ||
-				(dayjs(admissionPeriod.start_date).isSame(dayjs(Date.now())))
-			)
-			&&
-			// Creating a date of end date + 1 day
-			dayjs(admissionPeriod.end_date).add(1, 'day').isAfter(dayjs(Date.now()))
+			// Subtracting 1 millisecond, to make sure the time 00:00:00.000 is also active a part of the
+			// active period
+			dayjs(admissionPeriod.start_date)
+				.subtract(1, 'millisecond')
+				.isBefore(dayjs(Date.now())) &&
+			// Adding 1 day and then subtracting 1 millisecond to the end date, to make the active period
+			// to last to 23:59:59.999
+			dayjs(admissionPeriod.end_date)
+				.add(1, 'day')
+				.subtract(1, 'millisecond')
+				.isAfter(dayjs(Date.now()))
 		) {
 			return true
 		}
