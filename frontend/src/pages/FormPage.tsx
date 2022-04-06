@@ -135,6 +135,9 @@ const useStyles = createStyles((theme) => ({
 			fontSize: 'large',
 			marginBottom: '1rem',
 		},
+		'a': {
+			color: theme.colors.ntnui_yellow[9],
+		}
 	},
 	loading: {
 		margin: 'auto',
