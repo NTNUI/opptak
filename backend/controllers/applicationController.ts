@@ -121,7 +121,7 @@ const getApplications = async (
 		}
 
 		// Pagination
-		const { page, name } = req.query
+		const { page, name, committee } = req.query
 		const LIMIT = 4
 		const startIndex = (page - 1) * LIMIT
 
@@ -163,14 +163,18 @@ const getApplications = async (
 		// Filter applications by name
 		const nameString = name as string
 		if (nameString) {
-			applications = applications.filter((application) => application.name.toLowerCase().includes(nameString.toLowerCase()))
+			applications = applications.filter((application) =>
+				application.name.toLowerCase().includes(nameString.toLowerCase())
+			)
 		}
 
-		// Filter applications by committee
-		const { committee } = req.query
-		if (committee) {
-			const committeeId = Number(committee)
-			applications = applications.filter((application) => application.committees.some((committee) => committee === committeeId))
+		// Filter applications by query committee id
+		const committeeString = committee as string
+		if (committeeString) {
+			const committees = committeeString.split(',')
+			const committeeIds = committees.map((committee) => Number(committee))
+			console.log(committeeIds)
+			// Some kind of filter
 		}
 
 		return res.status(200).json({
