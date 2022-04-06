@@ -100,9 +100,6 @@ function Dashboard() {
 			<Box className={classes.metroBoxes} onClick={() => navigate('/admission-period')}>
 				<CalendarEvent size={150} strokeWidth={0.7} /> Opptaksperiode
 			</Box>
-			<Box className={classes.metroBoxes} onClick={() => navigate('/admission-period')}>
-				<Lock size={150} strokeWidth={0.7} /> Tilganger
-			</Box>
 			</div>
 		</Box>
 	)
