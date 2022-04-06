@@ -8,14 +8,13 @@ import MAIN_BOARD_ID from '../utils/constants'
 import isAdmissionPeriodActive from '../utils/isApplicationPeriodActive'
 
 function validateAndFormatDateString(value: string): string {
-	// Typical ISOString, 2022-01-31T00:00:00.000Z,
-	// Formatting the date value comming in to 'YYYY-MM-DD', and throw exception
-	// if not valid date
-	const dateString = dayjs(value).format('YYYY-MM-DD')
+	// Expect ISO-string (YYYY-MM-DDTHH:mm:ss.sssZ)
+	const dateString = dayjs(Date.parse(value)).format('YYYY-MM-DD')
 
 	if (dateString === 'Invalid Date') {
 		throw Error(dateString)
 	}
+
 	return dateString
 }
 
