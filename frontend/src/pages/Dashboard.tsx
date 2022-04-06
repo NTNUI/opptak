@@ -1,8 +1,9 @@
 import { Box, createStyles } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { CalendarEvent, FileText, Loader, Lock, Users } from 'tabler-icons-react'
+import { CalendarEvent, FileText, Lock, Users } from 'tabler-icons-react'
 import { isApplicationPeriodActive, getAdmissionPeriod } from '../services/Applications'
+
 
 const useStyles = createStyles((theme) => ({
 	dashboardWrapper: {
@@ -21,6 +22,12 @@ const useStyles = createStyles((theme) => ({
 		gap: '1.5rem',
 		alignItems: 'center',
 		color: theme.colors.ntnui_yellow[9],
+		'@media (max-width: 900px)': {
+			display: 'flex',
+			flexWrap: 'wrap',
+			justifyContent: 'center',
+			alignItems: 'center',
+		},
 	},
 	metroBoxes: {
 		border: '2px solid ' + theme.colors.ntnui_yellow[9],
@@ -30,14 +37,13 @@ const useStyles = createStyles((theme) => ({
 		gap: '1rem',
 		padding: '1rem',
 		cursor: 'pointer',
-		'&:hover': {
-			transform: 'translateY(-0.3rem)',
-		},
 		'&:active': {
 			transform: 'scale(0.98)'
-		}
-
+		},
 	},
+	date: {
+		color: 'royalblue',
+	}
 }))
 
 function Dashboard() {
@@ -83,18 +89,19 @@ function Dashboard() {
 	return (
 		<Box className={classes.dashboardWrapper}>
 			<h1>Hei, Bolle Bollesen!</h1>
+			{periodOpen ? (<p>Opptaksperioden er satt fra <span className={classes.date}>{startDate}</span> til <span className={classes.date}>{endDate}</span> </p>) : (<p>Det er for tiden ingen satt opptaksperiode</p>)}
 			<div className={classes.metroBoxWrapper}>
 			<Box className={classes.metroBoxes} onClick={() => navigate('/applications')}>
-				<FileText size={150} strokeWidth={0.5} /> Søknader 
+				<FileText size={150} strokeWidth={0.7} /> Søknader 
 			</Box>
 			<Box className={classes.metroBoxes} onClick={() => navigate('/admission-status')}>
-				<Users size={150} strokeWidth={0.5} /> Opptaksstatus
+				<Users size={150} strokeWidth={0.7} /> Opptaksstatus
 			</Box>
-			<Box className={classes.metroBoxes} onClick={() => navigate('/application-period')}>
-				<CalendarEvent size={150} strokeWidth={0.5} /> Opptaksperiode
+			<Box className={classes.metroBoxes} onClick={() => navigate('/admission-period')}>
+				<CalendarEvent size={150} strokeWidth={0.7} /> Opptaksperiode
 			</Box>
-			<Box className={classes.metroBoxes} onClick={() => navigate('/application-period')}>
-				<Lock size={150} strokeWidth={0.5} /> Tilganger
+			<Box className={classes.metroBoxes} onClick={() => navigate('/admission-period')}>
+				<Lock size={150} strokeWidth={0.7} /> Tilganger
 			</Box>
 			</div>
 		</Box>
