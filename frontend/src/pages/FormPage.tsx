@@ -1,7 +1,12 @@
-import { Box, Button, createStyles } from '@mantine/core'
+import { Box, Button, createStyles, Loader } from '@mantine/core'
 import { FileText, Login } from 'tabler-icons-react'
 import { Form } from '../components/ApplicationForm'
 import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import {
+	isApplicationPeriodActive,
+	getAdmissionPeriod,
+} from '../services/Applications'
 
 const useStyles = createStyles((theme) => ({
 	formTitleAndBodyWrapper: {
@@ -101,11 +106,85 @@ const useStyles = createStyles((theme) => ({
 			gridRow: 1,
 		},
 	},
+	closedPeriod: {
+		width: '40%',
+		margin: 'auto',
+
+		border: '2px solid ' + theme.colors.ntnui_yellow[9],
+		borderRadius: theme.radius.sm,
+		color: 'white',
+		'@media (max-width: 1200px)': {
+			width: '70%',
+		},
+		'@media (max-width: 700px)': {
+			width: '85%',
+			border: 'none',
+			backgroundColor: 'transparent',
+			padding: '1rem',
+		},
+	},
+	closedText: {
+		textAlign: 'center',
+		marginLeft: '1rem',
+		marginRight: '1rem',
+		'*': {
+			// Icon
+			margin: '0 0 -3px 0',
+		},
+		'@media (max-width: 700px)': {
+			fontSize: 'large',
+			marginBottom: '1rem',
+		},
+		a: {
+			color: theme.colors.ntnui_yellow[9],
+		},
+	},
+	loading: {
+		margin: 'auto',
+		width: '100%',
+	},
+	endOfSearchPeriodText: {
+		fontWeight: 'bold',
+		paddingBottom: '1rem',
+	},
 }))
 
 function FormBox() {
 	const { classes } = useStyles()
+	const [periodOpen, setPeriodOpen] = useState<boolean>(false)
+	const [isLoading, setIsLoading] = useState<boolean>(false)
+	const [endDate, setEndDate] = useState<string>('')
 	let navigate = useNavigate()
+
+	useEffect(() => {
+		setIsLoading(true)
+		const getApplicationPeriodActiveAsync = async () => {
+			try {
+				const response = await isApplicationPeriodActive()
+				setPeriodOpen(response)
+				if (response) {
+					const getApplicationsPeriodAsync = async () => {
+						const response = await getAdmissionPeriod()
+						const parsedEndDate = new Date(
+							response.admissionPeriod.end_date
+						).toLocaleDateString('no-No', {
+							month: 'long',
+							day: '2-digit',
+							year: 'numeric',
+						})
+						setEndDate(parsedEndDate)
+						setIsLoading(false)
+					}
+					getApplicationsPeriodAsync()
+				}
+				setIsLoading(false)
+			} catch (err) {
+				setPeriodOpen(false)
+				setIsLoading(false)
+			}
+		}
+		getApplicationPeriodActiveAsync()
+	}, [])
 
 	return (
 		<>
@@ -123,15 +202,32 @@ function FormBox() {
 					Intern
 				</Button>
 			</Box>
-			<Box className={classes.formTitleAndBodyWrapper}>
-				<h2 className={classes.formTitle}>
-					<FileText />
-					Søknad til NTNUI Admin
-				</h2>
-				<Form />
-			</Box>
+			{isLoading ? (
+				<Loader size='xl' color='yellow' className={classes.loading} />
+			) : periodOpen ? (
+				<Box className={classes.formTitleAndBodyWrapper}>
+					<h2 className={classes.formTitle}>
+						{endDate && (
+							<p className={classes.endOfSearchPeriodText}>Søknadsfrist: {endDate}</p>
+						)}
+						<FileText />
+						Søknad til NTNUI Admin
+					</h2>
+					<Form />
+				</Box>
+			) : (
+				<Box className={classes.closedPeriod}>
+					<h1 className={classes.formTitle}>
+						NTNUI Admin har for tiden ingen opptak
+					</h1>
+					<p className={classes.closedText}>
+						Vi har vanligvis opptak på starten av hvert semester. Leter du etter
+						opptak til en NTNUI gruppe eller lag? Sjekk{' '}
+						<a href='https://medlem.ntnui.no/'>gruppens</a> egen nettside!
+					</p>
+				</Box>
+			)}
 		</>
 	)
 }
-
 export default FormBox

@@ -29,9 +29,15 @@ const getApplication = async (id: String): Promise<IApplicationResponse> => {
 	return response.data
 }
 
+const isApplicationPeriodActive = async (): Promise<boolean> => {
+	const response = await axios.get('/applications/period/active')
+	return response.data.response
+}
+
 export {
 	getApplications,
 	getApplication,
 	getAdmissionPeriod,
 	putAdmissionPeriod,
+	isApplicationPeriodActive,
 }
