@@ -131,8 +131,7 @@ const postApplication = async (
 			committee,
 			status: StatusTypes.PENDING,
 		}))
-
-		// Insert statuses
+		// Insert statuses in database
 		const insertedStatuses = await StatusModel.insertMany(statuses, {
 			ordered: true,
 		})
@@ -140,9 +139,8 @@ const postApplication = async (
 			.catch(() => {
 				throw new CustomError('Something went wrong creating statuses', 500)
 			})
-		// Create application
 		const statusIds = insertedStatuses.map((stat: IStatus) => stat)
-		console.log(statusIds)
+		// Create application
 		const application = new ApplicationModel({ ...req.body, statuses: statusIds })
 		return application
 			.save()
