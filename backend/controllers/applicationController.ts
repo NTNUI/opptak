@@ -163,58 +163,54 @@ const putApplicationStatus = async (
 			.catch(() => {
 				throw new CustomError('Something went wrong while retrieving the user', 500)
 			})
-		if (user) {
-			// Check that user is in committee that status is set for
-			const isUserInCommittee = user.committees.find(
-				(committee) => committee.committee === parseInt(req.params.committee_id, 10)
+		if (!user) throw new CustomError('Could not find user', 404)
+		// Check that user is in committee that status is set for
+		const isUserInCommittee = user.committees.find(
+			(committee) => committee.committee === parseInt(req.params.committee_id, 10)
+		)
+		if (!isUserInCommittee) {
+			throw new CustomError(
+				'You do not have access to change the status of this application for this committee',
+				403
 			)
-			if (!isUserInCommittee) {
-				throw new CustomError(
-					'You do not have access to change the status of this application for this committee',
-					403
-				)
-			}
-			// Retrieve application
-			const application = await ApplicationModel.findById(
-				req.params.application_id
-			)
-				.then((applicationRes) => applicationRes)
-				.catch((error) => {
-					// Error thrown on invalid ID
-					if (error.name === 'CastError') {
-						throw new CustomError('Could not find application', 404)
-					}
-					throw new CustomError(
-						'Something went wrong while retrieving the application',
-						500
-					)
-				})
-			if (!application) throw new CustomError('Could not find application', 404)
-			// Find status to change
-			const status = application.statuses.find(
-				(stat: IStatus) => stat.committee.toString() === req.params.committee_id
-			)
-			if (!status) throw new CustomError('Could not find status', 404)
-			status.value = req.body.value
-			status.set_by = `${user.first_name} ${user.last_name}`
-			// Save application
-			return application
-				.save()
-				.then((newApplication) =>
-					res.status(200).json({
-						status: newApplication.statuses.find(
-							(stat: IStatus) => stat.committee === status.committee
-						),
-					})
-				)
-				.catch((err) => {
-					if (err.name === 'ValidationError') {
-						return res.status(400).json({ message: err.message })
-					}
-					throw new CustomError('Could not save application', 500)
-				})
 		}
-		throw new CustomError('Could not find user', 404)
+		// Retrieve application
+		const application = await ApplicationModel.findById(req.params.application_id)
+			.then((applicationRes) => applicationRes)
+			.catch((error) => {
+				// Error thrown on invalid ID
+				if (error.name === 'CastError') {
+					throw new CustomError('Could not find application', 404)
+				}
+				throw new CustomError(
+					'Something went wrong while retrieving the application',
+					500
+				)
+			})
+		if (!application) throw new CustomError('Could not find application', 404)
+		// Find status to change
+		const status = application.statuses.find(
+			(stat: IStatus) => stat.committee.toString() === req.params.committee_id
+		)
+		if (!status) throw new CustomError('Could not find status', 404)
+		status.value = req.body.value
+		status.set_by = `${user.first_name} ${user.last_name}`
+		// Save application
+		return application
+			.save()
+			.then((newApplication) =>
+				res.status(200).json({
+					status: newApplication.statuses.find(
+						(stat: IStatus) => stat.committee === status.committee
+					),
+				})
+			)
+			.catch((err) => {
+				if (err.name === 'ValidationError') {
+					return res.status(400).json({ message: err.message })
+				}
+				throw new CustomError('Could not save application', 500)
+			})
 	} catch (error) {
 		return next(error)
 	}
