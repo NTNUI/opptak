@@ -3,7 +3,6 @@ import {
 	getApplicationById,
 	getApplications,
 	postApplication,
-	putApplicationStatus,
 } from '../controllers/applicationController'
 import {
 	getAdmissionPeriod,
@@ -43,14 +42,5 @@ applicationRouter.get('/period/active', getAdmissionPeriodStatus)
 // @description Get application by id if user has access
 // @access Private
 applicationRouter.get('/:application_id', authorization, getApplicationById)
-
-// @route PUT /:application_id/status/:committee_id
-// @description Update an applications status for a committee
-// @access Private
-applicationRouter.put(
-	'/:application_id/status/:committee_id',
-	authorization,
-	putApplicationStatus
-)
 
 export default applicationRouter

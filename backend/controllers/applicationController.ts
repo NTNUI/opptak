@@ -1,10 +1,12 @@
 import { NextFunction, Request, Response } from 'express'
 import { CustomError, UnauthorizedUserError } from 'ntnui-tools/customError'
 import { RequestWithNtnuiNo } from '../utils/request'
-import { ApplicationModel, IApplication, IStatus } from '../models/Application'
-import { IUser, UserModel } from '../models/User'
+import { ApplicationModel, IApplication } from '../models/Application'
+import { UserModel } from '../models/User'
 import { CommitteeModel, ICommittee } from '../models/Committee'
 import isAdmissionPeriodActive from '../utils/isApplicationPeriodActive'
+import { StatusTypes } from '../utils/enums'
+import { IStatus, StatusModel } from '../models/Status'
 
 async function getUserCommitteeIdsByUserId(userId: number | string) {
 	let committeeIds: number[] = []
@@ -24,13 +26,6 @@ interface IPopulatedApplicationCommittees
 	extends Omit<IApplication, 'committees'> {
 	committees: ICommittee[]
 }
-interface IPopulatedApplicationStatuses extends Omit<IApplication, 'statuses'> {
-	statuses: IPopulatedStatus[]
-}
-
-interface IPopulatedStatus extends Omit<IStatus, 'committee'> {
-	committee: ICommittee
-}
 
 const getApplicationById = async (
 	req: RequestWithNtnuiNo,
@@ -45,7 +40,11 @@ const getApplicationById = async (
 		// Retrieve application and committees the application is sent to
 		const application = await ApplicationModel.findById(req.params.application_id)
 			.populate<IPopulatedApplicationCommittees>('committees', 'name slug')
-			.populate<IPopulatedApplicationStatuses>('statuses.committee', 'name')
+			.populate({
+				path: 'statuses',
+				populate: { path: 'committee', model: 'Committee', select: 'name' },
+				select: '-__v',
+			})
 			.then((applicationRes) => applicationRes)
 			.catch(() => {
 				throw new CustomError('Could not find application', 404)
@@ -117,7 +116,6 @@ const postApplication = async (
 		if (!(await isAdmissionPeriodActive())) {
 			throw new CustomError('Admission period is not active', 403)
 		}
-
 		// Check that all applied committees accepts admissions
 		const closedCommittees = await CommitteeModel.findOne({
 			_id: { $in: req.body.committees },
@@ -128,11 +126,24 @@ const postApplication = async (
 				.status(400)
 				.json({ message: 'A committee the application was sent to is closed' })
 		}
-		// Create status for each committee
-		const statuses = req.body.committees.map((committeeId: number) => ({
-			committee: committeeId,
+		// Create a status model for each committee the application is sent to
+		const statuses = req.body.committees.map((committee: number) => ({
+			committee,
+			status: StatusTypes.PENDING,
 		}))
-		const application = new ApplicationModel({ ...req.body, statuses })
+
+		// Insert statuses
+		const insertedStatuses = await StatusModel.insertMany(statuses, {
+			ordered: true,
+		})
+			.then((statusRes) => statusRes)
+			.catch(() => {
+				throw new CustomError('Something went wrong creating statuses', 500)
+			})
+		// Create application
+		const statusIds = insertedStatuses.map((stat: IStatus) => stat)
+		console.log(statusIds)
+		const application = new ApplicationModel({ ...req.body, statuses: statusIds })
 		return application
 			.save()
 			.then((newApplication) =>
@@ -149,76 +160,4 @@ const postApplication = async (
 	}
 }
 
-const putApplicationStatus = async (
-	req: RequestWithNtnuiNo,
-	res: Response,
-	next: NextFunction
-) => {
-	try {
-		// Access control - retrieve user
-		const { ntnuiNo } = req
-		if (!ntnuiNo) throw UnauthorizedUserError
-		const user: IUser | null = await UserModel.findById(ntnuiNo)
-			.then((userRes) => userRes)
-			.catch(() => {
-				throw new CustomError('Something went wrong while retrieving the user', 500)
-			})
-		if (!user) throw new CustomError('Could not find user', 404)
-		// Check that user is in committee that status is set for
-		const isUserInCommittee = user.committees.find(
-			(committee) => committee.committee === parseInt(req.params.committee_id, 10)
-		)
-		if (!isUserInCommittee) {
-			throw new CustomError(
-				'You do not have access to change the status of this application for this committee',
-				403
-			)
-		}
-		// Retrieve application
-		const application = await ApplicationModel.findById(req.params.application_id)
-			.then((applicationRes) => applicationRes)
-			.catch((error) => {
-				// Error thrown on invalid ID
-				if (error.name === 'CastError') {
-					throw new CustomError('Could not find application', 404)
-				}
-				throw new CustomError(
-					'Something went wrong while retrieving the application',
-					500
-				)
-			})
-		if (!application) throw new CustomError('Could not find application', 404)
-		// Find status to change
-		const status = application.statuses.find(
-			(stat: IStatus) => stat.committee.toString() === req.params.committee_id
-		)
-		if (!status) throw new CustomError('Could not find status', 404)
-		status.value = req.body.value
-		status.set_by = `${user.first_name} ${user.last_name}`
-		// Save application
-		return application
-			.save()
-			.then((newApplication) =>
-				res.status(200).json({
-					status: newApplication.statuses.find(
-						(stat: IStatus) => stat.committee === status.committee
-					),
-				})
-			)
-			.catch((err) => {
-				if (err.name === 'ValidationError') {
-					return res.status(400).json({ message: err.message })
-				}
-				throw new CustomError('Could not save application', 500)
-			})
-	} catch (error) {
-		return next(error)
-	}
-}
-
-export {
-	getApplications,
-	postApplication,
-	putApplicationStatus,
-	getApplicationById,
-}
+export { getApplications, postApplication, getApplicationById }
