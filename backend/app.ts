@@ -9,6 +9,7 @@ import applicationRouter from './routes/applications'
 import authRouter from './routes/auth'
 import userRouter from './routes/user'
 import errorHandler from './utils/errorHandler'
+import statusRouter from './routes/statuses'
 
 axios.defaults.baseURL = 'https://dev.api.ntnui.no/' // GET FROM ENV OR CONFIG
 const app = express()
@@ -25,6 +26,7 @@ app.use(express.json())
 app.use('/auth', authRouter)
 app.use('/test', testRoute)
 app.use('/applications', applicationRouter)
+app.use('/statuses', statusRouter)
 app.use('/committees', committeeRouter)
 app.use('/user', userRouter)
 

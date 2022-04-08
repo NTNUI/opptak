@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import mongoose, { ObjectId } from 'mongoose'
 
 interface IApplication {
 	name: string
@@ -7,6 +7,7 @@ interface IApplication {
 	text: string
 	submitted_date: Date
 	committees: number[]
+	statuses: ObjectId[]
 }
 
 const ApplicationModel = mongoose.model<IApplication>(
@@ -28,6 +29,9 @@ const ApplicationModel = mongoose.model<IApplication>(
 			text: {
 				type: String,
 				required: true,
+				validate: {
+					validator: (text: string) => text.length <= 2500,
+				},
 			},
 			committees: {
 				type: [
@@ -40,6 +44,15 @@ const ApplicationModel = mongoose.model<IApplication>(
 				validate: [
 					(val: []) => val.length > 0,
 					'There must be at least one committee',
+				],
+			},
+			statuses: {
+				type: [
+					{
+						type: mongoose.Schema.Types.ObjectId,
+						ref: 'Status',
+						required: true,
+					},
 				],
 			},
 		},

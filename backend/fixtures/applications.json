@@ -1,34 +1,80 @@
 [
 	{
+		"_id": {
+			"$oid": "62500c32b0a502a2feda6ae7"
+		},
 		"name": "Bolle Bollesen",
 		"phone_number": "+6969696969",
 		"email": "bolle@bolle.no",
-		"text": "Jeg forsøker å søke til Sprint",
-		"committees": [6],
-		"submitted_date": "2022-02-26T16:49:27.005Z"
+		"text": "Jeg forsøker å søke til Triatlon og Turn",
+		"committees": [2, 3],
+		"statuses": [
+			{
+				"$oid": "62500c32b0a502a2feda6ae4"
+			},
+			{
+				"$oid": "62500c32b0a502a2feda6ae5"
+			}
+		],
+		"submitted_date": {
+			"$date": "2022-04-08T10:19:30.473Z"
+		}
 	},
 	{
+		"_id": {
+			"$oid": "62500d8cb0a502a2feda6aef"
+		},
 		"name": "Navn Navnesen",
 		"phone_number": "+420420420",
 		"email": "Navn@Navnesen.no",
-		"text": "Jeg forsøker å søke til Event",
-		"committees": [74],
-		"submitted_date": "2022-02-23T16:49:27.005Z"
+		"text": "Jeg forsøker å søke til Ski og Fjellsport",
+		"committees": [4],
+		"statuses": [
+			{
+				"$oid": "62500d8cb0a502a2feda6aed"
+			}
+		],
+		"submitted_date": {
+			"$date": "2022-04-08T10:25:16.632Z"
+		}
 	},
 	{
+		"_id": {
+			"$oid": "62500db3b0a502a2feda6af5"
+		},
 		"name": "Cris P Bacon",
 		"phone_number": "+123456789",
 		"email": "Bacon@IsGoodForMe.no",
-		"text": "Jeg forsøker å søke til Blits",
-		"committees": [44],
-		"submitted_date": "2022-02-19T16:49:27.005Z"
+		"text": "Jeg forsøker å søke til Hovedstyret",
+		"committees": [9],
+		"statuses": [
+			{
+				"$oid": "62500db3b0a502a2feda6af3"
+			}
+		],
+		"submitted_date": {
+			"$date": "2022-04-08T10:25:55.633Z"
+		}
 	},
 	{
+		"_id": {
+			"$oid": "62500dbfb0a502a2feda6afc"
+		},
 		"name": "Olle Bolle",
 		"phone_number": "+987654321",
 		"email": "Olle@Bolle.no",
-		"text": "Jeg forsøker å søke til Event, Blits og Sprint",
-		"committees": [74, 44, 6],
-		"submitted_date": "2022-02-22T16:49:27.005Z"
+		"text": "Jeg forsøker å søke til Hovedstyret og Sprint",
+		"committees": [9, 10],
+		"statuses": [
+			{
+				"$oid": "62500dbfb0a502a2feda6af9"
+			},
+			{
+				"$oid": "62500dbfb0a502a2feda6afa"
+			}
+		],
+		"submitted_date": {
+			"$date": "2022-04-08T10:26:07.451Z"
+		}
 	}
 ]

@@ -111,4 +111,19 @@ async function refreshNtnuiToken(token: string): Promise<INtnuiAccessToken> {
 		})
 }
 
-export { getRoleInGroup, getNtnuiToken, isValidNtnuiToken, refreshNtnuiToken }
+interface IUserProfileResponse {
+	data: { first_name: string; last_name: string }
+}
+
+async function getNtnuiProfile(token: string): Promise<IUserProfileResponse> {
+	return axios.get('users/profile', {
+		headers: { Authorization: `Bearer ${token}` },
+	})
+}
+export {
+	getNtnuiProfile,
+	getRoleInGroup,
+	getNtnuiToken,
+	isValidNtnuiToken,
+	refreshNtnuiToken,
+}

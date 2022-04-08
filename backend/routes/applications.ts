@@ -18,6 +18,11 @@ const applicationRouter = express.Router()
 // @access Private
 applicationRouter.get('/', authorization, getApplications)
 
+// @route POST applications
+// @description Add application
+// @access Public
+applicationRouter.post('/', postApplication)
+
 // @route GET applications/period
 // @description Get the application period
 // @access Public
@@ -33,14 +38,9 @@ applicationRouter.put('/period', authorization, putAdmissionPeriod)
 // @access Public
 applicationRouter.get('/period/active', getAdmissionPeriodStatus)
 
-// @route GET applications/:application-id
+// @route GET applications/:application_id
 // @description Get application by id if user has access
 // @access Private
 applicationRouter.get('/:application_id', authorization, getApplicationById)
-
-// @route POST applications
-// @description Add application
-// @access Public
-applicationRouter.post('/', postApplication)
 
 export default applicationRouter

@@ -5,6 +5,8 @@ import { ApplicationModel, IApplication } from '../models/Application'
 import { UserModel } from '../models/User'
 import { CommitteeModel, ICommittee } from '../models/Committee'
 import isAdmissionPeriodActive from '../utils/isApplicationPeriodActive'
+import { StatusTypes } from '../utils/enums'
+import { IStatus, StatusModel } from '../models/Status'
 
 async function getUserCommitteeIdsByUserId(userId: number | string) {
 	let committeeIds: number[] = []
@@ -20,7 +22,8 @@ async function getUserCommitteeIdsByUserId(userId: number | string) {
 	return committeeIds
 }
 
-interface IPopulatedApplication extends Omit<IApplication, 'committees'> {
+interface IPopulatedApplicationCommittees
+	extends Omit<IApplication, 'committees'> {
 	committees: ICommittee[]
 }
 
@@ -36,7 +39,12 @@ const getApplicationById = async (
 		const userCommitteeIds: number[] = await getUserCommitteeIdsByUserId(ntnuiNo)
 		// Retrieve application and committees the application is sent to
 		const application = await ApplicationModel.findById(req.params.application_id)
-			.populate<IPopulatedApplication>('committees', 'name slug')
+			.populate<IPopulatedApplicationCommittees>('committees', 'name slug')
+			.populate({
+				path: 'statuses',
+				populate: { path: 'committee', model: 'Committee', select: 'name' },
+				select: '-__v',
+			})
 			.then((applicationRes) => applicationRes)
 			.catch(() => {
 				throw new CustomError('Could not find application', 404)
@@ -79,6 +87,7 @@ const getApplications = async (
 			committees: { $in: committeeIds },
 		})
 			.populate('committees', 'name')
+			.select('-statuses')
 			.limit(LIMIT)
 			.skip(startIndex)
 			.then((applicationRes) => {
@@ -107,12 +116,9 @@ const postApplication = async (
 		if (!(await isAdmissionPeriodActive())) {
 			throw new CustomError('Admission period is not active', 403)
 		}
-
-		const application = new ApplicationModel(req.body)
-
 		// Check that all applied committees accepts admissions
 		const closedCommittees = await CommitteeModel.findOne({
-			_id: { $in: application.committees },
+			_id: { $in: req.body.committees },
 			accepts_admissions: false,
 		})
 		if (closedCommittees) {
@@ -120,6 +126,22 @@ const postApplication = async (
 				.status(400)
 				.json({ message: 'A committee the application was sent to is closed' })
 		}
+		// Create a status model for each committee the application is sent to
+		const statuses = req.body.committees.map((committee: number) => ({
+			committee,
+			status: StatusTypes.PENDING,
+		}))
+		// Insert statuses in database
+		const insertedStatuses = await StatusModel.insertMany(statuses, {
+			ordered: true,
+		})
+			.then((statusRes) => statusRes)
+			.catch(() => {
+				throw new CustomError('Something went wrong creating statuses', 500)
+			})
+		const statusIds = insertedStatuses.map((stat: IStatus) => stat)
+		// Create application
+		const application = new ApplicationModel({ ...req.body, statuses: statusIds })
 		return application
 			.save()
 			.then((newApplication) =>
