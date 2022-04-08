@@ -30,13 +30,15 @@ async function updateOrCreateUserModel(
 			upsert: true,
 			runValidators: true,
 		}
-	).catch((err) => {
-		throw new CustomError(
-			`Could not update or create user model.`,
-			500,
-			`${err.message}`
-		)
-	})
+	)
+		.then((user) => user)
+		.catch((err) => {
+			throw new CustomError(
+				`Could not update or create user model.`,
+				500,
+				`${err.message}`
+			)
+		})
 }
 
 async function getCommittees() {

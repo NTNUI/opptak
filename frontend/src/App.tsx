@@ -19,6 +19,7 @@ function App() {
 	return (
 		<MantineProvider
 			theme={{
+				fontFamily: 'Poppins, sans-serif',
 				colors: colors,
 			}}
 			children={

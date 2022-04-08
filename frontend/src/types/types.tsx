@@ -1,3 +1,16 @@
+import StatusTypes from '../utils/enums'
+
+export interface IStatus {
+	_id: string
+	value: StatusTypes
+	set_by: string | null
+	committee: {
+		name: string
+		_id: number
+	}
+	updated_date: Date
+}
+
 interface IApplication {
 	_id: string
 	name: string
@@ -6,6 +19,7 @@ interface IApplication {
 	text: string
 	committees: ICommittee[]
 	submitted_date: Date
+	statuses: IStatus[]
 }
 
 interface IApplicationsResponse {
