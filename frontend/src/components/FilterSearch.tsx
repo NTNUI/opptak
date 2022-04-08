@@ -1,36 +1,24 @@
-import { ClassNames } from '@emotion/react'
-import {
-	ActionIcon,
-	Badge,
-	Collapse,
-	createStyles,
-	Input,
-	MultiSelect,
-	Select,
-} from '@mantine/core'
+import { createStyles, Input, MultiSelect, Select } from '@mantine/core'
 import { useEffect, useState } from 'react'
-import { Search, Adjustments, X } from 'tabler-icons-react'
+import { ChevronDown, Search, X } from 'tabler-icons-react'
 import { getAllCommittees } from '../services/Committees'
 import { ICommittee } from '../types/types'
 
 const useStyles = createStyles((theme) => ({
-	outerWrapper: {
-		width: '100%',
-		display: 'flex',
-		flexDirection: 'column',
-		alignItems: 'center',
-	},
 	filterWrapper: {
-		//margin: '0rem auto 2rem',
 		padding: '0',
-		//width: '100%',
 		display: 'flex',
-		marginBottom: '1rem',
-		//gap: '1rem',
+		gap: '1rem',
 		flexDirection: 'column',
+		width: '100%',
+		alignItems: 'center',
+		marginBottom: '1rem',
+	},
+	searchWrapper: {
+		display: 'flex',
+		flexDirection: 'column',
+		justifyContent: 'center',
 		width: '60%',
-		//alignContent: 'center',
-		//justifyContent: 'center',
 		'@media (max-width: 600px)': {
 			width: '80%',
 		},
@@ -40,14 +28,6 @@ const useStyles = createStyles((theme) => ({
 		'@media (min-width: 1200px)': {
 			width: '50%',
 		},
-	},
-	searchWrapper: {
-		display: 'flex',
-		flexDirection: 'row',
-		gap: '0.5rem',
-		width: '100%',
-		justifyContent: 'center',
-		marginBottom: '1rem',
 	},
 	searchInputRoot: {
 		width: '100%',
@@ -67,29 +47,15 @@ const useStyles = createStyles((theme) => ({
 		color: 'white',
 	},
 	filter: {},
-	actionIconRoot: {},
-	actionIcon: {
-		backgroundColor: theme.colors.ntnui_yellow[9],
-		border: 'none',
-		color: theme.colors.ntnui_background[9],
-		width: '5rem',
-		'&:hover': {
-			backgroundColor: theme.colors.ntnui_yellow[9],
-		},
-	},
-	collapse: {
-		//backgroundColor: theme.colors.ntnui_yellow[9],
-		//padding: '0.5rem',
-	},
 	selectLabel: {
 		color: 'black',
 	},
-	selectSortingRoot: {
-		marginBottom: 0,
-	},
+	selectSortingRoot: {},
+	selectStatusRoot: {},
 	multiselectInput: {
 		background: 'transparent',
 		color: 'white',
+		//border: '1px solid' + theme.colors.ntnui_yellow[9],
 	},
 	multiselectValue: {
 		background: theme.colors.ntnui_yellow[9],
@@ -98,38 +64,29 @@ const useStyles = createStyles((theme) => ({
 	selectInput: {
 		background: 'transparent',
 		color: 'white',
+		//border: '1px solid' + theme.colors.ntnui_yellow[9],
 	},
 	badgeLabel: {
 		color: 'white',
 	},
-	collapseInner: {
-		border: '2px solid' + theme.colors.ntnui_yellow[9],
-		borderRadius: theme.radius.sm,
-		padding: '1rem',
-		display: 'grid',
-		gap: '1rem',
-		gridTemplateColumns: '1fr 1fr',
-		marginBottom: '1rem',
-	},
 	filterPreview: {
 		marginBottom: '1rem',
 		display: 'grid',
-		gap: '1rem',
-		gridTemplateColumns: '3fr 1fr',
+		gap: '0.5rem',
+		columnGap: '2rem',
+		gridTemplateColumns: '1fr 1fr',
 		'@media (max-width: 600px)': {
 			width: '90%',
 			display: 'flex',
 			flexDirection: 'column',
-			gap: '1rem',
-			//alignItems: 'center',
+			gap: '0.5rem',
 		},
 		'@media (min-width: 600px)': {
 			width: '80%',
-			gridTemplateColumns: '4fr 2fr',
 		},
 		'@media (min-width: 1200px)': {
 			width: '70%',
-			gridTemplateColumns: '3fr 1fr',
+			columnGap: '4rem',
 		},
 	},
 	filterBadgesWrapper: {
@@ -142,20 +99,16 @@ const useStyles = createStyles((theme) => ({
 		color: theme.colors.ntnui_yellow[9],
 		border: ' 1px solid' + theme.colors.ntnui_yellow[9],
 	},
-	// filterBadgeOutline: {
-	// 	border: '2px solid' + theme.colors.ntnui_yellow[9],
-	// },
+	multiselectRoot: {
+		gridColumn: '1 / 3',
+	},
+	selectRightSection: {
+		pointerEvents: 'none',
+	},
 }))
-
-// const removeButton = (
-// 	<ActionIcon size='xs' color='yellow' radius='xl' variant='transparent'>
-// 		<X size={12} strokeWidth={3} />
-// 	</ActionIcon>
-// )
 
 function FilterSearch() {
 	const { classes } = useStyles()
-	const [opened, setOpen] = useState(false)
 	const [committees, setCommittees] = useState<ICommittee[]>([])
 	const [chosenCommittees, setChosenCommittees] = useState<string[]>([])
 	const [status, setStatus] = useState<string>()
@@ -179,102 +132,88 @@ function FilterSearch() {
 		})
 	}
 
-	function FilterBadge(name: string, key: number) {
-		return (
-			<Badge
-				classNames={{
-					root: classes.filterBadgeRoot,
-					//outline: classes.filterBadgeOutline,
-					// inner: classes.filterBadgeInner,
-				}}
-				key={key}
-				variant='outline'
-				//sx={{ paddingRight: 3 }}
-			>
-				{name}
-			</Badge>
-		)
-	}
-
 	return (
-		<>
-			<div className={classes.filterWrapper}>
-				<div className={classes.searchWrapper}>
-					<Input
-						classNames={{
-							wrapper: classes.searchInputRoot,
-							defaultVariant: classes.searchInput,
-							input: classes.searchInputField,
-							withIcon: classes.withIcon,
-						}}
-						icon={<Search />}
-						variant='default'
-						placeholder='Søk etter søker ...'
-						size='md'
-					/>
+		<div className={classes.filterWrapper}>
+			<div className={classes.searchWrapper}>
+				<Input
+					classNames={{
+						wrapper: classes.searchInputRoot,
+						defaultVariant: classes.searchInput,
+						input: classes.searchInputField,
+						withIcon: classes.withIcon,
+					}}
+					icon={<Search />}
+					variant='default'
+					placeholder='Søk etter søker ...'
+					size='md'
+				/>
 
-					<ActionIcon
+				{/* <ActionIcon
 						classNames={{ root: classes.actionIconRoot, filled: classes.actionIcon }}
 						variant='filled'
 						size={42}
 						onClick={() => setOpen((o) => !o)}
 					>
 						<Adjustments size={30} />
-					</ActionIcon>
-				</div>
-
-				<Collapse className={classes.collapse} in={opened}>
-					<div className={classes.collapseInner}>
-						<MultiSelect
-							classNames={{
-								input: classes.multiselectInput,
-								value: classes.multiselectValue,
-							}}
-							data={committeesToStrings(committees)}
-							label={<span className={classes.badgeLabel}>Velg utvalg</span>}
-							placeholder='Velg utvalg'
-							searchable
-							clearable
-							nothingFound='Nothing found'
-							value={chosenCommittees}
-							onChange={setChosenCommittees}
-						/>
-						<Select
-							classNames={{
-								label: classes.selectLabel,
-								input: classes.selectInput,
-							}}
-							data={['Alle', 'Akseptert', 'Innkalt', 'Ubehandlet', 'Avvist']}
-							label={<span className={classes.badgeLabel}>Velg status</span>}
-							defaultValue={'Alle'}
-							value={status}
-							onChange={(e) => setStatus(e as string)}
-						/>
-					</div>
-				</Collapse>
+					</ActionIcon> */}
 			</div>
 			<div className={classes.filterPreview}>
-				<div className={classes.filterBadgesWrapper}>
-					{chosenCommittees.map((committee: string, key: number) =>
-						FilterBadge(committee, key)
-					)}
-				</div>
+				<Select
+					classNames={{
+						root: classes.selectStatusRoot,
+						label: classes.selectLabel,
+						input: classes.selectInput,
+						rightSection: classes.selectRightSection,
+					}}
+					data={['Alle', 'Akseptert', 'Innkalt', 'Ubehandlet', 'Avvist']}
+					label={<span className={classes.badgeLabel}>Velg status</span>}
+					defaultValue={'Alle'}
+					value={status}
+					onChange={(e) => setStatus(e as string)}
+					rightSection={<ChevronDown size={14} />}
+					rightSectionWidth={40}
+				/>
+
 				<Select
 					classNames={{
 						root: classes.selectSortingRoot,
 						label: classes.selectLabel,
 						input: classes.selectInput,
+						rightSection: classes.selectRightSection,
 					}}
-					data={['Nyeste først', 'Eldste først']}
-					//label={<span className={classes.badgeLabel}>Sorter etter</span>}
+					data={[
+						{ value: 'nyeste først', label: 'Nyeste først', group: 'Dato' },
+						{ value: 'eldste først', label: 'Eldste først', group: 'Dato' },
+						{ value: 'A-Å', label: 'A-Å', group: 'Alfabetisk' },
+						{ value: 'Å-A', label: 'Å-A', group: 'Alfabetisk' },
+					]}
+					label={<span className={classes.badgeLabel}>Sorter etter</span>}
 					//nothingFound='Nothing found'
-					defaultValue={'Nyeste først'}
+					defaultValue={'nyeste først'}
 					size='sm'
 					value={dateSort}
 					onChange={(e) => setDateSort(e as string)}
+					rightSection={<ChevronDown size={14} />}
+					rightSectionWidth={40}
+				/>
+				<MultiSelect
+					classNames={{
+						root: classes.multiselectRoot,
+						input: classes.multiselectInput,
+						value: classes.multiselectValue,
+					}}
+					data={committeesToStrings(committees)}
+					label={<span className={classes.badgeLabel}>Velg utvalg</span>}
+					placeholder='Velg utvalg'
+					searchable
+					clearable
+					nothingFound='Nothing found'
+					value={chosenCommittees}
+					onChange={setChosenCommittees}
+					rightSectionWidth={40}
 				/>
 			</div>
-		</>
+		</div>
 	)
 }
 
