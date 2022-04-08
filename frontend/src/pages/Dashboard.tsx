@@ -9,7 +9,7 @@ import {
 
 const useStyles = createStyles((theme) => ({
 	dashboardWrapper: {
-		margin: 0,
+		margin: '1rem',
 		height: '100%',
 		display: 'flex',
 		flexDirection: 'column',
@@ -17,6 +17,7 @@ const useStyles = createStyles((theme) => ({
 		color: 'white',
 	},
 	metroBoxWrapper: {
+		paddingTop: '1rem',
 		margin: 0,
 		height: '100%',
 		display: 'flex',
@@ -33,6 +34,8 @@ const useStyles = createStyles((theme) => ({
 	},
 	metroBoxes: {
 		border: '2px solid ' + theme.colors.ntnui_yellow[9],
+		width: '170px',
+		borderRadius: theme.radius.sm,
 		display: 'flex',
 		flexDirection: 'column',
 		alignItems: 'center',
@@ -41,10 +44,27 @@ const useStyles = createStyles((theme) => ({
 		cursor: 'pointer',
 		'&:active': {
 			transform: 'scale(0.98)',
+			color: '#F8F082',
+			boxShadow: '0 0 2px #F8F082',
+		},
+		'&:hover': {
+			color: '#F8F082',
+			boxShadow: '0 0 10px #F8F082',
+			transition: 'ease-in-out 0.1s',
 		},
 	},
 	date: {
-		color: 'royalblue',
+		color: theme.colors.ntnui_blue[9],
+		fontWeight: '600',
+		textAlign: 'center',
+		fontSize: '1.3rem',
+	},
+	text: {
+		textAlign: 'center',
+		fontWeight: 'lighter',
+	},
+	header: {
+		fontWeight: '600',
 	},
 }))
 
@@ -91,34 +111,36 @@ function Dashboard() {
 
 	return (
 		<Box className={classes.dashboardWrapper}>
-			<h1>Hei, Bolle Bollesen!</h1>
+			<h1 className={classes.text}>
+				Hei, <span className={classes.header}>Bolle Bollesen!</span>
+			</h1>
 			{periodOpen ? (
-				<p>
-					Opptaksperioden er satt fra{' '}
+				<p className={classes.text}>
+					<CalendarEvent size={24} strokeWidth={1.5} /> Opptaksperioden er satt fra{' '}
 					<span className={classes.date}>{startDate}</span> til{' '}
 					<span className={classes.date}>{endDate}</span>{' '}
 				</p>
 			) : (
-				<p>Det er for tiden ingen satt opptaksperiode</p>
+				<p className={classes.text}>Det er for tiden ingen satt opptaksperiode</p>
 			)}
 			<div className={classes.metroBoxWrapper}>
 				<Box
 					className={classes.metroBoxes}
 					onClick={() => navigate('/applications')}
 				>
-					<FileText size={150} strokeWidth={0.7} /> Søknader
+					<FileText size={150} strokeWidth={0.9} /> Søknader
 				</Box>
 				<Box
 					className={classes.metroBoxes}
 					onClick={() => navigate('/admission-status')}
 				>
-					<Users size={150} strokeWidth={0.7} /> Opptaksstatus
+					<Users size={150} strokeWidth={0.9} /> Opptaksstatus
 				</Box>
 				<Box
 					className={classes.metroBoxes}
 					onClick={() => navigate('/admission-period')}
 				>
-					<CalendarEvent size={150} strokeWidth={0.7} /> Opptaksperiode
+					<CalendarEvent size={150} strokeWidth={0.9} /> Opptaksperiode
 				</Box>
 			</div>
 		</Box>
