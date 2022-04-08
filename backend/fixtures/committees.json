@@ -1,86 +1,70 @@
 [
 	{
-		"_id": 79,
-		"name": "Baneutvalget",
-		"slug": "baneutvalget",
-		"access_roles": ["deputy_leader"]
+		"_id": 2,
+		"name": "Triatlon",
+		"slug": "triatlon",
+		"access_roles": ["deputy_leader"],
+		"accepts_admissions": true
 	},
 	{
-		"_id": 44,
-		"name": "Blits",
-		"slug": "blits",
-		"access_roles": ["deputy_leader"]
+		"_id": 3,
+		"name": "Turn",
+		"slug": "turn",
+		"access_roles": [],
+		"accepts_admissions": true
 	},
 	{
-		"_id": 74,
-		"name": "Event",
-		"slug": "event",
-		"access_roles": ["deputy_leader"]
+		"_id": 4,
+		"name": "Ski og Fjellsport",
+		"slug": "ski-og-fjellsport",
+		"access_roles": ["deputy_leader"],
+		"accepts_admissions": false
 	},
 	{
-		"_id": 52,
-		"name": "Hovedstyret",
-		"slug": "hovedstyret",
-		"access_roles": ["deputy_leader"]
-	},
-	{
-		"_id": 78,
-		"name": "Interimstyret",
-		"slug": "interimstyret",
-		"access_roles": ["deputy_leader"]
-	},
-	{
-		"_id": 73,
-		"name": "Kontrollutvalget",
-		"slug": "kontrollutvalget",
-		"access_roles": ["deputy_leader"]
-	},
-	{
-		"_id": 72,
-		"name": "Lovutvalget",
-		"slug": "lovutvalget",
-		"access_roles": ["deputy_leader"]
-	},
-	{
-		"_id": 93,
-		"name": "Moment",
-		"slug": "moment",
-		"access_roles": ["deputy_leader"]
-	},
-	{
-		"_id": 76,
-		"name": "Økonomiutvalget",
-		"slug": "okonomiutvalget",
-		"access_roles": []
-	},
-	{
-		"_id": 75,
-		"name": "Paraidrett",
-		"slug": "paraidrett",
-		"access_roles": []
+		"_id": 5,
+		"name": "Hidden-test-group",
+		"slug": "hidden-test-group",
+		"access_roles": [],
+		"accepts_admissions": false
 	},
 	{
 		"_id": 6,
+		"name": "Tindegruppa",
+		"slug": "tindegruppa",
+		"access_roles": ["deputy_leader"],
+		"accepts_admissions": false
+	},
+	{
+		"_id": 7,
+		"name": "Koiene",
+		"slug": "koiene",
+		"access_roles": ["deputy_leader"],
+		"accepts_admissions": false
+	},
+	{
+		"_id": 8,
+		"name": "Aikido",
+		"slug": "aikido",
+		"access_roles": [],
+		"accepts_admissions": false
+	},
+	{
+		"_id": 9,
+		"name": "Hovedstyret",
+		"slug": "hovedstyret",
+		"access_roles": [
+			"deputy_leader",
+			"cashier",
+			"board_member",
+			"deputy_board_member"
+		],
+		"accepts_admissions": true
+	},
+	{
+		"_id": 10,
 		"name": "Sprint",
 		"slug": "sprint",
-		"access_roles": []
-	},
-	{
-		"_id": 80,
-		"name": "Studentlekene",
-		"slug": "studentlekene",
-		"access_roles": []
-	},
-	{
-		"_id": 71,
-		"name": "Valgkomiteen",
-		"slug": "valgkomiteen",
-		"access_roles": []
-	},
-	{
-		"_id": 97,
-		"name": "Vedtektskomiteen",
-		"slug": "vedtektskomiteen",
-		"access_roles": []
+		"access_roles": ["deputy_leader", "cashier"],
+		"accepts_admissions": true
 	}
 ]

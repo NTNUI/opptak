@@ -1,0 +1,79 @@
+[
+	{
+		"_id": {
+			"$oid": "62500ace8515676685700dde"
+		},
+		"value": "Pending",
+		"set_by": null,
+		"committee": 6,
+		"updated_date": {
+			"$date": "2022-04-08T10:13:34.528Z"
+		}
+	},
+	{
+		"_id": {
+			"$oid": "62500c32b0a502a2feda6ae4"
+		},
+		"value": "Pending",
+		"set_by": null,
+		"committee": 2,
+		"updated_date": {
+			"$date": "2022-04-08T10:19:30.298Z"
+		}
+	},
+	{
+		"_id": {
+			"$oid": "62500c32b0a502a2feda6ae5"
+		},
+		"value": "Pending",
+		"set_by": null,
+		"committee": 3,
+		"updated_date": {
+			"$date": "2022-04-08T10:19:30.299Z"
+		}
+	},
+	{
+		"_id": {
+			"$oid": "62500d8cb0a502a2feda6aed"
+		},
+		"value": "Pending",
+		"set_by": null,
+		"committee": 4,
+		"updated_date": {
+			"$date": "2022-04-08T10:25:16.551Z"
+		}
+	},
+	{
+		"_id": {
+			"$oid": "62500db3b0a502a2feda6af3"
+		},
+		"value": "Pending",
+		"set_by": null,
+		"committee": 9,
+		"updated_date": {
+			"$date": "2022-04-08T10:25:55.481Z"
+		}
+	},
+	{
+		"_id": {
+			"$oid": "62500dbfb0a502a2feda6af9"
+		},
+		"value": "Pending",
+		"set_by": null,
+		"committee": 9,
+		"updated_date": {
+			"$date": "2022-04-08T10:26:07.322Z"
+		}
+	},
+	{
+		"_id": {
+			"$oid": "62500dbfb0a502a2feda6afa"
+		},
+		"value": "Pending",
+		"set_by": null,
+		"committee": 10,
+		"updated_date": {
+			"$date": "2022-04-08T10:26:07.322Z"
+		}
+	}
+]
