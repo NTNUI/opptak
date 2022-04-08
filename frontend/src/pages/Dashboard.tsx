@@ -6,6 +6,7 @@ import {
 	isApplicationPeriodActive,
 	getAdmissionPeriod,
 } from '../services/Applications'
+import isOrganizer from '../utils/isOrganizer'
 
 const useStyles = createStyles((theme) => ({
 	dashboardWrapper: {
@@ -74,10 +75,14 @@ function Dashboard() {
 	const [periodOpen, setPeriodOpen] = useState<boolean>(false)
 	const [startDate, setStartDate] = useState<string>('')
 	const [endDate, setEndDate] = useState<string>('')
+	const [isTheOrganizer, setTheOrganizer] = useState<boolean>(false)
 
 	useEffect(() => {
 		const getApplicationPeriodActiveAsync = async () => {
 			try {
+				if (await isOrganizer()) {
+					setTheOrganizer(true)
+				}
 				const response = await isApplicationPeriodActive()
 				setPeriodOpen(response)
 				if (response) {
@@ -136,12 +141,14 @@ function Dashboard() {
 				>
 					<Users size={150} strokeWidth={0.9} /> Opptaksstatus
 				</Box>
-				<Box
-					className={classes.metroBoxes}
-					onClick={() => navigate('/admission-period')}
-				>
-					<CalendarEvent size={150} strokeWidth={0.9} /> Opptaksperiode
-				</Box>
+				{isTheOrganizer && (
+					<Box
+						className={classes.metroBoxes}
+						onClick={() => navigate('/admission-period')}
+					>
+						<CalendarEvent size={150} strokeWidth={0.9} /> Opptaksperiode
+					</Box>
+				)}
 			</div>
 		</Box>
 	)
