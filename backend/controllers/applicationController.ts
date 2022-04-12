@@ -122,29 +122,36 @@ const getApplications = async (
 
 		// Pagination
 		const { page, name, committee } = req.query
-		const LIMIT = 4
-		const startIndex = (page - 1) * LIMIT
-
-		let filter
-
-		if (committeeIds.includes(ELECTION_COMMITTEE_ID)) {
-			// Election committee are allowed to see all applications
-			filter = {}
-		} else if (committeeIds.includes(MAIN_BOARD_ID)) {
-			// Main board are allowed to see all applications except
-			// to the main board
-			filter = { committees: { $ne: [MAIN_BOARD_ID] } }
-		} else {
-			// All other committees are only allowed to se applications
-			// to their own committee
-			filter = { committees: { $in: committeeIds } }
+		// Committee querying - returns queried committee if it contains one of users committees
+		const containUsersCommittee = { committees: { $in: userCommitteeIds } }
+		let committeeQuery: {} = containUsersCommittee // Base case
+		if (committee) {
+			committeeQuery = {
+				$and: [{ committees: { $eq: committee } }, containUsersCommittee],
+			}
+			// Querying for multiple committees
+			if (Array.isArray(committee)) {
+				committeeQuery = {
+					$and: [{ committees: { $in: committee } }, containUsersCommittee],
+				}
+			}
 		}
-
-		const total = await ApplicationModel.countDocuments(filter)
-
-		const applications = await ApplicationModel.find(filter)
-			.populate<IPopulatedApplicationCommittees>('committees', 'name')
-			.select('name committees submitted_date')
+		// Name querying
+		const nameQuery = name ? { name: { $regex: name, $options: 'i' } } : {}
+		// Create filter options
+		const filterOptions = {
+			...nameQuery,
+			...committeeQuery,
+		}
+		// Pagination
+		const LIMIT = 4
+		const startIndex = (Number(page) - 1) * LIMIT
+		const total = await ApplicationModel.countDocuments(filterOptions)
+		// Retrieve applications that following given filter
+		let applications: IApplication[] = []
+		await ApplicationModel.find(filterOptions)
+			.populate('committees', 'name')
+			.select('-statuses')
 			.limit(LIMIT)
 			.skip(startIndex)
 			.then((applicationRes) => applicationRes)
@@ -172,7 +179,7 @@ const getApplications = async (
 		const committeeString = committee as string
 		if (committeeString) {
 			const committees = committeeString.split(',')
-			const committeeIds = committees.map((committee) => Number(committee))
+			const committeeIds = committees.map((committeeId) => Number(committeeId))
 			console.log(committeeIds)
 			// Some kind of filter
 		}
