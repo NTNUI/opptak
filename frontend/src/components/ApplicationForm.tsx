@@ -5,6 +5,7 @@ import {
 	createStyles,
 	MultiSelect,
 	Loader,
+	Badge,
 } from '@mantine/core'
 import { useForm } from '@mantine/hooks'
 import axios from 'axios'
@@ -151,7 +152,7 @@ export function Form() {
 			email: (value) => /^\S+@\S+$/.test(value),
 			name: (value) => value.trim().length >= 1,
 			phone_number: (value) => /^\+{0,1}[0-9]+$/.test(value),
-			text: (value) => value.trim().length >= 1,
+			text: (value) => value.trim().length >= 1 && value.trim().length <= 2500,
 			committees: (value) => value.length > 0,
 		},
 
@@ -159,7 +160,7 @@ export function Form() {
 			email: 'Ugyldig format på e-post; prøv igjen med formatet navn@domene.no',
 			name: 'Feltet kan ikke være tomt',
 			phone_number: 'Telefonnummer kan kun inneholde tall',
-			text: 'Søknadsfeltet kan ikke være tomt',
+			text: 'Søknadsfeltet kan ikke være tomt eller inneholde mer enn 2500 tegn',
 			committees: 'Velg minst 1 komité',
 		},
 	})
@@ -222,8 +223,22 @@ export function Form() {
 			<Textarea
 				required
 				classNames={{ label: classes.labelText, input: classes.formField }}
-				label={'Søknadstekst'}
+				label='Søknadstekst'
+				description={
+					<>
+						<Badge
+							color={form.values.text.length > 2500 ? 'red' : 'white'}
+							size='xs'
+							radius='xs'
+							variant='outline'
+							fullWidth
+						>
+							{form.values.text.length}/2500
+						</Badge>
+					</>
+				}
 				autosize
+				maxRows={10}
 				minRows={3}
 				onBlur={() => form.validateField('text')}
 				{...form.getInputProps('text')}
