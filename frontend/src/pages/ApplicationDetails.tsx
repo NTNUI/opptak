@@ -322,14 +322,14 @@ function ApplicationDetailPage() {
 							<h2 className={classes.sectionTitle}>
 								<ClipboardList size={32} /> Personinformasjon
 							</h2>
-							<p className={classes.personalInfoItem}>
+							<div className={classes.personalInfoItem}>
 								<User size={24} />
 								<p>
 									<b>Navn:</b>
 									{isLoading || !application ? <YellowDotLoader /> : application.name}
 								</p>
-							</p>
-							<p className={classes.personalInfoItem}>
+							</div>
+							<div className={classes.personalInfoItem}>
 								<Phone size={24} />
 								<p>
 									<b>Telefon:</b>
@@ -339,8 +339,8 @@ function ApplicationDetailPage() {
 										application.phone_number
 									)}
 								</p>
-							</p>
-							<p className={`${classes.personalInfoItem} ${classes.email}`}>
+							</div>
+							<div className={`${classes.personalInfoItem} ${classes.email}`}>
 								<Mail size={24} />
 								<p>
 									<b>E-post:</b>
@@ -350,8 +350,8 @@ function ApplicationDetailPage() {
 										<a href={`mailto:${application.email}`}>{application.email}</a>
 									)}
 								</p>
-							</p>
-							<p className={classes.personalInfoItem}>
+							</div>
+							<div className={classes.personalInfoItem}>
 								<Clock size={24} />
 								<p>
 									<b>Sendt inn:</b>
@@ -361,7 +361,7 @@ function ApplicationDetailPage() {
 										stringifyDate(application.submitted_date)
 									)}
 								</p>
-							</p>
+							</div>
 						</Box>
 						<Box className={classes.statusSection}>
 							<h2 className={classes.sectionTitle}>
