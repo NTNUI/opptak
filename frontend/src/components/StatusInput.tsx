@@ -29,7 +29,6 @@ interface IStatusStyleProps {
 }
 
 const useStyles = createStyles((theme, { statusValue }: IStatusStyleProps) => ({
-	root: {},
 	label: {
 		color: 'white',
 		wordBreak: 'break-word',
@@ -51,8 +50,6 @@ const useStyles = createStyles((theme, { statusValue }: IStatusStyleProps) => ({
 	icon: {
 		color: isYellow(statusValue) ? 'black' : 'white',
 	},
-
-	description: {},
 }))
 
 function isYellow(value: StatusTypes): boolean {
@@ -162,8 +159,6 @@ function StatusInput({
 				itemComponent={SelectItem}
 				icon={getIconForStatus(statusValue)}
 				classNames={{
-					root: classes.root,
-					description: classes.description,
 					label: classes.label,
 					icon: classes.icon,
 					input: classes.input,

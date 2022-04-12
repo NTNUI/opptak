@@ -76,6 +76,7 @@ const useStyles = createStyles(
 			color: 'white',
 			display: 'grid',
 			gridTemplateColumns: '2fr 1fr',
+			gridTemplateRows: 'auto 1fr',
 			gridTemplateAreas:
 				amountOfStatuses > 4
 					? `
@@ -254,7 +255,6 @@ function ApplicationDetailPage() {
 			}
 			getApplicationAsync()
 		}
-		console.log(amountOfStatuses)
 	}, [id, navigate])
 
 	function stringifyDate(date: Date) {
