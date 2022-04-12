@@ -151,7 +151,13 @@ const getApplications = async (
 		let applications: IApplication[] = []
 		await ApplicationModel.find(filterOptions)
 			.populate('committees', 'name')
-			.select('-statuses')
+			.populate(
+				{
+					path: 'statuses',
+					populate: { path: 'committee', model: 'Committee', select: 'name' },
+					select: '-__v',
+				}
+			)
 			.limit(LIMIT)
 			.skip(startIndex)
 			.then((applicationRes) => applicationRes)
@@ -165,23 +171,6 @@ const getApplications = async (
 					}
 				}
 			}
-		}
-
-		// Filter applications by name
-		const nameString = name as string
-		if (nameString) {
-			applications = applications.filter((application) =>
-				application.name.toLowerCase().includes(nameString.toLowerCase())
-			)
-		}
-
-		// Filter applications by query committee id
-		const committeeString = committee as string
-		if (committeeString) {
-			const committees = committeeString.split(',')
-			const committeeIds = committees.map((committeeId) => Number(committeeId))
-			console.log(committeeIds)
-			// Some kind of filter
 		}
 
 		return res.status(200).json({
