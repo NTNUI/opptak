@@ -1,15 +1,9 @@
-import {
-	createStyles,
-	Group,
-	Loader,
-	MantineTheme,
-	Select,
-} from '@mantine/core'
+import { createStyles, Group, Select } from '@mantine/core'
+import { useNotifications } from '@mantine/notifications'
 import axios from 'axios'
 import { forwardRef } from 'react'
 import { useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { ChevronDown } from 'tabler-icons-react'
+import { ChevronDown, X } from 'tabler-icons-react'
 
 import StatusTypes from '../utils/enums'
 import {
@@ -83,6 +77,7 @@ function StatusInput({
 	const [updatedDateValue, setUpdatedDateValue] = useState<Date>(updated_date)
 	const { classes } = useStyles({ statusValue })
 	const [isLoading, setIsLoading] = useState<boolean>(false)
+	const notification = useNotifications()
 
 	const StatusOptions = () => {
 		return Object.values(StatusTypes).map((status: StatusTypes) => {
@@ -108,6 +103,16 @@ function StatusInput({
 				})
 				.catch((err) => {
 					setIsLoading(false)
+					notification.showNotification({
+						title: 'Kunne ikke endre status!',
+						message:
+							'En feil oppstod. Ta kontakt med sprint@ntnui.no dersom problemet vedvarer',
+						color: 'red',
+						autoClose: false,
+						icon: <X size={18} />,
+					})
+					// Set value back to what was previously set
+					setStatusValue(value)
 					console.log(err)
 				})
 		}
