@@ -3,6 +3,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"author": "NTNUI",
+	"type": "module",
 	"description": "NTNUI Admin application form backend",
 	"repository": {
 		"type": "git",
@@ -24,7 +25,7 @@
 		"express": "^4.17.3",
 		"jsonwebtoken": "^8.5.1",
 		"mongoose": "^6.2.3",
-		"ntnui-tools": "file:../package",
+		"ntnui-tools": "^0.0.2",
 		"validation": "^0.0.1"
 	},
 	"main": "app.ts",

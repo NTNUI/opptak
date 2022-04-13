@@ -45,4 +45,4 @@ To run backend locally, run `npm run backend`. For more details check out [backe
 
 ### 📦 TypeScript npm package
 
-The package is included in the `/package` folder. After development is complete it will be published to npm and can be installed with `npm install ntnui-tools`.
+The package is published in the [npm registry](https://www.npmjs.com/package/ntnui-tools) and installed using `npm i ntnui-tools`.
