@@ -1,4 +1,4 @@
-import { Box, createStyles } from '@mantine/core'
+import { Box, createStyles, Loader } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { CalendarEvent, FileText, Users } from 'tabler-icons-react'
@@ -7,6 +7,7 @@ import {
 	getAdmissionPeriod,
 } from '../services/Applications'
 import isOrganizer from '../utils/isOrganizer'
+import { getNtnuiProfile } from '../../../package/index'
 
 const useStyles = createStyles((theme) => ({
 	dashboardWrapper: {
@@ -43,6 +44,7 @@ const useStyles = createStyles((theme) => ({
 		gap: '1rem',
 		padding: '1rem',
 		cursor: 'pointer',
+		transition: 'ease-in-out 0.1s',
 		'&:active': {
 			transform: 'scale(0.98)',
 			color: '#F8F082',
@@ -51,7 +53,6 @@ const useStyles = createStyles((theme) => ({
 		'&:hover': {
 			color: '#F8F082',
 			boxShadow: '0 0 10px #F8F082',
-			transition: 'ease-in-out 0.1s',
 		},
 	},
 	date: {
@@ -63,9 +64,16 @@ const useStyles = createStyles((theme) => ({
 	text: {
 		textAlign: 'center',
 		fontWeight: 'lighter',
+		'*': {
+			// Icon
+			margin: '0 0 -3px 0',
+		},
 	},
 	header: {
 		fontWeight: '600',
+	},
+	loader: {
+		margin: '0 0 -3px 0',
 	},
 }))
 
@@ -76,8 +84,10 @@ function Dashboard() {
 	const [startDate, setStartDate] = useState<string>('')
 	const [endDate, setEndDate] = useState<string>('')
 	const [isTheOrganizer, setTheOrganizer] = useState<boolean>(false)
+	const [isLoading, setIsLoading] = useState<boolean>(false)
 
 	useEffect(() => {
+		setIsLoading(true)
 		const getApplicationPeriodActiveAsync = async () => {
 			try {
 				if (await isOrganizer()) {
@@ -104,6 +114,7 @@ function Dashboard() {
 						})
 						setStartDate(parsedStartDate)
 						setEndDate(parsedEndDate)
+						setIsLoading(false)
 					}
 					getApplicationsPeriodAsync()
 				}
@@ -122,8 +133,17 @@ function Dashboard() {
 			{periodOpen ? (
 				<p className={classes.text}>
 					<CalendarEvent size={24} strokeWidth={1.5} /> Opptaksperioden er satt fra{' '}
-					<span className={classes.date}>{startDate}</span> til{' '}
-					<span className={classes.date}>{endDate}</span>{' '}
+					{isLoading ? (
+						<Loader className={classes.loader} color='blue' variant='dots' />
+					) : (
+						<span className={classes.date}>{startDate}</span>
+					)}{' '}
+					til{' '}
+					{isLoading ? (
+						<Loader className={classes.loader} color='blue' variant='dots' />
+					) : (
+						<span className={classes.date}>{endDate}</span>
+					)}
 				</p>
 			) : (
 				<p className={classes.text}>Det er for tiden ingen satt opptaksperiode</p>
