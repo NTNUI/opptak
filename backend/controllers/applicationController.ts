@@ -63,8 +63,6 @@ const getApplicationById = async (
 			return res.status(200).json({ application })
 		}
 
-		// Remove the main_board_id from the committee-array and the
-		// status-array in the result-set
 		const applicationCommittees: ICommittee[] = application.committees
 		if (userCommitteeIds.includes(MAIN_BOARD_ID)) {
 			for (let i = 0; i < applicationCommittees.length; i += 1) {
@@ -75,21 +73,13 @@ const getApplicationById = async (
 				}
 			}
 
-			// If the applications was only sent to the main board, then the
-			// committee array is now empty, since a board member is not
-			// allowed to see applications to the main board
 			if (applicationCommittees.length > 0) {
 				return res.status(200).json({ application })
 			}
 			return res.status(403).json({ message: 'Not authorized' })
 		}
 
-		// If user is not in election committee or the main board,
-		// the code under will be runned, cause the user then is a
-		// member of an other committee
-
 		let authorized = false
-		// Check if user is in committee that application is sent to
 		for (let id = 0; id < applicationCommittees.length; id += 1) {
 			const appCommitteeId = applicationCommittees[id]._id
 			if (userCommitteeIds.includes(appCommitteeId)) {
@@ -141,43 +131,29 @@ const getApplications = async (
 		const LIMIT = 4
 		const startIndex = (pageNum - 1) * LIMIT
 
-		let applications: IApplication[] = []
 		let filter
-		let applicationCommitte: { _id: Number; name: string }
 
-		// If user is member of election committe, retrieve all applications
 		if (committeeIds.includes(ELECTION_COMMITTEE_ID)) {
 			filter = {}
 		} else if (committeeIds.includes(MAIN_BOARD_ID)) {
-			// If user is member of main board, retrieve all applications
-			// without applications that only is for the main board
 			filter = { committees: { $ne: [MAIN_BOARD_ID] } }
 		} else {
-			// Retrieve applications that only have the given committees
 			filter = { committees: { $in: committeeIds } }
 		}
 
 		const total = await ApplicationModel.countDocuments(filter)
 
-		await ApplicationModel.find(filter)
-			.populate('committees', 'name')
+		const applications = await ApplicationModel.find(filter)
+			.populate<IPopulatedApplicationCommittees>('committees', 'name')
 			.select('name committees submitted_date')
 			.limit(LIMIT)
 			.skip(startIndex)
-			.then((applicationRes) => {
-				applications = applicationRes
-			})
+			.then((applicationRes) => applicationRes)
 
-		// Filter out the main_board_id from committees in applications
-		// if the user is not member of the election committee
 		if (!committeeIds.includes(ELECTION_COMMITTEE_ID)) {
 			for (let i = 0; i < applications.length; i += 1) {
 				for (let j = 0; j < applications[i].committees.length; j += 1) {
-					// Based on how the Object.values work, to access the values in the object
-					// we have to get element 2 in the object
-					;[, , applicationCommitte] = Object.values(applications[i].committees[j])
-
-					if (applicationCommitte._id === MAIN_BOARD_ID) {
+					if (applications[i].committees[j]._id === MAIN_BOARD_ID) {
 						applications[i].committees.splice(j, 1)
 						j -= 1
 					}
