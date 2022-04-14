@@ -33,8 +33,7 @@ const getUserProfile = async (
 		const { ntnuiNo } = req
 		if (!ntnuiNo) throw UnauthorizedUserError
 		const user = await UserModel.findOne({ _id: ntnuiNo }).populate(
-			'committees.committee',
-			'name slug'
+			'committees.committee'
 		)
 		if (!user) throw UnauthorizedUserError
 		return res.status(200).json({

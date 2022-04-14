@@ -14,6 +14,7 @@ export const getUserCommittees = async (): Promise<IRoleInCommittee[]> => {
 export interface IUserProfile {
 	first_name: string
 	last_name: string
+	committees: IRoleInCommittee[]
 }
 
 export const getUserProfile = async (): Promise<IUserProfile> => {
