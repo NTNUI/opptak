@@ -10,3 +10,13 @@ export const getUserCommittees = async (): Promise<IRoleInCommittee[]> => {
 	const response = await axios.get('/user/committees')
 	return response.data.committees
 }
+
+export interface IUserProfile {
+	first_name: string
+	last_name: string
+}
+
+export const getUserProfile = async (): Promise<IUserProfile> => {
+	const response = await axios.get('/user/profile')
+	return response.data
+}
