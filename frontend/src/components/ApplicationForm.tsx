@@ -5,9 +5,8 @@ import {
 	createStyles,
 	MultiSelect,
 	Loader,
-	Badge,
 } from '@mantine/core'
-import { useForm } from '@mantine/hooks'
+import { useForm } from '@mantine/form'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useNotifications } from '@mantine/notifications'
@@ -62,6 +61,22 @@ const useStyles = createStyles((theme) => ({
 		'&:focus': {
 			backgroundColor: 'darkgreen',
 		},
+	},
+	textareaError: {
+		display: 'none',
+	},
+	textareaBottomLabel: {
+		margin: 0,
+		fontSize: '14px',
+		display: 'flex',
+		justifyContent: 'space-between',
+		p: {
+			margin: 0,
+		},
+	},
+	textareaCustomError: {
+		margin: 0,
+		color: '#f03e3e',
 	},
 }))
 
@@ -148,20 +163,24 @@ export function Form() {
 			committees: [],
 		},
 
-		validationRules: {
-			email: (value) => /^\S+@\S+$/.test(value),
-			name: (value) => value.trim().length >= 1,
-			phone_number: (value) => /^\+{0,1}[0-9]+$/.test(value),
-			text: (value) => value.trim().length >= 1 && value.trim().length <= 2500,
-			committees: (value) => value.length > 0,
-		},
-
-		errorMessages: {
-			email: 'Ugyldig format på e-post; prøv igjen med formatet navn@domene.no',
-			name: 'Feltet kan ikke være tomt',
-			phone_number: 'Telefonnummer kan kun inneholde tall',
-			text: 'Søknadsfeltet kan ikke være tomt eller inneholde mer enn 2500 tegn',
-			committees: 'Velg minst 1 komité',
+		validate: {
+			email: (value) =>
+				/^\S+@\S+$/.test(value)
+					? null
+					: 'Ugyldig format på e-post; prøv igjen med formatet navn@domene.no',
+			name: (value) =>
+				value.trim().length >= 1 ? null : 'Feltet kan ikke være tomt',
+			phone_number: (value) =>
+				/^\+{0,1}[0-9]+$/.test(value)
+					? null
+					: 'Telefonnummer kan kun inneholde tall',
+			text: (value) =>
+				value.trim().length < 1
+					? 'Søknadsfeltet kan ikke være tomt'
+					: value.trim().length > 2500
+					? 'Maks 2500 tegn'
+					: null,
+			committees: (value) => (value.length > 0 ? null : 'Velg minst 1 komité'),
 		},
 	})
 	return (
@@ -222,28 +241,28 @@ export function Form() {
 			)}
 			<Textarea
 				required
-				classNames={{ label: classes.labelText, input: classes.formField }}
+				classNames={{
+					label: classes.labelText,
+					input: classes.formField,
+					error: classes.textareaError,
+				}}
 				label='Søknadstekst'
-				description={
-					<>
-						<Badge
-							color={form.values.text.length > 2500 ? 'red' : 'white'}
-							size='xs'
-							radius='xs'
-							variant='outline'
-							fullWidth
-						>
-							{form.values.text.length}/2500
-						</Badge>
-					</>
-				}
 				autosize
 				maxRows={10}
 				minRows={3}
 				onBlur={() => form.validateField('text')}
 				{...form.getInputProps('text')}
 			/>
-
+			<div className={classes.textareaBottomLabel}>
+				<p className={classes.textareaCustomError}>{form.errors.text}</p>
+				<p
+					className={
+						form.values.text.length > 2500 ? classes.textareaCustomError : ''
+					}
+				>
+					{form.values.text.length}/2500
+				</p>
+			</div>
 			<Button
 				leftIcon={isLoading ? <Loader size={18} /> : <Check size={18} />}
 				className={classes.submitButton}
