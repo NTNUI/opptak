@@ -24,7 +24,7 @@ function App() {
 			}}
 			children={
 				<>
-					<NotificationsProvider position='top-right'>
+					<NotificationsProvider position='top-center'>
 						<BrowserRouter>
 							<Routes>
 								<Route path='/' element={<FormPage />} />
