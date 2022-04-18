@@ -1,6 +1,7 @@
 import { createStyles, Group, Select } from '@mantine/core'
 import { useNotifications } from '@mantine/notifications'
 import axios from 'axios'
+import dayjs from 'dayjs'
 import { forwardRef } from 'react'
 import { useState } from 'react'
 import { ChevronDown, X } from 'tabler-icons-react'
@@ -11,6 +12,7 @@ import {
 	getStatusColor,
 	getStatusTranslation,
 } from '../utils/status'
+require('dayjs/locale/nb')
 
 export interface IStatusInputProps {
 	_id: string
@@ -137,16 +139,9 @@ function StatusInput({
 				label={committee.name}
 				description={
 					setByValue &&
-					`Satt av ${setByValue} ${new Date(updatedDateValue).toLocaleString(
-						'no-NO',
-						{
-							month: 'short',
-							day: '2-digit',
-							year: '2-digit',
-							hour: 'numeric',
-							minute: 'numeric',
-						}
-					)}`
+					`Satt av ${setByValue} ${dayjs(updatedDateValue)
+						.locale('nb')
+						.format('d. MMM HH:mm')}`
 				}
 				disabled={!allowedToChange || isLoading}
 				placeholder='Pick one'
