@@ -1,8 +1,20 @@
-import { createStyles, Input, MultiSelect, Select } from '@mantine/core'
-import { useEffect, useState } from 'react'
-import { ChevronDown, Search, X } from 'tabler-icons-react'
+import { createStyles, Group, Input, MultiSelect, Select } from '@mantine/core'
+import { forwardRef, useEffect, useState } from 'react'
+import {
+	ChevronDown,
+	Database,
+	QuestionMark,
+	Search,
+	X,
+} from 'tabler-icons-react'
 import { getAllCommittees } from '../services/Committees'
 import { ICommittee } from '../types/types'
+import StatusTypes from '../utils/enums'
+import {
+	getIconForStatus,
+	getStatus,
+	getStatusTranslation,
+} from '../utils/status'
 
 const useStyles = createStyles((theme) => ({
 	filterWrapper: {
@@ -107,6 +119,23 @@ const useStyles = createStyles((theme) => ({
 	},
 }))
 
+interface StatusTypesData {
+	value: string
+	label: string
+}
+
+function getStatusTypesStrings(): StatusTypesData[] {
+	// .push({ label: 'Alle', value: 'all' })
+
+	const statusTypesArray: StatusTypesData[] = Object.values(StatusTypes).map(
+		(status: StatusTypes) => {
+			return { label: getStatusTranslation(status), value: status }
+		}
+	)
+	statusTypesArray.unshift({ label: 'Alle', value: 'all' })
+	return statusTypesArray
+}
+
 function FilterSearch() {
 	const { classes } = useStyles()
 	const [committees, setCommittees] = useState<ICommittee[]>([])
@@ -132,6 +161,36 @@ function FilterSearch() {
 		})
 	}
 
+	interface ItemProps extends React.ComponentPropsWithoutRef<'div'> {
+		label: string
+		value: StatusTypes
+	}
+
+	const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
+		({ label, value, ...others }: ItemProps, ref) => (
+			<div ref={ref} {...others}>
+				<Group noWrap>
+					{getStatusIcon(value)}
+					{label}
+				</Group>
+			</div>
+		)
+	)
+
+	function getStatusIcon(status: string) {
+		const retreivedStatus = getStatus(status)
+
+		try {
+			if (retreivedStatus === undefined) {
+				return <Database />
+			} else {
+				return getIconForStatus(retreivedStatus)
+			}
+		} catch (error) {
+			return <QuestionMark />
+		}
+	}
+
 	return (
 		<div className={classes.filterWrapper}>
 			<div className={classes.searchWrapper}>
@@ -147,15 +206,6 @@ function FilterSearch() {
 					placeholder='Søk etter søker ...'
 					size='md'
 				/>
-
-				{/* <ActionIcon
-						classNames={{ root: classes.actionIconRoot, filled: classes.actionIcon }}
-						variant='filled'
-						size={42}
-						onClick={() => setOpen((o) => !o)}
-					>
-						<Adjustments size={30} />
-					</ActionIcon> */}
 			</div>
 			<div className={classes.filterPreview}>
 				<Select
@@ -165,9 +215,12 @@ function FilterSearch() {
 						input: classes.selectInput,
 						rightSection: classes.selectRightSection,
 					}}
-					data={['Alle', 'Akseptert', 'Innkalt', 'Ubehandlet', 'Avvist']}
+					data={getStatusTypesStrings()}
+					itemComponent={SelectItem}
+					// @ts-expect-error
+					icon={getStatusIcon(status)}
 					label={<span className={classes.badgeLabel}>Velg status</span>}
-					defaultValue={'Alle'}
+					defaultValue={'all'}
 					value={status}
 					onChange={(e) => setStatus(e as string)}
 					rightSection={<ChevronDown size={14} />}
@@ -188,7 +241,6 @@ function FilterSearch() {
 						{ value: 'Å-A', label: 'Å-A', group: 'Alfabetisk' },
 					]}
 					label={<span className={classes.badgeLabel}>Sorter etter</span>}
-					//nothingFound='Nothing found'
 					defaultValue={'nyeste først'}
 					size='sm'
 					value={dateSort}
