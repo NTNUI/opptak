@@ -53,8 +53,8 @@ export function getStatus(status: string) {
 			return StatusTypes.ACCEPTED
 		case 'Rejected':
 			return StatusTypes.REJECTED
-		case 'all':
-			return undefined
+		default:
+			return 'Ukjent status'
 	}
 }
 
@@ -81,7 +81,7 @@ export function getStatusColor(status: StatusTypes, theme: MantineTheme) {
 	}
 }
 
-export function getIconForStatus(status: StatusTypes) {
+export function getIconForStatus(status: string) {
 	switch (status) {
 		case StatusTypes.PENDING:
 			return <File size={20} />

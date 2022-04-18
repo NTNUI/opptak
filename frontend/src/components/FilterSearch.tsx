@@ -1,20 +1,10 @@
 import { createStyles, Group, Input, MultiSelect, Select } from '@mantine/core'
 import { forwardRef, useEffect, useState } from 'react'
-import {
-	ChevronDown,
-	Database,
-	QuestionMark,
-	Search,
-	X,
-} from 'tabler-icons-react'
+import { ChevronDown, Database, Search } from 'tabler-icons-react'
 import { getAllCommittees } from '../services/Committees'
 import { ICommittee } from '../types/types'
 import StatusTypes from '../utils/enums'
-import {
-	getIconForStatus,
-	getStatus,
-	getStatusTranslation,
-} from '../utils/status'
+import { getIconForStatus, getStatusTranslation } from '../utils/status'
 
 const useStyles = createStyles((theme) => ({
 	filterWrapper: {
@@ -132,7 +122,7 @@ function getStatusTypesStrings(): StatusTypesData[] {
 			return { label: getStatusTranslation(status), value: status }
 		}
 	)
-	statusTypesArray.unshift({ label: 'Alle', value: 'all' })
+	statusTypesArray.unshift({ label: 'Alle', value: '' })
 	return statusTypesArray
 }
 
@@ -140,7 +130,7 @@ function FilterSearch() {
 	const { classes } = useStyles()
 	const [committees, setCommittees] = useState<ICommittee[]>([])
 	const [chosenCommittees, setChosenCommittees] = useState<string[]>([])
-	const [status, setStatus] = useState<string>()
+	const [status, setStatus] = useState<string>('')
 	const [dateSort, setDateSort] = useState<string>()
 
 	useEffect(() => {
@@ -170,24 +160,18 @@ function FilterSearch() {
 		({ label, value, ...others }: ItemProps, ref) => (
 			<div ref={ref} {...others}>
 				<Group noWrap>
-					{getStatusIcon(value)}
+					{getFilterStatusIcon(value)}
 					{label}
 				</Group>
 			</div>
 		)
 	)
 
-	function getStatusIcon(status: string) {
-		const retreivedStatus = getStatus(status)
-
-		try {
-			if (retreivedStatus === undefined) {
-				return <Database />
-			} else {
-				return getIconForStatus(retreivedStatus)
-			}
-		} catch (error) {
-			return <QuestionMark />
+	function getFilterStatusIcon(status: string) {
+		if (status === '') {
+			return <Database />
+		} else {
+			return getIconForStatus(status)
 		}
 	}
 
@@ -217,10 +201,9 @@ function FilterSearch() {
 					}}
 					data={getStatusTypesStrings()}
 					itemComponent={SelectItem}
-					// @ts-expect-error
-					icon={getStatusIcon(status)}
+					icon={getFilterStatusIcon(status)}
 					label={<span className={classes.badgeLabel}>Velg status</span>}
-					defaultValue={'all'}
+					defaultValue={''}
 					value={status}
 					onChange={(e) => setStatus(e as string)}
 					rightSection={<ChevronDown size={14} />}
