@@ -7,7 +7,7 @@ import {
 	getAdmissionPeriod,
 } from '../services/Applications'
 import isOrganizer from '../utils/isOrganizer'
-import { getNtnuiProfile } from '../../../package/index'
+import { IUserProfile, getUserProfile } from '../services/User'
 
 const useStyles = createStyles((theme) => ({
 	dashboardWrapper: {
@@ -72,6 +72,9 @@ const useStyles = createStyles((theme) => ({
 	header: {
 		fontWeight: '600',
 	},
+	subHeader: {
+		fontWeight: 'lighter',
+	},
 	loader: {
 		margin: '0 0 -3px 0',
 	},
@@ -85,9 +88,15 @@ function Dashboard() {
 	const [endDate, setEndDate] = useState<string>('')
 	const [isTheOrganizer, setTheOrganizer] = useState<boolean>(false)
 	const [isLoading, setIsLoading] = useState<boolean>(false)
+	const [userName, setUserName] = useState<IUserProfile>()
 
 	useEffect(() => {
 		setIsLoading(true)
+		const getUser = async () => {
+			const user = await getUserProfile()
+			setUserName(user)
+			setIsLoading(false)
+		}
 		const getApplicationPeriodActiveAsync = async () => {
 			try {
 				if (await isOrganizer()) {
@@ -123,12 +132,20 @@ function Dashboard() {
 			}
 		}
 		getApplicationPeriodActiveAsync()
+		getUser()
 	}, [])
 
 	return (
 		<Box className={classes.dashboardWrapper}>
 			<h1 className={classes.text}>
-				Hei, <span className={classes.header}>Bolle Bollesen!</span>
+				{isLoading ? (
+					<Loader className={classes.loader} />
+				) : (
+					<span className={classes.header}>
+						<span className={classes.subHeader}>Hei, </span>
+						{userName?.first_name} {userName?.last_name}
+					</span>
+				)}
 			</h1>
 			{periodOpen ? (
 				<p className={classes.text}>
