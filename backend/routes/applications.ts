@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { NextFunction, Request, Response } from 'express'
 import {
 	getApplicationById,
 	getApplications,
@@ -11,13 +11,24 @@ import {
 	getAdmissionPeriodStatus,
 } from '../controllers/admissionPeriodController'
 import authorization from '../utils/authorizationMiddleware'
+import { StatusTypes } from '../utils/enums'
+import { stringifyEnum } from '../models/Status'
+
+const { query } = require('express-validator')
 
 const applicationRouter = express.Router()
 
 // @route GET applications
 // @description Get all applications that user has access to
 // @access Private
-applicationRouter.get('/', authorization, getApplications)
+applicationRouter.get('/', authorization, (req: Request, res: Response, next: NextFunction) => {
+	console.log(Object.values(StatusTypes))
+	next()
+},[
+	query('committee').optional().isInt().withMessage('Must be an integer'),
+	query('name').optional().isString().withMessage('Must be a string'),
+	query('status').optional().isIn(Object.values(StatusTypes)).withMessage(`The following values are accepted for status: ${stringifyEnum(StatusTypes)}`),
+], getApplications)
 
 // @route POST applications
 // @description Add application
