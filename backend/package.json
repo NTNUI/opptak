@@ -3,7 +3,6 @@
 	"version": "0.1.0",
 	"private": true,
 	"author": "NTNUI",
-	"type": "module",
 	"description": "NTNUI Admin application form backend",
 	"repository": {
 		"type": "git",
