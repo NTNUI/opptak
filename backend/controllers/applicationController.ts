@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { CustomError, UnauthorizedUserError } from 'ntnui-tools/customError'
+import { validationResult, ValidationError } from 'express-validator'
 import { RequestWithNtnuiNo } from '../utils/request'
 import { ApplicationModel, IApplication } from '../models/Application'
 import { UserModel } from '../models/User'
@@ -112,9 +113,9 @@ const getApplications = async (
 		// Access control - retrieve committees that user is member of
 		const { ntnuiNo } = req
 		if (!ntnuiNo) throw UnauthorizedUserError
-		const committeeIds: number[] = await getUserCommitteeIdsByUserId(ntnuiNo)
+		const userCommitteeIds: number[] = await getUserCommitteeIdsByUserId(ntnuiNo)
 
-		if (!committeeIds) {
+		if (!userCommitteeIds) {
 			return res
 				.status(403)
 				.json({ message: 'The user is not member of any committee' })
@@ -122,61 +123,125 @@ const getApplications = async (
 
 		// Pagination
 		const { page, name, committee } = req.query
-		// Committee querying - returns queried committee if it contains one of users committees
-		const containUsersCommittee = { committees: { $in: userCommitteeIds } }
-		let committeeQuery: {} = containUsersCommittee // Base case
+
+		// Check if query parameter validation failed
+		const errorFormatter = ({ location, msg, param, value }: ValidationError) =>
+			`${location}[${param}](Value=${value}): ${msg}`
+
+		const result = validationResult(req).formatWith(errorFormatter)
+		if (!result.isEmpty()) {
+			return res.status(400).json({ message: result.array() })
+		}
+
+		// Aggregation
+		const aggregationPipeline = []
+		// Only return applications that are sent to committees that user is member of
+		const containUsersCommittee = {
+			$match: {
+				committees: {
+					$in: [...userCommitteeIds],
+				},
+			},
+		}
+		aggregationPipeline.push(containUsersCommittee)
+
+		// Populate status to query on status for committee value
+		const populateStatus = {
+			$lookup: {
+				from: 'status',
+				localField: 'statuses',
+				foreignField: '_id',
+				as: 'statuses',
+			},
+		}
+		aggregationPipeline.push(populateStatus)
+
+		// Filter statuses on committee and value
 		if (committee) {
-			committeeQuery = {
-				$and: [{ committees: { $eq: committee } }, containUsersCommittee],
-			}
-			// Querying for multiple committees
+			// Parse query parameter to numbers
 			if (Array.isArray(committee)) {
-				committeeQuery = {
-					$and: [{ committees: { $in: committee } }, containUsersCommittee],
-				}
+				// const committeeIds = committee.map((id) => parseInt(id, 10))
 			}
+			const statusForCommitteeValue = {
+				$match: {
+					statuses: {
+						$elemMatch: {
+							committee: { // TODO: If no committee passed, filter any
+								$in: [9],
+							},
+							value: 'Rejected',
+						},
+					},
+				},
+			}
+			aggregationPipeline.push(statusForCommitteeValue)
 		}
-		// Name querying
-		const nameQuery = name ? { name: { $regex: name, $options: 'i' } } : {}
-		// Create filter options
-		const filterOptions = {
-			...nameQuery,
-			...committeeQuery,
+		// TODO: Conditional committees
+
+
+		// Query on name
+		const queryName = {
+			$match: {
+				name: {
+					$regex: name,
+					$options: 'i',
+				},
+			},
 		}
+		if (name) aggregationPipeline.push(queryName)
+
+		// Populate committees
+		const populateCommittees = {
+			$lookup: {
+				from: 'committees',
+				localField: 'committees',
+				foreignField: '_id',
+				as: 'committees',
+			},
+		}
+		aggregationPipeline.push(populateCommittees)
+
 		// Pagination
 		const LIMIT = 4
 		const startIndex = (Number(page) - 1) * LIMIT
-		const total = await ApplicationModel.countDocuments(filterOptions)
-		// Retrieve applications that following given filter
-		let applications: IApplication[] = []
-		await ApplicationModel.find(filterOptions)
-			.populate('committees', 'name')
-			.populate(
-				{
-					path: 'statuses',
-					populate: { path: 'committee', model: 'Committee', select: 'name' },
-					select: '-__v',
-				}
-			)
-			.limit(LIMIT)
-			.skip(startIndex)
-			.then((applicationRes) => applicationRes)
-
-		if (!committeeIds.includes(ELECTION_COMMITTEE_ID)) {
-			for (let i = 0; i < applications.length; i += 1) {
-				for (let j = 0; j < applications[i].committees.length; j += 1) {
-					if (applications[i].committees[j]._id === MAIN_BOARD_ID) {
-						applications[i].committees.splice(j, 1)
-						j -= 1
-					}
-				}
-			}
+		const pagination = {
+			$facet: {
+				pagination: [
+					{ $group: { 
+					  _id: null,
+					  total: { $sum: 1 }
+					}},
+				  ],
+				data: [{ $skip: startIndex }, { $limit: LIMIT }], // TODO: Sorting
+			},
 		}
+		console.log(pagination)
+		aggregationPipeline.push(pagination)
+
+		// Projection
+		const projection = {
+			$project: {
+			  data: 1,
+			  // Get total from the first element of the metadata array
+			  total: { $arrayElemAt: [ '$pagination.total', 0 ] }
+			},
+		} // TODO: Full projection
+		aggregationPipeline.push(projection)
+
+		// Retrieve applications that following given filter
+		console.log(userCommitteeIds)
+		let applications: IApplication[] = []
+		await ApplicationModel.aggregate(aggregationPipeline)
+			.exec()
+			.then((applicationRes) => {
+				applications = applicationRes
+			})
+			.catch(() => {
+				throw new CustomError('Something went wrong retrieving applications', 500)
+			})
 
 		return res.status(200).json({
 			applications,
-			currentPage: Number(pageNum),
-			numberOfPages: Math.ceil(total / LIMIT),
 		})
 	} catch (error) {
 		return next(error)
