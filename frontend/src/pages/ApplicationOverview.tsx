@@ -6,7 +6,6 @@ const useStyles = createStyles((theme) => ({
 	overview: {
 		display: 'flex',
 		alignItems: 'center',
-		//gap: '1rem',
 		color: 'white',
 		padding: '0',
 		flexDirection: 'column',

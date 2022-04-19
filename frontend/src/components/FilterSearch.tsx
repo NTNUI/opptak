@@ -1,6 +1,6 @@
 import { createStyles, Group, Input, MultiSelect, Select } from '@mantine/core'
 import { forwardRef, useEffect, useState } from 'react'
-import { ChevronDown, Database, Search } from 'tabler-icons-react'
+import { ChevronDown, Menu2, Search } from 'tabler-icons-react'
 import { getAllCommittees } from '../services/Committees'
 import { ICommittee } from '../types/types'
 import StatusTypes from '../utils/enums'
@@ -131,7 +131,7 @@ function FilterSearch() {
 	const [committees, setCommittees] = useState<ICommittee[]>([])
 	const [chosenCommittees, setChosenCommittees] = useState<string[]>([])
 	const [status, setStatus] = useState<string>('')
-	const [dateSort, setDateSort] = useState<string>()
+	const [dateSort, setDateSort] = useState<string>('desc')
 
 	useEffect(() => {
 		async function getCommittees() {
@@ -143,6 +143,22 @@ function FilterSearch() {
 		}
 		getCommittees()
 	}, [])
+
+	useEffect(() => {
+		function constructSearchFilterQuery() {
+			const listOfChosenCommittees = chosenCommittees.join('-')
+			let searchQuery = new URLSearchParams([
+				['committees', `${listOfChosenCommittees}`],
+				['status', `${status}`],
+				['dateSort', `${dateSort}`],
+			])
+			console.log(searchQuery.toString())
+
+			return searchQuery
+		}
+		constructSearchFilterQuery()
+		// TODO: query backend with constructed search query
+	}, [chosenCommittees, status, dateSort])
 
 	// Convert list of ICommittee to list of strings
 	const committeesToStrings = (committees: ICommittee[]) => {
@@ -169,7 +185,7 @@ function FilterSearch() {
 
 	function getFilterStatusIcon(status: string) {
 		if (status === '') {
-			return <Database />
+			return <Menu2 />
 		} else {
 			return getIconForStatus(status)
 		}
@@ -218,13 +234,13 @@ function FilterSearch() {
 						rightSection: classes.selectRightSection,
 					}}
 					data={[
-						{ value: 'nyeste først', label: 'Nyeste først', group: 'Dato' },
-						{ value: 'eldste først', label: 'Eldste først', group: 'Dato' },
-						{ value: 'A-Å', label: 'A-Å', group: 'Alfabetisk' },
-						{ value: 'Å-A', label: 'Å-A', group: 'Alfabetisk' },
+						{ value: 'desc', label: 'Nyeste først', group: 'Dato' },
+						{ value: 'asc', label: 'Eldste først', group: 'Dato' },
+						{ value: 'A-Z', label: 'A-Z', group: 'Alfabetisk' },
+						{ value: 'Z-A', label: 'Z-A', group: 'Alfabetisk' },
 					]}
 					label={<span className={classes.badgeLabel}>Sorter etter</span>}
-					defaultValue={'nyeste først'}
+					defaultValue={'desc'}
 					size='sm'
 					value={dateSort}
 					onChange={(e) => setDateSort(e as string)}
