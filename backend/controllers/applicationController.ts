@@ -122,7 +122,10 @@ const getApplications = async (
 		}
 
 		// Pagination
-		const { page, name, committee } = req.query
+		const page: string = req.query.page as string
+		const name: string = req.query.name as string
+		const committee: string | string[] = req.query.committee as string | string[]
+		const status: string = req.query.status as string
 
 		// Check if query parameter validation failed
 		const errorFormatter = ({ location, msg, param, value }: ValidationError) =>
@@ -154,30 +157,68 @@ const getApplications = async (
 				as: 'statuses',
 			},
 		}
-		aggregationPipeline.push(populateStatus)
-
-		// Filter statuses on committee and value
+		if (status) aggregationPipeline.push(populateStatus)
+		
+		// Prepare committee query
+		const committeeIds = []
 		if (committee) {
 			// Parse query parameter to numbers
 			if (Array.isArray(committee)) {
-				// const committeeIds = committee.map((id) => parseInt(id, 10))
+				committeeIds.push(committee.map((id) => parseInt(id, 10)))
+			} else {
+				committeeIds.push(parseInt(committee, 10))
 			}
-			const statusForCommitteeValue = {
+		}
+		// Filter on both status and committee if both query parameters are sent
+		if (status && committee) {
+			const statusForCommittee = {
 				$match: {
 					statuses: {
 						$elemMatch: {
-							committee: { // TODO: If no committee passed, filter any
-								$in: [9],
+							committee: {
+								$in: committeeIds,
 							},
-							value: 'Rejected',
+							value: status,
 						},
 					},
 				},
 			}
-			aggregationPipeline.push(statusForCommitteeValue)
+			aggregationPipeline.push(statusForCommittee)
+		} else if (status) {
+			// Filter only on status
+			const filterStatus = {
+				$match: {
+					statuses: {
+						$elemMatch: {
+							value: status,
+						},
+					},
+				},
+			}
+			aggregationPipeline.push(filterStatus)
+		} else if(committee) {
+			// Filter only on committee(s)
+			const filterCommittee = {
+				$match: {
+					committees: {
+						$in: committeeIds,
+					},
+				},
+			}
+			aggregationPipeline.push(filterCommittee)
 		}
-		// TODO: Conditional committees
 
+		
+		// Populate committees
+		const populateCommittees = {
+			$lookup: {
+				from: 'committees',
+				localField: 'committees',
+				foreignField: '_id',
+				as: 'committees',
+			},
+		}
+		aggregationPipeline.push(populateCommittees)
 
 		// Query on name
 		const queryName = {
@@ -190,59 +231,54 @@ const getApplications = async (
 		}
 		if (name) aggregationPipeline.push(queryName)
 
-		// Populate committees
-		const populateCommittees = {
-			$lookup: {
-				from: 'committees',
-				localField: 'committees',
-				foreignField: '_id',
-				as: 'committees',
-			},
-		}
-		aggregationPipeline.push(populateCommittees)
-
 		// Pagination
 		const LIMIT = 4
-		const startIndex = (Number(page) - 1) * LIMIT
+		const startIndex = parseInt(page, 10) ? (Number(page) - 1) * LIMIT : 1
 		const pagination = {
 			$facet: {
 				pagination: [
-					{ $group: { 
-					  _id: null,
-					  total: { $sum: 1 }
-					}},
-				  ],
-				data: [{ $skip: startIndex }, { $limit: LIMIT }], // TODO: Sorting
+					{ $count: 'total' },
+					{
+						$addFields: {
+							currentPage: Number(page),
+							numberOfPages: { $ceil: { $divide: ['$total', LIMIT] } },
+						},
+					},
+				],
+				applications: [{ $skip: startIndex }, { $limit: LIMIT }], // TODO: Sorting
 			},
 		}
-		console.log(pagination)
 		aggregationPipeline.push(pagination)
 
 		// Projection
 		const projection = {
 			$project: {
-			  data: 1,
-			  // Get total from the first element of the metadata array
-			  total: { $arrayElemAt: [ '$pagination.total', 0 ] }
+				applications: {
+					_id: 1,
+					name: 1,
+					submitted_date: 1,
+					committees: {
+						_id: 1,
+						name: 1,
+						slug: 1,
+					},
+					statuses: 1,
+				},
+				pagination: 1,
 			},
-		} // TODO: Full projection
+		}
 		aggregationPipeline.push(projection)
 
 		// Retrieve applications that following given filter
-		console.log(userCommitteeIds)
-		let applications: IApplication[] = []
-		await ApplicationModel.aggregate(aggregationPipeline)
+		const applications = await ApplicationModel.aggregate(aggregationPipeline)
 			.exec()
-			.then((applicationRes) => {
-				applications = applicationRes
-			})
+			.then((applicationRes) => applicationRes
+			)
 			.catch(() => {
 				throw new CustomError('Something went wrong retrieving applications', 500)
 			})
 
-		return res.status(200).json({
-			applications,
-		})
+		return res.status(200).json(applications)
 	} catch (error) {
 		return next(error)
 	}

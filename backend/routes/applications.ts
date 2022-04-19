@@ -21,10 +21,7 @@ const applicationRouter = express.Router()
 // @route GET applications
 // @description Get all applications that user has access to
 // @access Private
-applicationRouter.get('/', authorization, (req: Request, res: Response, next: NextFunction) => {
-	console.log(Object.values(StatusTypes))
-	next()
-},[
+applicationRouter.get('/', authorization, [
 	query('committee').optional().isInt().withMessage('Must be an integer'),
 	query('name').optional().isString().withMessage('Must be a string'),
 	query('status').optional().isIn(Object.values(StatusTypes)).withMessage(`The following values are accepted for status: ${stringifyEnum(StatusTypes)}`),
