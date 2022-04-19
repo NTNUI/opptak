@@ -104,6 +104,28 @@ const getApplicationById = async (
 	}
 }
 
+export enum SortTypes {
+	NAME_ASC = 'name_asc',
+	NAME_DESC = 'name_desc',
+	DATE_ASC = 'date_asc',
+	DATE_DESC = 'date_desc',
+}
+
+const getSortTypeValue = (sortType: SortTypes) => {
+	switch (sortType) {
+		case SortTypes.NAME_ASC:
+			return { name: 1 }
+		case SortTypes.NAME_DESC:
+			return { name: -1 }
+		case SortTypes.DATE_ASC:
+			return { submitted_date: 1 }
+		case SortTypes.DATE_DESC:
+			return { submitted_date: -1 }
+		default:
+			return {}
+	}
+}
+
 const getApplications = async (
 	req: RequestWithNtnuiNo,
 	res: Response,
@@ -126,6 +148,9 @@ const getApplications = async (
 		const name: string = req.query.name as string
 		const committee: string | string[] = req.query.committee as string | string[]
 		const status: string = req.query.status as string
+		const sortparam: SortTypes = req.query.sort as SortTypes
+		// Get sort value
+		const sortValue = getSortTypeValue(sortparam)
 
 		// Check if query parameter validation failed
 		const errorFormatter = ({ location, msg, param, value }: ValidationError) =>
@@ -148,6 +173,17 @@ const getApplications = async (
 		}
 		aggregationPipeline.push(containUsersCommittee)
 
+		// Query on name
+		const queryName = {
+			$match: {
+				name: {
+					$regex: name,
+					$options: 'i',
+				},
+			},
+		}
+		if (name) aggregationPipeline.push(queryName)
+
 		// Populate status to query on status for committee value
 		const populateStatus = {
 			$lookup: {
@@ -158,7 +194,7 @@ const getApplications = async (
 			},
 		}
 		if (status) aggregationPipeline.push(populateStatus)
-		
+
 		// Prepare committee query
 		const committeeIds = []
 		if (committee) {
@@ -196,7 +232,7 @@ const getApplications = async (
 				},
 			}
 			aggregationPipeline.push(filterStatus)
-		} else if(committee) {
+		} else if (committee) {
 			// Filter only on committee(s)
 			const filterCommittee = {
 				$match: {
@@ -208,7 +244,6 @@ const getApplications = async (
 			aggregationPipeline.push(filterCommittee)
 		}
 
-		
 		// Populate committees
 		const populateCommittees = {
 			$lookup: {
@@ -220,22 +255,18 @@ const getApplications = async (
 		}
 		aggregationPipeline.push(populateCommittees)
 
-		// Query on name
-		const queryName = {
-			$match: {
-				name: {
-					$regex: name,
-					$options: 'i',
-				},
-			},
+		// Sort
+		const sort = {
+			$sort: sortparam ? (sortValue as 1 | -1) : {},
 		}
-		if (name) aggregationPipeline.push(queryName)
+		if (sortparam) aggregationPipeline.push(sort)
 
 		// Pagination
 		const LIMIT = 4
 		const startIndex = parseInt(page, 10) ? (Number(page) - 1) * LIMIT : 1
 		const pagination = {
 			$facet: {
+				applications: [{ $skip: startIndex }, { $limit: LIMIT }],
 				pagination: [
 					{ $count: 'total' },
 					{
@@ -245,7 +276,6 @@ const getApplications = async (
 						},
 					},
 				],
-				applications: [{ $skip: startIndex }, { $limit: LIMIT }], // TODO: Sorting
 			},
 		}
 		aggregationPipeline.push(pagination)
@@ -264,15 +294,27 @@ const getApplications = async (
 					},
 					statuses: 1,
 				},
-				pagination: 1,
+				pagination: {
+					$mergeObjects: [
+						// To make it an object instead of array
+						{
+							currentPage: { $arrayElemAt: ['$pagination.currentPage', 0] },
+							numberOfPages: { $arrayElemAt: ['$pagination.numberOfPages', 0] },
+						},
+					],
+				},
 			},
 		}
+
 		aggregationPipeline.push(projection)
 
 		// Retrieve applications that following given filter
 		const applications = await ApplicationModel.aggregate(aggregationPipeline)
 			.exec()
-			.then((applicationRes) => applicationRes
+			.then((applicationRes) =>
+				applicationRes.length
+					? applicationRes[0]
+					: { applications: [], pagination: {} }
 			)
 			.catch(() => {
 				throw new CustomError('Something went wrong retrieving applications', 500)
