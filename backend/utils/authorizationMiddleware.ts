@@ -1,10 +1,7 @@
 import { Response, NextFunction } from 'express'
 import jsonwebtoken from 'jsonwebtoken'
 import { isValidNtnuiToken, refreshNtnuiToken } from 'ntnui-tools'
-import {
-	CustomError,
-	UnauthorizedUserError,
-} from 'ntnui-tools/dist/customError'
+import { CustomError, UnauthorizedUserError } from 'ntnui-tools/customError'
 import { RequestWithNtnuiNo } from './request'
 
 /**

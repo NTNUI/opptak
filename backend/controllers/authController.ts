@@ -7,10 +7,7 @@ import {
 	refreshNtnuiToken,
 	getNtnuiProfile,
 } from 'ntnui-tools'
-import {
-	CustomError,
-	UnauthorizedUserError,
-} from 'ntnui-tools/dist/customError'
+import { CustomError, UnauthorizedUserError } from 'ntnui-tools/customError'
 import { CommitteeModel } from '../models/Committee'
 import { MembershipType } from '../utils/enums'
 import { IRoleInCommittee, UserModel } from '../models/User'
