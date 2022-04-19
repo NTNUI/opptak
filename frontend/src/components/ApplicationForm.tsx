@@ -5,6 +5,7 @@ import {
 	createStyles,
 	MultiSelect,
 	Loader,
+	Collapse,
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import axios from 'axios'
@@ -183,6 +184,13 @@ export function Form() {
 			committees: (value) => (value.length > 0 ? null : 'Velg minst 1 komité'),
 		},
 	})
+
+	useEffect(() => {
+		if (form.values.text.length) {
+			form.validateField('text')
+		}
+	}, [form.values.text])
+
 	return (
 		<form
 			className={classes.form}
@@ -253,16 +261,14 @@ export function Form() {
 				onBlur={() => form.validateField('text')}
 				{...form.getInputProps('text')}
 			/>
-			<div className={classes.textareaBottomLabel}>
-				<p className={classes.textareaCustomError}>{form.errors.text}</p>
-				<p
-					className={
-						form.values.text.length > 2500 ? classes.textareaCustomError : ''
-					}
-				>
-					{form.values.text.length}/2500
-				</p>
-			</div>
+			<Collapse in={form.values.text.length > 2500}>
+				<div className={classes.textareaBottomLabel}>
+					<p className={classes.textareaCustomError}>{form.errors.text}</p>
+					<p className={classes.textareaCustomError}>
+						{form.values.text.length}/2500
+					</p>
+				</div>
+			</Collapse>
 			<Button
 				leftIcon={isLoading ? <Loader size={18} /> : <Check size={18} />}
 				className={classes.submitButton}
