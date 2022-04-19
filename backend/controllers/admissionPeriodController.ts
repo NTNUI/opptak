@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { UnauthorizedUserError } from 'ntnui-tools/customError'
+import { UnauthorizedUserError } from 'ntnui-tools/dist/customError'
 import dayjs from 'dayjs'
 import { AdmissionPeriodModel } from '../models/AdmissionPeriod'
 import { getUserCommitteeIdsByUserId } from '../utils/userCommittee'

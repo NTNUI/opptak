@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import { CustomError } from 'ntnui-tools/customError'
+import { CustomError } from 'ntnui-tools/dist/customError'
 
 /**
  * Custom error handler to standardize error objects returned to

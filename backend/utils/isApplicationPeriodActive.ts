@@ -1,4 +1,4 @@
-import { CustomError } from 'ntnui-tools/customError'
+import { CustomError } from 'ntnui-tools/dist/customError'
 import dayjs from 'dayjs'
 import { AdmissionPeriodModel } from '../models/AdmissionPeriod'
 

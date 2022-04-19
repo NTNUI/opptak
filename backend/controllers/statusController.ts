@@ -1,5 +1,8 @@
 import { NextFunction, Response } from 'express'
-import { CustomError, UnauthorizedUserError } from 'ntnui-tools/customError'
+import {
+	CustomError,
+	UnauthorizedUserError,
+} from 'ntnui-tools/dist/customError'
 import { RequestWithNtnuiNo } from '../utils/request'
 import { IUser, UserModel } from '../models/User'
 import { StatusModel } from '../models/Status'
