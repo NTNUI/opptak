@@ -11,10 +11,7 @@ import {
 	getAdmissionPeriodStatus,
 } from '../controllers/admissionPeriodController'
 import authorization from '../utils/authorizationMiddleware'
-import { StatusTypes, SortTypes } from '../utils/enums'
-import { stringifyEnum } from '../models/Status'
-
-const { query } = require('express-validator')
+import applicationQueryValidator from '../utils/applicationQueryMiddleware'
 
 const applicationRouter = express.Router()
 
@@ -24,26 +21,7 @@ const applicationRouter = express.Router()
 applicationRouter.get(
 	'/',
 	authorization,
-	[
-		query('page')
-			.optional()
-			.isInt({ min: 1 })
-			.withMessage('Page must be a number'),
-		query('name').optional().isString().withMessage('Must be a string'),
-		query('committees').optional().isInt().withMessage('Must be an integer'),
-		query('status')
-			.optional()
-			.isIn(Object.values(StatusTypes))
-			.withMessage(
-				`The following values are accepted for status: ${stringifyEnum(
-					StatusTypes
-				)}`
-			),
-		query('sort')
-			.optional()
-			.isIn(Object.values(SortTypes))
-			.withMessage('Invalid value for sort'),
-	],
+	applicationQueryValidator(),
 	getApplications
 )
 

@@ -6,10 +6,11 @@ import { ApplicationModel, IApplication } from '../models/Application'
 import { UserModel } from '../models/User'
 import { CommitteeModel, ICommittee } from '../models/Committee'
 import isAdmissionPeriodActive from '../utils/isApplicationPeriodActive'
-import { StatusTypes } from '../utils/enums'
+import { SortTypes, StatusTypes } from '../utils/enums'
 import { IStatus, StatusModel } from '../models/Status'
 import { ELECTION_COMMITTEE_ID, MAIN_BOARD_ID } from '../utils/constants'
 import { AdmissionPeriodModel } from '../models/AdmissionPeriod'
+import { getSortTypeValue } from '../utils/applicationQueryMiddleware'
 
 async function getUserCommitteeIdsByUserId(userId: number | string) {
 	let committeeIds: number[] = []
@@ -104,28 +105,6 @@ const getApplicationById = async (
 	}
 }
 
-export enum SortTypes {
-	NAME_ASC = 'name_asc',
-	NAME_DESC = 'name_desc',
-	DATE_ASC = 'date_asc',
-	DATE_DESC = 'date_desc',
-}
-
-const getSortTypeValue = (sortType: SortTypes) => {
-	switch (sortType) {
-		case SortTypes.NAME_ASC:
-			return { name: 1 }
-		case SortTypes.NAME_DESC:
-			return { name: -1 }
-		case SortTypes.DATE_ASC:
-			return { submitted_date: 1 }
-		case SortTypes.DATE_DESC:
-			return { submitted_date: -1 }
-		default:
-			return {}
-	}
-}
-
 const getApplications = async (
 	req: RequestWithNtnuiNo,
 	res: Response,
@@ -143,18 +122,7 @@ const getApplications = async (
 				.json({ message: 'The user is not member of any committee' })
 		}
 
-		// Pagination
-		const page: string = req.query.page as string
-		const name: string = req.query.name as string
-		const committees: string | string[] = req.query.committees as
-			| string
-			| string[]
-		const status: string = req.query.status as string
-		const sortparam: SortTypes = req.query.sort as SortTypes
-		// Get sort value
-		const sortValue = getSortTypeValue(sortparam)
-
-		// Check if query parameter validation failed
+		// Validate query parameters
 		const errorFormatter = ({ location, msg, param, value }: ValidationError) =>
 			`${location}[${param}](Value=${value}): ${msg}`
 
@@ -162,6 +130,15 @@ const getApplications = async (
 		if (!result.isEmpty()) {
 			return res.status(400).json({ message: result.array() })
 		}
+		// Retrieve query parameters
+		const page: string = req.query.page as string
+		const name: string = req.query.name as string
+		const committees: string | string[] = req.query.committees as
+			| string
+			| string[]
+		const status: string = req.query.status as string
+		const sortparam: SortTypes = req.query.sort as SortTypes
+		const sortValue = getSortTypeValue(sortparam) // Parse sort value
 
 		// Aggregation
 		const aggregationPipeline = []
@@ -282,7 +259,7 @@ const getApplications = async (
 		}
 		aggregationPipeline.push(pagination)
 
-		// Projection
+		// Projection to retrieve interesting fields
 		const projection = {
 			$project: {
 				applications: {
@@ -298,7 +275,7 @@ const getApplications = async (
 				},
 				pagination: {
 					$mergeObjects: [
-						// To make it an object instead of array
+						// Make pagination to an object instead of array
 						{
 							currentPage: { $arrayElemAt: ['$pagination.currentPage', 0] },
 							numberOfPages: { $arrayElemAt: ['$pagination.numberOfPages', 0] },
