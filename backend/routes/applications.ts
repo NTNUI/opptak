@@ -30,7 +30,7 @@ applicationRouter.get(
 			.isInt({ min: 1 })
 			.withMessage('Page must be a number'),
 		query('name').optional().isString().withMessage('Must be a string'),
-		query('committee').optional().isInt().withMessage('Must be an integer'),
+		query('committees').optional().isInt().withMessage('Must be an integer'),
 		query('status')
 			.optional()
 			.isIn(Object.values(StatusTypes))

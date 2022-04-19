@@ -146,7 +146,9 @@ const getApplications = async (
 		// Pagination
 		const page: string = req.query.page as string
 		const name: string = req.query.name as string
-		const committee: string | string[] = req.query.committee as string | string[]
+		const committees: string | string[] = req.query.committees as
+			| string
+			| string[]
 		const status: string = req.query.status as string
 		const sortparam: SortTypes = req.query.sort as SortTypes
 		// Get sort value
@@ -195,18 +197,18 @@ const getApplications = async (
 		}
 		if (status) aggregationPipeline.push(populateStatus)
 
-		// Prepare committee query
+		// Prepare committees query
 		const committeeIds = []
-		if (committee) {
+		if (committees) {
 			// Parse query parameter to numbers
-			if (Array.isArray(committee)) {
-				committeeIds.push(committee.map((id) => parseInt(id, 10)))
+			if (Array.isArray(committees)) {
+				committeeIds.push(committees.map((id) => parseInt(id, 10)))
 			} else {
-				committeeIds.push(parseInt(committee, 10))
+				committeeIds.push(parseInt(committees, 10))
 			}
 		}
-		// Filter on both status and committee if both query parameters are sent
-		if (status && committee) {
+		// Filter on both status and committees if both query parameters are sent
+		if (status && committees) {
 			const statusForCommittee = {
 				$match: {
 					statuses: {
@@ -232,7 +234,7 @@ const getApplications = async (
 				},
 			}
 			aggregationPipeline.push(filterStatus)
-		} else if (committee) {
+		} else if (committees) {
 			// Filter only on committee(s)
 			const filterCommittee = {
 				$match: {
