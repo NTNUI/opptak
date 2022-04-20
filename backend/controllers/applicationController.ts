@@ -244,15 +244,6 @@ const wipeAdmissionData = async (
 		if (!committeeIds.includes(MAIN_BOARD_ID)) {
 			throw new CustomError('You do not have access to this resource', 403)
 		}
-		const applications = await ApplicationModel.find()
-			.populate('statuses', 'status')
-			.then((applicationRes) => applicationRes)
-			.catch(() => {
-				throw new CustomError('Something went wrong retrieving applications', 500)
-			})
-		if (applications.length === 0) {
-			return res.status(404).json({ message: 'No applications to delete' })
-		}
 		await ApplicationModel.deleteMany({})
 		await StatusModel.deleteMany({})
 		await UserModel.deleteMany({ _id: { $ne: ntnuiNo } })
