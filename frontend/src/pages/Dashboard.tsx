@@ -109,8 +109,8 @@ function Dashboard() {
 				if (response) {
 					const response = await getAdmissionPeriod()
 					const parsedStartDate = dayjs(response.admissionPeriod.start_date)
-					.locale('nb')
-					.format('D. MMMM YYYY')
+						.locale('nb')
+						.format('D. MMMM YYYY')
 					const parsedEndDate = dayjs(response.admissionPeriod.end_date)
 						.locale('nb')
 						.format('D. MMMM YYYY')
