@@ -8,6 +8,7 @@ import isAdmissionPeriodActive from '../utils/isApplicationPeriodActive'
 import { StatusTypes } from '../utils/enums'
 import { IStatus, StatusModel } from '../models/Status'
 import { ELECTION_COMMITTEE_ID, MAIN_BOARD_ID } from '../utils/constants'
+import { AdmissionPeriodModel } from '../models/AdmissionPeriod'
 
 async function getUserCommitteeIdsByUserId(userId: number | string) {
 	let committeeIds: number[] = []
@@ -230,4 +231,33 @@ const postApplication = async (
 	}
 }
 
-export { getApplications, postApplication, getApplicationById }
+const wipeAdmissionData = async (
+	req: RequestWithNtnuiNo,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const { ntnuiNo } = req
+		if (!ntnuiNo) throw UnauthorizedUserError
+		const committeeIds: number[] = await getUserCommitteeIdsByUserId(ntnuiNo)
+		// Only main board can delete all applications
+		if (!committeeIds.includes(MAIN_BOARD_ID)) {
+			throw new CustomError('You do not have access to this resource', 403)
+		}
+		await ApplicationModel.deleteMany({})
+		await StatusModel.deleteMany({})
+		await UserModel.deleteMany({ _id: { $ne: ntnuiNo } })
+		await AdmissionPeriodModel.deleteMany({})
+		await CommitteeModel.updateMany({}, { accepts_admissions: false })
+		return res.status(200).json({ message: 'Admission data successfully wiped' })
+	} catch (error) {
+		return next(error)
+	}
+}
+
+export {
+	getApplications,
+	postApplication,
+	getApplicationById,
+	wipeAdmissionData,
+}
