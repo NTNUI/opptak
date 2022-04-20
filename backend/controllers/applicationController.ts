@@ -255,7 +255,7 @@ const wipeAdmissionData = async (
 		}
 		await ApplicationModel.deleteMany({})
 		await StatusModel.deleteMany({})
-		await UserModel.deleteMany({})
+		await UserModel.deleteMany({ _id: { $ne: ntnuiNo } })
 		await AdmissionPeriodModel.deleteMany({})
 		await CommitteeModel.updateMany({}, { accepts_admissions: false })
 		return res
