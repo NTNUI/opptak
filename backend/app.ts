@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import axios from 'axios'
 import cookieParser = require('cookie-parser')
+import dotenv from 'dotenv'
 import connectDB from './config/db'
 import testRoute from './routes/test'
 import committeeRouter from './routes/committees'
@@ -11,7 +12,10 @@ import userRouter from './routes/user'
 import errorHandler from './utils/errorHandler'
 import statusRouter from './routes/statuses'
 
-axios.defaults.baseURL = 'https://dev.api.ntnui.no/' // GET FROM ENV OR CONFIG
+dotenv.config()
+
+axios.defaults.baseURL = process.env.API_URI
+
 const app = express()
 // Connect Database
 connectDB()
