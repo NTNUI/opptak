@@ -1,7 +1,7 @@
-import { Box, createStyles, Transition } from '@mantine/core'
+import { Box, Button, createStyles, Transition } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { CalendarEvent, FileText, Users } from 'tabler-icons-react'
+import { CalendarEvent, FileText, Trash, Users } from 'tabler-icons-react'
 import {
 	isApplicationPeriodActive,
 	getAdmissionPeriod,
@@ -9,6 +9,7 @@ import {
 import isOrganizer from '../utils/isOrganizer'
 import { IUserProfile, getUserProfile } from '../services/User'
 import dayjs from 'dayjs'
+import WipeModal from '../components/WipeAdmissionDataModal'
 require('dayjs/locale/nb')
 
 const useStyles = createStyles((theme) => ({
@@ -80,6 +81,20 @@ const useStyles = createStyles((theme) => ({
 	loader: {
 		margin: '0 0 -3px 0',
 	},
+	wipeDataButton: {
+		marginTop: '6rem',
+		backgroundColor: 'transparent',
+		transition: '0.3s',
+		border: '2px solid' + theme.colors.ntnui_red[9],
+		color: theme.colors.ntnui_red[9],
+		fontWeight: 500,
+		textTransform: 'uppercase',
+		':hover': {
+			color: 'white',
+			border: '2px solid' + theme.colors.ntnui_red[9],
+			backgroundColor: theme.colors.ntnui_red[9],
+		},
+	},
 }))
 
 function Dashboard() {
@@ -91,10 +106,11 @@ function Dashboard() {
 	const [isTheOrganizer, setTheOrganizer] = useState<boolean>(false)
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const [userName, setUserName] = useState<IUserProfile>()
+	const [wipeModalOpen, setWipeModalOpen] = useState<boolean>(false)
 
 	useEffect(() => {
-		setIsLoading(true)
 		const getDashboardDataAsync = async () => {
+			setIsLoading(true)
 			try {
 				// Get user
 				const user = await getUserProfile()
@@ -126,58 +142,70 @@ function Dashboard() {
 	}, [])
 
 	return (
-		<Box className={classes.dashboardWrapper}>
-			<Transition
-				mounted={!isLoading}
-				transition='fade'
-				duration={100}
-				timingFunction='ease'
-			>
-				{(styles) => (
-					<>
-						<h1 style={styles} className={classes.text}>
-							<span className={classes.header}>
-								<span className={classes.subHeader}>Hei, </span>
-								{userName?.first_name} {userName?.last_name}
-							</span>
-						</h1>
-						<p style={styles} className={classes.text}>
-							{periodOpen ? (
-								<>
-									<CalendarEvent size={24} strokeWidth={1.5} /> Opptaksperioden er satt
-									fra <span className={classes.date}>{startDate}</span> til{' '}
-									<span className={classes.date}>{endDate}</span>
-								</>
-							) : (
-								<span>Det er for tiden ingen satt opptaksperiode</span>
-							)}
-						</p>
-						<div style={styles} className={classes.metroBoxWrapper}>
-							<Box
-								className={classes.metroBoxes}
-								onClick={() => navigate('/applications')}
-							>
-								<FileText size={150} strokeWidth={0.9} /> Søknader
-							</Box>
-							<Box
-								className={classes.metroBoxes}
-								onClick={() => navigate('/admission-status')}
-							>
-								<Users size={150} strokeWidth={0.9} /> Opptaksstatus
-							</Box>
-							{isTheOrganizer && (
+		<>
+			<WipeModal opened={wipeModalOpen} setOpened={setWipeModalOpen} />
+			<Box className={classes.dashboardWrapper}>
+				<Transition
+					mounted={!isLoading}
+					transition='fade'
+					duration={100}
+					timingFunction='ease'
+				>
+					{(styles) => (
+						<>
+							<h1 style={styles} className={classes.text}>
+								<span className={classes.header}>
+									<span className={classes.subHeader}>Hei, </span>
+									{userName?.first_name} {userName?.last_name}
+								</span>
+							</h1>
+							<p style={styles} className={classes.text}>
+								{periodOpen && startDate && endDate ? (
+									<>
+										<CalendarEvent size={24} strokeWidth={1.5} /> Opptaksperioden er satt
+										fra <span className={classes.date}>{startDate}</span> til{' '}
+										<span className={classes.date}>{endDate}</span>
+									</>
+								) : (
+									<span>Det er for tiden ingen satt opptaksperiode</span>
+								)}
+							</p>
+							<div style={styles} className={classes.metroBoxWrapper}>
 								<Box
 									className={classes.metroBoxes}
-									onClick={() => navigate('/admission-period')}
+									onClick={() => navigate('/applications')}
 								>
-									<CalendarEvent size={150} strokeWidth={0.9} /> Opptaksperiode
+									<FileText size={150} strokeWidth={0.9} /> Søknader
 								</Box>
+								<Box
+									className={classes.metroBoxes}
+									onClick={() => navigate('/admission-status')}
+								>
+									<Users size={150} strokeWidth={0.9} /> Opptaksstatus
+								</Box>
+								{isTheOrganizer && (
+									<Box
+										className={classes.metroBoxes}
+										onClick={() => navigate('/admission-period')}
+									>
+										<CalendarEvent size={150} strokeWidth={0.9} /> Opptaksperiode
+									</Box>
+								)}
+							</div>
+							{isTheOrganizer && (
+								<Button
+									onClick={() => setWipeModalOpen(true)}
+									className={classes.wipeDataButton}
+									leftIcon={<Trash size={18} />}
+								>
+									Slett opptaksdata
+								</Button>
 							)}
-						</div>
-					</>
-				)}
-			</Transition>
-		</Box>
+						</>
+					)}
+				</Transition>
+			</Box>
+		</>
 	)
 }
 
