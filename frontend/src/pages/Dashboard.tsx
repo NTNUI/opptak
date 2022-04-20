@@ -70,7 +70,7 @@ const useStyles = createStyles((theme) => ({
 		},
 	},
 	header: {
-		fontWeight: '600',
+		fontWeight: '500',
 	},
 	subHeader: {
 		fontWeight: 'lighter',
