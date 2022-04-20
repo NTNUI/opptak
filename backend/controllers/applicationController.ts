@@ -231,7 +231,7 @@ const postApplication = async (
 	}
 }
 
-const wipeApplicationData = async (
+const wipeAdmissionData = async (
 	req: RequestWithNtnuiNo,
 	res: Response,
 	next: NextFunction
@@ -260,7 +260,7 @@ const wipeApplicationData = async (
 		await CommitteeModel.updateMany({}, { accepts_admissions: false })
 		return res
 			.status(200)
-			.json({ message: 'Application data successfully wiped' })
+			.json({ message: 'Admission data successfully wiped' })
 	} catch (error) {
 		return next(error)
 	}

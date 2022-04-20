@@ -45,7 +45,7 @@ applicationRouter.get('/period/active', getAdmissionPeriodStatus)
 applicationRouter.get('/:application_id', authorization, getApplicationById)
 
 // @route DELETE applications
-// @description Delete all application data
+// @description Delete all admission data
 // @access Private
 applicationRouter.delete('/', authorization, wipeApplicationData)
 
