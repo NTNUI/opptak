@@ -11,6 +11,7 @@ import { IStatus, StatusModel } from '../models/Status'
 import { ELECTION_COMMITTEE_ID, MAIN_BOARD_ID } from '../utils/constants'
 import { AdmissionPeriodModel } from '../models/AdmissionPeriod'
 import { getSortTypeValue } from '../utils/applicationQueryMiddleware'
+import { ELECTION_COMMITTEE_ID, MAIN_BOARD_ID } from '../utils/constants'
 
 async function getUserCommitteeIdsByUserId(userId: number | string) {
 	let committeeIds: number[] = []
@@ -29,6 +30,11 @@ async function getUserCommitteeIdsByUserId(userId: number | string) {
 interface IPopulatedApplicationCommittees
 	extends Omit<IApplication, 'committees'> {
 	committees: ICommittee[]
+}
+
+interface IPopulatedApplicationCommitteesAndStatus
+	extends Omit<IPopulatedApplicationCommittees, 'statuses'> {
+	statuses: IStatus[]
 }
 
 const getApplicationById = async (
@@ -142,16 +148,30 @@ const getApplications = async (
 
 		// Aggregation
 		const aggregationPipeline = []
-		// Only return applications that are sent to committees that user is member of
-		const containUsersCommittee = {
-			$match: {
-				committees: {
-					$in: [...userCommitteeIds],
+		// Only return applications that are sent to committees that user is authorized to see
+		if (userCommitteeIds.includes(ELECTION_COMMITTEE_ID)) {
+			// Election committee are allowed to see all applications
+		} else if (userCommitteeIds.includes(MAIN_BOARD_ID)) {
+			// Main board see all applications except ones only to the main board
+			const userAuthorizedCommittees = {
+				$match: {
+					committees: {
+						$ne: [MAIN_BOARD_ID],
+					},
 				},
-			},
+			}
+			aggregationPipeline.push(userAuthorizedCommittees)
+		} else {
+			// Normal committees only see applications to their own committee
+			const userAuthorizedCommittees = {
+				$match: {
+					committees: {
+						$in: userCommitteeIds,
+					},
+				},
+			}
+			aggregationPipeline.push(userAuthorizedCommittees)
 		}
-		aggregationPipeline.push(containUsersCommittee)
-
 		// Query on name
 		const queryName = {
 			$match: {
@@ -172,7 +192,7 @@ const getApplications = async (
 				as: 'statuses',
 			},
 		}
-		if (status) aggregationPipeline.push(populateStatus)
+		aggregationPipeline.push(populateStatus)
 
 		// Prepare committees query
 		const committeeIds = []
@@ -271,7 +291,9 @@ const getApplications = async (
 						name: 1,
 						slug: 1,
 					},
-					statuses: 1,
+					statuses: {
+						committee: 1,
+					},
 				},
 				pagination: {
 					$mergeObjects: [
@@ -287,19 +309,44 @@ const getApplications = async (
 
 		aggregationPipeline.push(projection)
 
+		interface IApplicationResponse {
+			applications: IPopulatedApplicationCommitteesAndStatus[]
+			pagination: {
+				currentPage: number
+				numberOfPages: number
+			}
+		}
 		// Retrieve applications that following given filter
-		const applications = await ApplicationModel.aggregate(aggregationPipeline)
+		const applicationRes = await ApplicationModel.aggregate(aggregationPipeline)
 			.exec()
-			.then((applicationRes) =>
-				applicationRes.length
-					? applicationRes[0]
-					: { applications: [], pagination: {} }
+			.then((appRes: IApplicationResponse[]) =>
+				appRes[0].applications.length
+					? appRes[0]
+					: { applications: [], pagination: { currentPage: 1, numberOfPages: 0 } }
 			)
 			.catch(() => {
 				throw new CustomError('Something went wrong retrieving applications', 500)
 			})
 
-		return res.status(200).json(applications)
+		const { applications } = applicationRes
+		// If user is part of main board, hide parts with main board
+		if (
+			applications &&
+			!userCommitteeIds.includes(ELECTION_COMMITTEE_ID) &&
+			userCommitteeIds.includes(MAIN_BOARD_ID)
+		) {
+			for (let i = 0; i < applications.length; i += 1) {
+				// Remove status and committee if it's main board
+				applications[i].committees = applications[i].committees.filter(
+					(committee) => committee._id !== MAIN_BOARD_ID
+				)
+				applications[i].statuses = applications[i].statuses.filter(
+					(stat) => stat.committee !== MAIN_BOARD_ID
+				)
+			}
+		}
+
+		return res.status(200).json(applicationRes)
 	} catch (error) {
 		return next(error)
 	}
