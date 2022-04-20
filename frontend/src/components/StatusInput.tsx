@@ -141,7 +141,7 @@ function StatusInput({
 					setByValue &&
 					`Satt av ${setByValue} ${dayjs(updatedDateValue)
 						.locale('nb')
-						.format('d. MMM HH:mm')}`
+						.format('D. MMM HH:mm')}`
 				}
 				disabled={!allowedToChange || isLoading}
 				placeholder='Pick one'
