@@ -4,7 +4,6 @@ import axios from 'axios'
 import cookieParser = require('cookie-parser')
 import dotenv from 'dotenv'
 import connectDB from './config/db'
-import testRoute from './routes/test'
 import committeeRouter from './routes/committees'
 import applicationRouter from './routes/applications'
 import authRouter from './routes/auth'
@@ -28,7 +27,6 @@ app.use(express.json())
 
 // Set up routes
 app.use('/auth', authRouter)
-app.use('/test', testRoute)
 app.use('/applications', applicationRouter)
 app.use('/statuses', statusRouter)
 app.use('/committees', committeeRouter)
