@@ -59,11 +59,14 @@ const getApplicationById = async (
 			})
 		if (!application) throw new CustomError('Could not find application', 404)
 
+		// Election committee are allowed to see all applied committees
 		if (userCommitteeIds.includes(ELECTION_COMMITTEE_ID)) {
 			return res.status(200).json({ application })
 		}
 
 		const applicationCommittees: ICommittee[] = application.committees
+		// Main board are allowed to see all applied committees,
+		// but not to the main board
 		if (userCommitteeIds.includes(MAIN_BOARD_ID)) {
 			for (let i = 0; i < applicationCommittees.length; i += 1) {
 				if (applicationCommittees[i]._id === MAIN_BOARD_ID) {
@@ -134,10 +137,15 @@ const getApplications = async (
 		let filter
 
 		if (committeeIds.includes(ELECTION_COMMITTEE_ID)) {
+			// Election committee are allowed to see all applications
 			filter = {}
 		} else if (committeeIds.includes(MAIN_BOARD_ID)) {
+			// Main board are allowed to see all applications except
+			// to the main board
 			filter = { committees: { $ne: [MAIN_BOARD_ID] } }
 		} else {
+			// All other committees are only allowed to se applications
+			// to their own committee
 			filter = { committees: { $in: committeeIds } }
 		}
 
