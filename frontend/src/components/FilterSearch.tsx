@@ -126,12 +126,17 @@ function getStatusTypesStrings(): StatusTypesData[] {
 	return statusTypesArray
 }
 
-function FilterSearch() {
+type FilterSearchProps = {
+	page: number
+}
+
+function FilterSearch(page: FilterSearchProps) {
 	const { classes } = useStyles()
 	const [committees, setCommittees] = useState<ICommittee[]>([])
 	const [chosenCommittees, setChosenCommittees] = useState<string[]>([])
 	const [status, setStatus] = useState<string>('')
-	const [dateSort, setDateSort] = useState<string>('desc')
+	const [sort, setSort] = useState<string>('date_desc')
+	const [nameSearch, setNameSearch] = useState<string>('')
 
 	useEffect(() => {
 		async function getCommittees() {
@@ -146,25 +151,46 @@ function FilterSearch() {
 
 	useEffect(() => {
 		function constructSearchFilterQuery() {
-			const listOfChosenCommittees = chosenCommittees.join('-')
-			let searchQuery = new URLSearchParams([
-				['committees', `${listOfChosenCommittees}`],
-				['status', `${status}`],
-				['dateSort', `${dateSort}`],
-			])
-			console.log(searchQuery.toString())
+			let committeesFilterString = ''
+			let statusString = ''
+			let sortString = `sort=${sort}`
+			let searchString = ''
+			let pageString = `page=${page.page}`
+			chosenCommittees.forEach((committee: string) => {
+				committeesFilterString += `&committee=${committee}`
+			})
+
+			if (status !== '') {
+				statusString = `status=${status}`
+			}
+			if (nameSearch !== '') {
+				searchString = `name=${nameSearch}`
+			}
+
+			let searchQuery = new URLSearchParams(
+				committeesFilterString +
+					'&' +
+					statusString +
+					'&' +
+					sortString +
+					'&' +
+					searchString +
+					'&' +
+					pageString
+			)
 
 			return searchQuery
 		}
 		constructSearchFilterQuery()
 		// TODO: query backend with constructed search query
-	}, [chosenCommittees, status, dateSort])
+	}, [chosenCommittees, status, sort, nameSearch, page.page])
 
-	// Convert list of ICommittee to list of strings
-	const committeesToStrings = (committees: ICommittee[]) => {
-		return committees.map((committee: ICommittee) => {
-			return committee.name
+	function committeesToCommitteeData() {
+		let dataList: { value: string; label: string }[] = []
+		committees.forEach((committee: ICommittee) => {
+			dataList.push({ value: `${committee._id}`, label: committee.name })
 		})
+		return dataList
 	}
 
 	interface ItemProps extends React.ComponentPropsWithoutRef<'div'> {
@@ -201,6 +227,8 @@ function FilterSearch() {
 						input: classes.searchInputField,
 						withIcon: classes.withIcon,
 					}}
+					value={nameSearch}
+					onChange={(e: any) => setNameSearch(e.target.value)}
 					icon={<Search />}
 					variant='default'
 					placeholder='Søk etter søker ...'
@@ -234,16 +262,16 @@ function FilterSearch() {
 						rightSection: classes.selectRightSection,
 					}}
 					data={[
-						{ value: 'desc', label: 'Nyeste først', group: 'Dato' },
-						{ value: 'asc', label: 'Eldste først', group: 'Dato' },
-						{ value: 'A-Z', label: 'A-Z', group: 'Alfabetisk' },
-						{ value: 'Z-A', label: 'Z-A', group: 'Alfabetisk' },
+						{ value: 'date_desc', label: 'Nyeste først', group: 'Dato' },
+						{ value: 'date_asc', label: 'Eldste først', group: 'Dato' },
+						{ value: 'name_asc', label: 'A-Z', group: 'Alfabetisk' },
+						{ value: 'name_desc', label: 'Z-A', group: 'Alfabetisk' },
 					]}
 					label={<span className={classes.badgeLabel}>Sorter etter</span>}
-					defaultValue={'desc'}
+					defaultValue={'date_desc'}
 					size='sm'
-					value={dateSort}
-					onChange={(e) => setDateSort(e as string)}
+					value={sort}
+					onChange={(e) => setSort(e as string)}
 					rightSection={<ChevronDown size={14} />}
 					rightSectionWidth={40}
 				/>
@@ -253,7 +281,7 @@ function FilterSearch() {
 						input: classes.multiselectInput,
 						value: classes.multiselectValue,
 					}}
-					data={committeesToStrings(committees)}
+					data={committeesToCommitteeData()}
 					label={<span className={classes.badgeLabel}>Velg utvalg</span>}
 					placeholder='Velg utvalg'
 					searchable
