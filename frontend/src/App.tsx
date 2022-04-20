@@ -19,11 +19,12 @@ function App() {
 	return (
 		<MantineProvider
 			theme={{
+				fontFamily: 'Poppins, sans-serif',
 				colors: colors,
 			}}
 			children={
 				<>
-					<NotificationsProvider position='top-right'>
+					<NotificationsProvider position='top-center'>
 						<BrowserRouter>
 							<Routes>
 								<Route path='/' element={<FormPage />} />
