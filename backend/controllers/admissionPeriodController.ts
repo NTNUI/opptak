@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import { AdmissionPeriodModel } from '../models/AdmissionPeriod'
 import { getUserCommitteeIdsByUserId } from '../utils/userCommittee'
 import { RequestWithNtnuiNo } from '../utils/request'
-import MAIN_BOARD_ID from '../utils/constants'
+import { MAIN_BOARD_ID } from '../utils/constants'
 import isAdmissionPeriodActive from '../utils/isApplicationPeriodActive'
 
 function validateAndFormatDateString(value: string): string {
