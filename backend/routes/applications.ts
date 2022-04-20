@@ -3,7 +3,7 @@ import {
 	getApplicationById,
 	getApplications,
 	postApplication,
-	wipeApplications,
+	wipeApplicationData,
 } from '../controllers/applicationController'
 import {
 	getAdmissionPeriod,
@@ -45,8 +45,8 @@ applicationRouter.get('/period/active', getAdmissionPeriodStatus)
 applicationRouter.get('/:application_id', authorization, getApplicationById)
 
 // @route DELETE applications
-// @description Delete all applications for all committees
+// @description Delete all application data
 // @access Private
-applicationRouter.delete('/', authorization, wipeApplications)
+applicationRouter.delete('/', authorization, wipeApplicationData)
 
 export default applicationRouter

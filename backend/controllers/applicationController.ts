@@ -231,8 +231,7 @@ const postApplication = async (
 	}
 }
 
-// Delete all applications for all committees
-const wipeApplications = async (
+const wipeApplicationData = async (
 	req: RequestWithNtnuiNo,
 	res: Response,
 	next: NextFunction
@@ -271,5 +270,5 @@ export {
 	getApplications,
 	postApplication,
 	getApplicationById,
-	wipeApplications,
+	wipeApplicationData,
 }
