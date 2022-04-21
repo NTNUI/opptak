@@ -198,7 +198,7 @@ const getApplications = async (
 		if (committee) {
 			// Parse query parameter to numbers
 			if (Array.isArray(committee)) {
-				committeeIds.push(committee.map((id) => parseInt(id, 10)))
+				committeeIds.push(...committee.map((id) => parseInt(id, 10)))
 			} else {
 				committeeIds.push(parseInt(committee, 10))
 			}
