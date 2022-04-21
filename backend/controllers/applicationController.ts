@@ -138,9 +138,7 @@ const getApplications = async (
 		// Retrieve query parameters
 		const page: string = req.query.page as string
 		const name: string = req.query.name as string
-		const committee: string | string[] = req.query.committee as
-			| string
-			| string[]
+		const committee: string | string[] = req.query.committee as string | string[]
 		const status: string = req.query.status as string
 		const sortparam: SortTypes = req.query.sort as SortTypes
 		const sortValue = getSortTypeValue(sortparam) // Parse sort value
@@ -269,7 +267,7 @@ const getApplications = async (
 					{ $count: 'total' },
 					{
 						$addFields: {
-							currentPage: page? Number(page) : 0,
+							currentPage: page ? Number(page) : 0,
 							numberOfPages: { $ceil: { $divide: ['$total', LIMIT] } },
 						},
 					},
