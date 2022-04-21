@@ -17,13 +17,11 @@ const useStyles = createStyles((theme) => ({
 	inputField: {
 		backgroundColor: 'transparent',
 		color: 'white',
-		width: '70%',
 	},
 	modal: {
 		backgroundColor: theme.colors.ntnui_background[9],
 		color: 'white',
 		border: '2px solid ' + theme.colors.ntnui_yellow[9],
-		padding: '1rem',
 	},
 	modalTitle: {
 		color: 'white',
@@ -48,8 +46,12 @@ const useStyles = createStyles((theme) => ({
 		display: 'flex',
 		gap: '1rem',
 		margin: '1rem 0 0 0',
+		'@media (max-width: 400px)': {
+			flexDirection: 'column',
+		},
 	},
 	cancelButton: {
+		width: '100%',
 		backgroundColor: theme.colors.ntnui_red[9],
 		transition: '0.3s',
 		border: '2px solid' + theme.colors.ntnui_red[9],
@@ -61,6 +63,7 @@ const useStyles = createStyles((theme) => ({
 		},
 	},
 	confirmButton: {
+		width: '100%',
 		backgroundColor: theme.colors.ntnui_blue[9],
 		border: '2px solid' + theme.colors.ntnui_blue[9],
 		transition: '0.3s',
@@ -70,6 +73,10 @@ const useStyles = createStyles((theme) => ({
 			color: theme.colors.ntnui_blue[9],
 			backgroundColor: 'transparent',
 		},
+	},
+	slettSpan: {
+		color: 'white',
+		fontWeight: 600,
 	},
 }))
 
@@ -89,6 +96,7 @@ function WipeModal({ opened, setOpened }: IWipeModal) {
 	})
 
 	const handleWipeApplicationData = async () => {
+		if (form.validate().hasErrors) return
 		// Wipe app data
 		const notificationId = notifications.showNotification({
 			id: 'wipe-notification',
@@ -153,7 +161,7 @@ function WipeModal({ opened, setOpened }: IWipeModal) {
 			}}
 		>
 			<p>Dette er ment å gjøres når man er ferdig med semesterets opptak.</p>
-			<p>Ved sletting av opptaksdata slettes følgende:</p>
+			<p>Ved sletting av all opptaksdata slettes følgende:</p>
 			<ul>
 				<li>Alle søknader som er sendt inn og tilhørende data</li>
 				<li>Alle kontoer i søknadssystemet som har logget inn</li>
@@ -163,7 +171,13 @@ function WipeModal({ opened, setOpened }: IWipeModal) {
 				<TextInput
 					required
 					classNames={{ label: classes.labelText, input: classes.inputField }}
-					label='Skriv “slett” for å bekrefte at du vil slette all opptaksdata'
+					label={
+						<>
+							Skriv
+							<span className={classes.slettSpan}> "slett" </span>
+							for å bekrefte
+						</>
+					}
 					onBlur={() => form.validateField('confirm')}
 					{...form.getInputProps('confirm')}
 				/>
@@ -181,7 +195,7 @@ function WipeModal({ opened, setOpened }: IWipeModal) {
 						className={classes.confirmButton}
 						leftIcon={<Trash size={18} />}
 					>
-						Slett all opptaksdata
+						Slett opptaksdata
 					</Button>
 				</Box>
 			</form>
