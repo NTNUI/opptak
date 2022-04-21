@@ -261,7 +261,7 @@ const getApplications = async (
 
 		// Pagination
 		const LIMIT = 4
-		const startIndex = parseInt(page, 10) ? (Number(page) - 1) * LIMIT : 1
+		const startIndex = page ? (Number(page) - 1) * LIMIT : 0
 		const pagination = {
 			$facet: {
 				applications: [{ $skip: startIndex }, { $limit: LIMIT }],
@@ -269,7 +269,7 @@ const getApplications = async (
 					{ $count: 'total' },
 					{
 						$addFields: {
-							currentPage: Number(page),
+							currentPage: page? Number(page) : 0,
 							numberOfPages: { $ceil: { $divide: ['$total', LIMIT] } },
 						},
 					},
