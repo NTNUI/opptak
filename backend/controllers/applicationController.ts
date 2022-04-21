@@ -138,7 +138,7 @@ const getApplications = async (
 		// Retrieve query parameters
 		const page: string = req.query.page as string
 		const name: string = req.query.name as string
-		const committees: string | string[] = req.query.committees as
+		const committee: string | string[] = req.query.committee as
 			| string
 			| string[]
 		const status: string = req.query.status as string
@@ -195,16 +195,16 @@ const getApplications = async (
 
 		// Prepare committees query
 		const committeeIds = []
-		if (committees) {
+		if (committee) {
 			// Parse query parameter to numbers
-			if (Array.isArray(committees)) {
-				committeeIds.push(committees.map((id) => parseInt(id, 10)))
+			if (Array.isArray(committee)) {
+				committeeIds.push(committee.map((id) => parseInt(id, 10)))
 			} else {
-				committeeIds.push(parseInt(committees, 10))
+				committeeIds.push(parseInt(committee, 10))
 			}
 		}
 		// Filter on both status and committees if both query parameters are sent
-		if (status && committees) {
+		if (status && committee) {
 			const statusForCommittee = {
 				$match: {
 					statuses: {
@@ -230,7 +230,7 @@ const getApplications = async (
 				},
 			}
 			aggregationPipeline.push(filterStatus)
-		} else if (committees) {
+		} else if (committee) {
 			// Filter only on committee(s)
 			const filterCommittee = {
 				$match: {
@@ -337,7 +337,7 @@ const getApplications = async (
 			for (let i = 0; i < applications.length; i += 1) {
 				// Remove status and committee if it's main board
 				applications[i].committees = applications[i].committees.filter(
-					(committee) => committee._id !== MAIN_BOARD_ID
+					(com) => com._id !== MAIN_BOARD_ID
 				)
 				applications[i].statuses = applications[i].statuses.filter(
 					(stat) => stat.committee !== MAIN_BOARD_ID
