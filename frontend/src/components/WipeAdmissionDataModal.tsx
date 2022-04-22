@@ -26,6 +26,8 @@ const useStyles = createStyles((theme) => ({
 	modalTitle: {
 		color: 'white',
 		fontSize: '1rem',
+		textAlign: 'center',
+		width: '100%',
 		h1: {
 			fontWeight: 500,
 			margin: 0,
