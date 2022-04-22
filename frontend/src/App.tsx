@@ -14,7 +14,7 @@ import Login from './pages/Login'
 import colors from './utils/theme'
 
 function App() {
-	axios.defaults.baseURL = 'http://localhost:8082'
+	axios.defaults.baseURL = process.env.REACT_APP_BASE_URL || 'http://localhost:8082'
 	axios.defaults.withCredentials = true
 	return (
 		<MantineProvider

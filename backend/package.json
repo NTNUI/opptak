@@ -30,7 +30,7 @@
 	},
 	"main": "app.ts",
 	"scripts": {
-		"start": "node app.ts",
+		"start": "ts-node app.ts",
 		"app": "npx nodemon --exec npx ts-node app.ts",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
