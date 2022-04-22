@@ -11,13 +11,19 @@ import {
 	getAdmissionPeriodStatus,
 } from '../controllers/admissionPeriodController'
 import authorization from '../utils/authorizationMiddleware'
+import applicationQueryValidator from '../utils/applicationQueryMiddleware'
 
 const applicationRouter = express.Router()
 
 // @route GET applications
 // @description Get all applications that user has access to
 // @access Private
-applicationRouter.get('/', authorization, getApplications)
+applicationRouter.get(
+	'/',
+	authorization,
+	applicationQueryValidator(),
+	getApplications
+)
 
 // @route POST applications
 // @description Add application

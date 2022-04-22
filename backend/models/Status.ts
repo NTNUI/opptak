@@ -13,7 +13,7 @@ interface Enum {
 	[id: number]: string
 }
 
-function stringifyEnum(enumVal: Enum): String {
+export function stringifyEnum(enumVal: Enum): String {
 	const enumArr = Object.values(enumVal)
 	return enumArr.reduce((el1, el2, idx) => {
 		if (idx !== enumArr.length - 1) {

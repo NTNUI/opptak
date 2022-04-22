@@ -1,14 +1,16 @@
 import { NextFunction, Request, Response } from 'express'
 import { CustomError, UnauthorizedUserError } from 'ntnui-tools/customError'
+import { validationResult, ValidationError } from 'express-validator'
 import { RequestWithNtnuiNo } from '../utils/request'
 import { ApplicationModel, IApplication } from '../models/Application'
 import { UserModel } from '../models/User'
 import { CommitteeModel, ICommittee } from '../models/Committee'
 import isAdmissionPeriodActive from '../utils/isApplicationPeriodActive'
-import { StatusTypes } from '../utils/enums'
+import { SortTypes, StatusTypes } from '../utils/enums'
 import { IStatus, StatusModel } from '../models/Status'
-import { ELECTION_COMMITTEE_ID, MAIN_BOARD_ID } from '../utils/constants'
 import { AdmissionPeriodModel } from '../models/AdmissionPeriod'
+import { getSortTypeValue } from '../utils/applicationQueryMiddleware'
+import { ELECTION_COMMITTEE_ID, MAIN_BOARD_ID } from '../utils/constants'
 
 async function getUserCommitteeIdsByUserId(userId: number | string) {
 	let committeeIds: number[] = []
@@ -27,6 +29,11 @@ async function getUserCommitteeIdsByUserId(userId: number | string) {
 interface IPopulatedApplicationCommittees
 	extends Omit<IApplication, 'committees'> {
 	committees: ICommittee[]
+}
+
+interface IPopulatedApplicationCommitteesAndStatus
+	extends Omit<IPopulatedApplicationCommittees, 'statuses'> {
+	statuses: IStatus[]
 }
 
 const getApplicationById = async (
@@ -112,69 +119,231 @@ const getApplications = async (
 		// Access control - retrieve committees that user is member of
 		const { ntnuiNo } = req
 		if (!ntnuiNo) throw UnauthorizedUserError
-		const committeeIds: number[] = await getUserCommitteeIdsByUserId(ntnuiNo)
+		const userCommitteeIds: number[] = await getUserCommitteeIdsByUserId(ntnuiNo)
 
-		if (!committeeIds) {
+		if (!userCommitteeIds) {
 			return res
 				.status(403)
 				.json({ message: 'The user is not member of any committee' })
 		}
 
-		// Pagination
-		const { page } = req.query
-		let pageNum = 1 // default value
+		// Validate query parameters
+		const errorFormatter = ({ location, msg, param, value }: ValidationError) =>
+			`${location}[${param}](Value=${value}): ${msg}`
 
-		// validation of the page-query-param
-		if (undefined !== page) {
-			pageNum = Number(page)
-
-			if (pageNum < 1 || Number.isNaN(pageNum)) {
-				pageNum = 1
-			}
+		const result = validationResult(req).formatWith(errorFormatter)
+		if (!result.isEmpty()) {
+			return res.status(400).json({ message: result.array() })
 		}
-		const LIMIT = 4
-		const startIndex = (pageNum - 1) * LIMIT
+		// Retrieve query parameters
+		const page: string = req.query.page as string
+		const name: string = req.query.name as string
+		const committee: string | string[] = req.query.committee as string | string[]
+		const status: string = req.query.status as string
+		const sortparam: SortTypes = req.query.sort as SortTypes
+		const sortValue = getSortTypeValue(sortparam) // Parse sort value
 
-		let filter
-
-		if (committeeIds.includes(ELECTION_COMMITTEE_ID)) {
+		// Aggregation
+		const aggregationPipeline = []
+		// Only return applications that are sent to committees that user is authorized to see
+		if (userCommitteeIds.includes(ELECTION_COMMITTEE_ID)) {
 			// Election committee are allowed to see all applications
-			filter = {}
-		} else if (committeeIds.includes(MAIN_BOARD_ID)) {
-			// Main board are allowed to see all applications except
-			// to the main board
-			filter = { committees: { $ne: [MAIN_BOARD_ID] } }
+		} else if (userCommitteeIds.includes(MAIN_BOARD_ID)) {
+			// Main board see all applications except ones only to the main board
+			const userAuthorizedCommittees = {
+				$match: {
+					committees: {
+						$ne: [MAIN_BOARD_ID],
+					},
+				},
+			}
+			aggregationPipeline.push(userAuthorizedCommittees)
 		} else {
-			// All other committees are only allowed to se applications
-			// to their own committee
-			filter = { committees: { $in: committeeIds } }
+			// Normal committees only see applications to their own committee
+			const userAuthorizedCommittees = {
+				$match: {
+					committees: {
+						$in: userCommitteeIds,
+					},
+				},
+			}
+			aggregationPipeline.push(userAuthorizedCommittees)
+		}
+		// Query on name
+		const queryName = {
+			$match: {
+				name: {
+					$regex: name,
+					$options: 'i',
+				},
+			},
+		}
+		if (name) aggregationPipeline.push(queryName)
+
+		// Populate status to query on status for committee value
+		const populateStatus = {
+			$lookup: {
+				from: 'status',
+				localField: 'statuses',
+				foreignField: '_id',
+				as: 'statuses',
+			},
+		}
+		aggregationPipeline.push(populateStatus)
+
+		// Prepare committees query
+		const committeeIds = []
+		if (committee) {
+			// Parse query parameter to numbers
+			if (Array.isArray(committee)) {
+				committeeIds.push(...committee.map((id) => parseInt(id, 10)))
+			} else {
+				committeeIds.push(parseInt(committee, 10))
+			}
+		}
+		// Filter on both status and committees if both query parameters are sent
+		if (status && committee) {
+			const statusForCommittee = {
+				$match: {
+					statuses: {
+						$elemMatch: {
+							committee: {
+								$in: committeeIds,
+							},
+							value: status,
+						},
+					},
+				},
+			}
+			aggregationPipeline.push(statusForCommittee)
+		} else if (status) {
+			// Filter only on status
+			const filterStatus = {
+				$match: {
+					statuses: {
+						$elemMatch: {
+							value: status,
+						},
+					},
+				},
+			}
+			aggregationPipeline.push(filterStatus)
+		} else if (committee) {
+			// Filter only on committee(s)
+			const filterCommittee = {
+				$match: {
+					committees: {
+						$in: committeeIds,
+					},
+				},
+			}
+			aggregationPipeline.push(filterCommittee)
 		}
 
-		const total = await ApplicationModel.countDocuments(filter)
+		// Populate committees
+		const populateCommittees = {
+			$lookup: {
+				from: 'committees',
+				localField: 'committees',
+				foreignField: '_id',
+				as: 'committees',
+			},
+		}
+		aggregationPipeline.push(populateCommittees)
 
-		const applications = await ApplicationModel.find(filter)
-			.populate<IPopulatedApplicationCommittees>('committees', 'name')
-			.select('name committees submitted_date')
-			.limit(LIMIT)
-			.skip(startIndex)
-			.then((applicationRes) => applicationRes)
+		// Sort
+		const sort = {
+			$sort: sortparam ? (sortValue as 1 | -1) : {},
+		}
+		if (sortparam) aggregationPipeline.push(sort)
 
-		if (!committeeIds.includes(ELECTION_COMMITTEE_ID)) {
+		// Pagination
+		const LIMIT = 4
+		const startIndex = page ? (Number(page) - 1) * LIMIT : 0
+		const pagination = {
+			$facet: {
+				applications: [{ $skip: startIndex }, { $limit: LIMIT }],
+				pagination: [
+					{ $count: 'total' },
+					{
+						$addFields: {
+							currentPage: page ? Number(page) : 0,
+							numberOfPages: { $ceil: { $divide: ['$total', LIMIT] } },
+						},
+					},
+				],
+			},
+		}
+		aggregationPipeline.push(pagination)
+
+		// Projection to retrieve interesting fields
+		const projection = {
+			$project: {
+				applications: {
+					_id: 1,
+					name: 1,
+					submitted_date: 1,
+					committees: {
+						_id: 1,
+						name: 1,
+						slug: 1,
+					},
+					statuses: {
+						committee: 1,
+					},
+				},
+				pagination: {
+					$mergeObjects: [
+						// Make pagination to an object instead of array
+						{
+							currentPage: { $arrayElemAt: ['$pagination.currentPage', 0] },
+							numberOfPages: { $arrayElemAt: ['$pagination.numberOfPages', 0] },
+						},
+					],
+				},
+			},
+		}
+
+		aggregationPipeline.push(projection)
+
+		interface IApplicationResponse {
+			applications: IPopulatedApplicationCommitteesAndStatus[]
+			pagination: {
+				currentPage: number
+				numberOfPages: number
+			}
+		}
+		// Retrieve applications that following given filter
+		const applicationRes = await ApplicationModel.aggregate(aggregationPipeline)
+			.exec()
+			.then((appRes: IApplicationResponse[]) =>
+				appRes[0].applications.length
+					? appRes[0]
+					: { applications: [], pagination: { currentPage: 1, numberOfPages: 0 } }
+			)
+			.catch(() => {
+				throw new CustomError('Something went wrong retrieving applications', 500)
+			})
+
+		const { applications } = applicationRes
+		// If user is part of main board, hide parts with main board
+		if (
+			applications &&
+			!userCommitteeIds.includes(ELECTION_COMMITTEE_ID) &&
+			userCommitteeIds.includes(MAIN_BOARD_ID)
+		) {
 			for (let i = 0; i < applications.length; i += 1) {
-				for (let j = 0; j < applications[i].committees.length; j += 1) {
-					if (applications[i].committees[j]._id === MAIN_BOARD_ID) {
-						applications[i].committees.splice(j, 1)
-						j -= 1
-					}
-				}
+				// Remove status and committee if it's main board
+				applications[i].committees = applications[i].committees.filter(
+					(com) => com._id !== MAIN_BOARD_ID
+				)
+				applications[i].statuses = applications[i].statuses.filter(
+					(stat) => stat.committee !== MAIN_BOARD_ID
+				)
 			}
 		}
 
-		return res.status(200).json({
-			applications,
-			currentPage: Number(pageNum),
-			numberOfPages: Math.ceil(total / LIMIT),
-		})
+		return res.status(200).json(applicationRes)
 	} catch (error) {
 		return next(error)
 	}
