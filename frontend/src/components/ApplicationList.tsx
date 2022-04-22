@@ -9,7 +9,7 @@ const useStyles = createStyles((theme) => ({
 		padding: '0',
 		flexDirection: 'column',
 		gap: '1rem',
-
+		maxWidth: '100%',
 		'@media (max-width: 600px)': {
 			width: '90%',
 		},
