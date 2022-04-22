@@ -1,8 +1,15 @@
 # 🍑 Express.js with MongoDB backend
 
+- [Express.js](https://expressjs.com/) - framework
+- [MongoDB](https://www.mongodb.com/atlas/database) - database
+- [Mongoose](https://mongoosejs.com/) - object modeling
+- [Axios](https://github.com/axios/axios) - http client
+- [cors for Express.js](https://github.com/expressjs/cors) - middleware
+- [nodemon](https://github.com/remy/nodemon) - development dependency
+
 ## Developement
 
-Install and run the backend using `npm install`, then `npm run app`, or simply run `npm run backend` from the project root folder. 
+Install and run the backend using `npm install`, then `npm run app`, or simply run `npm run backend` from the project root folder.
 
 ### Environment variables
 
@@ -11,11 +18,13 @@ Add environment variables to an `.env` file in the backend folder.
 ```sh
 # .env
 
-## NTNUI API URI (optional)
-API_URI="https://api.ntnui.no"
-
 ## MongoDB connection string
 DB_URI = "mongodb://<username>:<password>@<host>:<port>/<database>"
+
+## Optional variables to use in development
+API_URI = "https://dev.api.ntnui.no"
+MAIN_BOARD_ID = 9
+ELECTION_COMMITTEE_ID = 10
 ```
 
 ### ☁ Set up MongoDB Atlas

@@ -15,7 +15,7 @@ import statusRouter from './routes/statuses'
 dotenv.config()
 
 axios.defaults.baseURL = process.env.API_URI || 'https://api.ntnui.no'
-console.log('📡 API set to', axios.defaults.baseURL)
+console.log('📡 API_URI set to', axios.defaults.baseURL)
 
 const app = express()
 

@@ -14,11 +14,11 @@ Add environment variables to an `.env` file in the frontend folder to connect to
 ```sh
 # .env
 
-## ID of the committee with organizer access
-REACT_APP_ORGANIZER_ID = 9
-
 ## URL to the Express.js backend
 REACT_APP_BASE_URL = 'http://localhost:8082'
+
+## Optional variables to use in development
+REACT_APP_MAIN_BOARD_ID = 9
 ```
 
 ## Scripts

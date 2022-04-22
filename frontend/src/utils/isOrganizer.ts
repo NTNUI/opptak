@@ -1,6 +1,6 @@
 import { getUserCommittees, IRoleInCommittee } from './../services/User'
 
-const MAIN_BOARD_ID = process.env.REACT_APP_ORGANIZER_ID || -69
+const MAIN_BOARD_ID = process.env.REACT_APP_MAIN_BOARD_ID || 52
 
 async function isOrganizer() {
 	const userCommittees: IRoleInCommittee[] = await getUserCommittees()
