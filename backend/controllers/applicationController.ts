@@ -7,6 +7,8 @@ import { CommitteeModel, ICommittee } from '../models/Committee'
 import isAdmissionPeriodActive from '../utils/isApplicationPeriodActive'
 import { StatusTypes } from '../utils/enums'
 import { IStatus, StatusModel } from '../models/Status'
+import { ELECTION_COMMITTEE_ID, MAIN_BOARD_ID } from '../utils/constants'
+import { AdmissionPeriodModel } from '../models/AdmissionPeriod'
 
 async function getUserCommitteeIdsByUserId(userId: number | string) {
 	let committeeIds: number[] = []
@@ -37,6 +39,13 @@ const getApplicationById = async (
 		const { ntnuiNo } = req
 		if (!ntnuiNo) throw UnauthorizedUserError
 		const userCommitteeIds: number[] = await getUserCommitteeIdsByUserId(ntnuiNo)
+
+		if (!userCommitteeIds) {
+			return res
+				.status(403)
+				.json({ message: 'The user is not member of any committee' })
+		}
+
 		// Retrieve application and committees the application is sent to
 		const application = await ApplicationModel.findById(req.params.application_id)
 			.populate<IPopulatedApplicationCommittees>('committees', 'name slug')
@@ -50,13 +59,43 @@ const getApplicationById = async (
 				throw new CustomError('Could not find application', 404)
 			})
 		if (!application) throw new CustomError('Could not find application', 404)
+
+		// Election committee are allowed to see all applied committees
+		if (userCommitteeIds.includes(ELECTION_COMMITTEE_ID)) {
+			return res.status(200).json({ application })
+		}
+
 		const applicationCommittees: ICommittee[] = application.committees
-		// Check if user is in committee that application is sent to
+		// Main board are allowed to see all applied committees,
+		// but not to the main board
+		if (userCommitteeIds.includes(MAIN_BOARD_ID)) {
+			for (let i = 0; i < applicationCommittees.length; i += 1) {
+				if (applicationCommittees[i]._id === MAIN_BOARD_ID) {
+					applicationCommittees.splice(i, 1)
+					application.statuses.splice(i, 1)
+					break
+				}
+			}
+
+			if (applicationCommittees.length > 0) {
+				return res.status(200).json({ application })
+			}
+			return res.status(403).json({ message: 'Not authorized' })
+		}
+
+		let authorized = false
 		for (let id = 0; id < applicationCommittees.length; id += 1) {
 			const appCommitteeId = applicationCommittees[id]._id
 			if (userCommitteeIds.includes(appCommitteeId)) {
-				return res.status(200).json({ application })
+				authorized = true
+			} else if (appCommitteeId === MAIN_BOARD_ID) {
+				applicationCommittees.splice(id, 1)
+				application.statuses.splice(id, 1)
+				id -= 1
 			}
+		}
+		if (authorized === true) {
+			return res.status(200).json({ application })
 		}
 		throw new CustomError('You do not have access to this application', 403)
 	} catch (error) {
@@ -74,32 +113,66 @@ const getApplications = async (
 		const { ntnuiNo } = req
 		if (!ntnuiNo) throw UnauthorizedUserError
 		const committeeIds: number[] = await getUserCommitteeIdsByUserId(ntnuiNo)
+
+		if (!committeeIds) {
+			return res
+				.status(403)
+				.json({ message: 'The user is not member of any committee' })
+		}
+
 		// Pagination
 		const { page } = req.query
+		let pageNum = 1 // default value
+
+		// validation of the page-query-param
+		if (undefined !== page) {
+			pageNum = Number(page)
+
+			if (pageNum < 1 || Number.isNaN(pageNum)) {
+				pageNum = 1
+			}
+		}
 		const LIMIT = 4
-		const startIndex = (Number(page) - 1) * LIMIT
-		const total = await ApplicationModel.countDocuments({
-			committees: { $in: committeeIds },
-		})
-		// Retrieve applications that only have the given committees
-		let applications: IApplication[] = []
-		await ApplicationModel.find({
-			committees: { $in: committeeIds },
-		})
-			.populate('committees', 'name')
-			.select('-statuses')
+		const startIndex = (pageNum - 1) * LIMIT
+
+		let filter
+
+		if (committeeIds.includes(ELECTION_COMMITTEE_ID)) {
+			// Election committee are allowed to see all applications
+			filter = {}
+		} else if (committeeIds.includes(MAIN_BOARD_ID)) {
+			// Main board are allowed to see all applications except
+			// to the main board
+			filter = { committees: { $ne: [MAIN_BOARD_ID] } }
+		} else {
+			// All other committees are only allowed to se applications
+			// to their own committee
+			filter = { committees: { $in: committeeIds } }
+		}
+
+		const total = await ApplicationModel.countDocuments(filter)
+
+		const applications = await ApplicationModel.find(filter)
+			.populate<IPopulatedApplicationCommittees>('committees', 'name')
+			.select('name committees submitted_date')
 			.limit(LIMIT)
 			.skip(startIndex)
-			.then((applicationRes) => {
-				applications = applicationRes
-			})
-			.catch(() => {
-				throw new CustomError('Something went wrong retrieving applications', 500)
-			})
+			.then((applicationRes) => applicationRes)
+
+		if (!committeeIds.includes(ELECTION_COMMITTEE_ID)) {
+			for (let i = 0; i < applications.length; i += 1) {
+				for (let j = 0; j < applications[i].committees.length; j += 1) {
+					if (applications[i].committees[j]._id === MAIN_BOARD_ID) {
+						applications[i].committees.splice(j, 1)
+						j -= 1
+					}
+				}
+			}
+		}
 
 		return res.status(200).json({
 			applications,
-			currentPage: Number(page),
+			currentPage: Number(pageNum),
 			numberOfPages: Math.ceil(total / LIMIT),
 		})
 	} catch (error) {
@@ -158,4 +231,33 @@ const postApplication = async (
 	}
 }
 
-export { getApplications, postApplication, getApplicationById }
+const wipeAdmissionData = async (
+	req: RequestWithNtnuiNo,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const { ntnuiNo } = req
+		if (!ntnuiNo) throw UnauthorizedUserError
+		const committeeIds: number[] = await getUserCommitteeIdsByUserId(ntnuiNo)
+		// Only main board can delete all applications
+		if (!committeeIds.includes(MAIN_BOARD_ID)) {
+			throw new CustomError('You do not have access to this resource', 403)
+		}
+		await ApplicationModel.deleteMany({})
+		await StatusModel.deleteMany({})
+		await UserModel.deleteMany({ _id: { $ne: ntnuiNo } })
+		await AdmissionPeriodModel.deleteMany({})
+		await CommitteeModel.updateMany({}, { accepts_admissions: false })
+		return res.status(200).json({ message: 'Admission data successfully wiped' })
+	} catch (error) {
+		return next(error)
+	}
+}
+
+export {
+	getApplications,
+	postApplication,
+	getApplicationById,
+	wipeAdmissionData,
+}

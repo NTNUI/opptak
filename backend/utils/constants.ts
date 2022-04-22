@@ -1,3 +1,4 @@
 const MAIN_BOARD_ID = 9
+const ELECTION_COMMITTEE_ID = 1
 
-export default MAIN_BOARD_ID
+export { MAIN_BOARD_ID, ELECTION_COMMITTEE_ID }
