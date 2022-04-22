@@ -52,8 +52,8 @@ function ApplicationList() {
 			try {
 				const response = await getApplications(currentPage)
 				setApplications(response.applications)
-				setCurrentPage(response.currentPage)
-				setNumberOfPages(response.numberOfPages)
+				setCurrentPage(response.pagination.currentPage)
+				setNumberOfPages(response.pagination.numberOfPages)
 				setIsLoading(false)
 			} catch (error: any) {
 				setIsLoading(false)

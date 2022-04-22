@@ -24,8 +24,10 @@ interface IApplication {
 
 interface IApplicationsResponse {
 	applications: IApplication[]
-	currentPage: number
-	numberOfPages: number
+	pagination: {
+		currentPage: number
+		numberOfPages: number
+	}
 }
 
 interface IApplicationResponse {
