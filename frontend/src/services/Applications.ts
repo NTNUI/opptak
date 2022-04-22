@@ -43,14 +43,12 @@ function constructSearchFilterQuery(
 	chosenCommittees: string[],
 	sort: string,
 	status: string,
-	nameSearch: string,
-	page: string
+	nameSearch: string
 ) {
 	let committeesFilterString = ''
 	let statusString = ''
 	let sortString = `sort=${sort}`
 	let searchString = ''
-	let pageString = `page=${page}`
 	chosenCommittees.forEach((committee: string) => {
 		committeesFilterString += `&committee=${committee}`
 	})
@@ -69,9 +67,7 @@ function constructSearchFilterQuery(
 			'&' +
 			sortString +
 			'&' +
-			searchString +
-			'&' +
-			pageString
+			searchString
 	)
 
 	return searchQuery

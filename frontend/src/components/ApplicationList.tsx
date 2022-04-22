@@ -26,9 +26,7 @@ type ApplicationListProps = {
 	applications: IApplication[]
 }
 
-function ApplicationList(
-	applications: ApplicationListProps,
-) {
+function ApplicationList(applications: ApplicationListProps) {
 	let navigate = useNavigate()
 
 	function itemClickHandler(id: string) {

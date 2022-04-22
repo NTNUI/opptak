@@ -53,7 +53,7 @@ function ApplicationOverview() {
 	const [numberOfPages, setNumberOfPages] = useState(1)
 	const [isLoading, setIsLoading] = useState(false)
 	const [applications, setApplications] = useState<IApplication[]>([])
-	const [filters, setFilters] = useState<string>('page=1')
+	const [filters, setFilters] = useState<string>('')
 
 	let navigate = useNavigate()
 

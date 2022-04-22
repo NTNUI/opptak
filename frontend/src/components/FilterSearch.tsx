@@ -1,10 +1,7 @@
 import { createStyles, Group, Input, MultiSelect, Select } from '@mantine/core'
 import { forwardRef, useEffect, useState } from 'react'
 import { ChevronDown, Menu2, Search } from 'tabler-icons-react'
-import {
-	constructSearchFilterQuery,
-	getApplications,
-} from '../services/Applications'
+import { constructSearchFilterQuery } from '../services/Applications'
 import { getAllCommittees } from '../services/Committees'
 import { ICommittee } from '../types/types'
 import StatusTypes from '../utils/enums'
@@ -141,7 +138,6 @@ function FilterSearch({ setFilter }: FilterSearchProps) {
 	const [status, setStatus] = useState<string>('')
 	const [sort, setSort] = useState<string>('date_desc')
 	const [nameSearch, setNameSearch] = useState<string>('')
-	const [page, setPage] = useState<number>(1)
 
 	useEffect(() => {
 		async function getCommittees() {
@@ -159,11 +155,10 @@ function FilterSearch({ setFilter }: FilterSearchProps) {
 			chosenCommittees,
 			sort,
 			status,
-			nameSearch,
-			page.toString()
+			nameSearch
 		)
 		setFilter(query.toString())
-	}, [chosenCommittees, status, sort, nameSearch, page, setFilter])
+	}, [chosenCommittees, status, sort, nameSearch, setFilter])
 
 	function committeesToCommitteeData() {
 		let dataList: { value: string; label: string }[] = []
