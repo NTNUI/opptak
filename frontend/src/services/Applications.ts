@@ -34,10 +34,16 @@ const isApplicationPeriodActive = async (): Promise<boolean> => {
 	return response.data.response
 }
 
+const wipeApplicationData = async () => {
+	const response = await axios.delete('/applications/')
+	return response
+}
+
 export {
 	getApplications,
 	getApplication,
 	getAdmissionPeriod,
 	putAdmissionPeriod,
 	isApplicationPeriodActive,
+	wipeApplicationData,
 }

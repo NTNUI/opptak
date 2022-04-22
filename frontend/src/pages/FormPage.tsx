@@ -109,7 +109,6 @@ const useStyles = createStyles((theme) => ({
 	closedPeriod: {
 		width: '40%',
 		margin: 'auto',
-
 		border: '2px solid ' + theme.colors.ntnui_yellow[9],
 		borderRadius: theme.radius.sm,
 		color: 'white',
@@ -144,7 +143,8 @@ const useStyles = createStyles((theme) => ({
 		width: '100%',
 	},
 	endOfSearchPeriodText: {
-		fontWeight: 'bold',
+		textAlign: 'center',
+		fontSize: 'large',
 		paddingBottom: '1rem',
 	},
 }))
@@ -165,13 +165,13 @@ function FormBox() {
 				if (response) {
 					const getApplicationsPeriodAsync = async () => {
 						const response = await getAdmissionPeriod()
-						const parsedEndDate = new Date(
-							response.admissionPeriod.end_date
-						).toLocaleDateString('no-No', {
-							month: 'long',
-							day: '2-digit',
-							year: 'numeric',
-						})
+						const parsedEndDate = new Date(response.admissionPeriod.end_date)
+							.toLocaleDateString('no-No', {
+								month: 'long',
+								day: '2-digit',
+								year: 'numeric',
+							})
+							.concat(' 23:59')
 						setEndDate(parsedEndDate)
 						setIsLoading(false)
 					}
@@ -206,13 +206,13 @@ function FormBox() {
 				<Loader size='xl' color='yellow' className={classes.loading} />
 			) : periodOpen ? (
 				<Box className={classes.formTitleAndBodyWrapper}>
-					<h2 className={classes.formTitle}>
-						{endDate && (
-							<p className={classes.endOfSearchPeriodText}>Søknadsfrist: {endDate}</p>
-						)}
+					<h1 className={classes.formTitle}>
 						<FileText />
 						Søknad til NTNUI Admin
-					</h2>
+					</h1>
+					{endDate && (
+						<p className={classes.endOfSearchPeriodText}>Søknadsfrist: {endDate}</p>
+					)}
 					<Form />
 				</Box>
 			) : (
