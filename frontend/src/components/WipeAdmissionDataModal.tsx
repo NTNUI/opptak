@@ -117,6 +117,7 @@ function WipeModal({ opened, setOpened }: IWipeModal) {
 				autoClose: 7000,
 			})
 			form.reset()
+			setOpened(false)
 		} catch (error: any) {
 			console.log(error.response.status)
 			if (error.response.status === 403) {
