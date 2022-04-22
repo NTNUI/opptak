@@ -12,6 +12,7 @@ import Dashboard from './pages/Dashboard'
 import FormPage from './pages/FormPage'
 import Login from './pages/Login'
 import colors from './utils/theme'
+import RequireAuth from './utils/authRouter'
 
 function App() {
 	axios.defaults.baseURL = 'http://localhost:8082'
@@ -32,46 +33,56 @@ function App() {
 								<Route
 									path='/dashboard'
 									element={
-										<>
-											<Navbar />
-											<Dashboard />
-										</>
+										<RequireAuth organizer>
+											<>
+												<Navbar />
+												<Dashboard />
+											</>
+										</RequireAuth>
 									}
 								/>
 								<Route
 									path='/applications'
 									element={
-										<>
-											<Navbar />
-											<ApplicationOverview />
-										</>
+										<RequireAuth>
+											<>
+												<Navbar />
+												<ApplicationOverview />
+											</>
+										</RequireAuth>
 									}
 								/>
 								<Route
 									path='/applications/:id'
 									element={
-										<>
-											<Navbar />
-											<ApplicationDetailPage />
-										</>
+										<RequireAuth>
+											<>
+												<Navbar />
+												<ApplicationDetailPage />
+											</>
+										</RequireAuth>
 									}
 								/>
 								<Route
 									path='/admission-status'
 									element={
-										<>
-											<Navbar />
-											<AdmissionStatus />
-										</>
+										<RequireAuth organizer>
+											<>
+												<Navbar />
+												<AdmissionStatus />
+											</>
+										</RequireAuth>
 									}
 								/>
 								<Route
 									path='/admission-period'
 									element={
-										<>
-											<Navbar />
-											<AdmissionPeriod />
-										</>
+										<RequireAuth organizer>
+											<>
+												<Navbar />
+												<AdmissionPeriod />
+											</>
+										</RequireAuth>
 									}
 								/>
 							</Routes>
