@@ -114,7 +114,7 @@ function WipeModal({ opened, setOpened }: IWipeModal) {
 				icon: <Check size={18} />,
 				title: 'Opptaksdata slettet!',
 				message: '',
-				autoClose: 7000,
+				autoClose: 5000,
 			})
 			form.reset()
 			setOpened(false)
