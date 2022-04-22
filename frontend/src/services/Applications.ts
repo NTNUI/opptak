@@ -6,9 +6,9 @@ import {
 } from '../types/types'
 
 const getApplications = async (
-	currentPage: number
+	query: string
 ): Promise<IApplicationsResponse> => {
-	const response = await axios.get(`/applications/?page=${currentPage}`)
+	const response = await axios.get(`/applications/?${query}`)
 	return response.data
 }
 
@@ -39,6 +39,44 @@ const wipeApplicationData = async () => {
 	return response
 }
 
+function constructSearchFilterQuery(
+	chosenCommittees: string[],
+	sort: string,
+	status: string,
+	nameSearch: string,
+	page: string
+) {
+	let committeesFilterString = ''
+	let statusString = ''
+	let sortString = `sort=${sort}`
+	let searchString = ''
+	let pageString = `page=${page}`
+	chosenCommittees.forEach((committee: string) => {
+		committeesFilterString += `&committee=${committee}`
+	})
+
+	if (status !== '') {
+		statusString = `status=${status}`
+	}
+	if (nameSearch !== '') {
+		searchString = `name=${nameSearch}`
+	}
+
+	let searchQuery = new URLSearchParams(
+		committeesFilterString +
+			'&' +
+			statusString +
+			'&' +
+			sortString +
+			'&' +
+			searchString +
+			'&' +
+			pageString
+	)
+
+	return searchQuery
+}
+
 export {
 	getApplications,
 	getApplication,
@@ -46,4 +84,5 @@ export {
 	putAdmissionPeriod,
 	isApplicationPeriodActive,
 	wipeApplicationData,
+	constructSearchFilterQuery,
 }

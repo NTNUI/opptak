@@ -53,6 +53,8 @@ function ApplicationOverview() {
 	const [numberOfPages, setNumberOfPages] = useState(1)
 	const [isLoading, setIsLoading] = useState(false)
 	const [applications, setApplications] = useState<IApplication[]>([])
+	const [filters, setFilters] = useState<string>('page=1')
+
 	let navigate = useNavigate()
 
 	const { classes } = useStyles()
@@ -61,7 +63,7 @@ function ApplicationOverview() {
 		setIsLoading(true)
 		const getApplicationsAsync = async () => {
 			try {
-				const response = await getApplications(currentPage)
+				const response = await getApplications(`page=${currentPage}&${filters}`)
 				setApplications(response.applications)
 				setCurrentPage(response.pagination.currentPage)
 				setNumberOfPages(response.pagination.numberOfPages)
@@ -74,12 +76,12 @@ function ApplicationOverview() {
 			}
 		}
 		getApplicationsAsync()
-	}, [currentPage, navigate])
+	}, [currentPage, navigate, filters])
 
 	return (
 		<div className={classes.overview}>
 			<h1>Søknadsoversikt</h1>
-			<Filter page={currentPage} />
+			<Filter setFilter={setFilters} />
 			{applications.length ? (
 				<ApplicationList applications={applications} />
 			) : isLoading ? (

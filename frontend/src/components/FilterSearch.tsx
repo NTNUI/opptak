@@ -1,6 +1,10 @@
 import { createStyles, Group, Input, MultiSelect, Select } from '@mantine/core'
 import { forwardRef, useEffect, useState } from 'react'
 import { ChevronDown, Menu2, Search } from 'tabler-icons-react'
+import {
+	constructSearchFilterQuery,
+	getApplications,
+} from '../services/Applications'
 import { getAllCommittees } from '../services/Committees'
 import { ICommittee } from '../types/types'
 import StatusTypes from '../utils/enums'
@@ -126,17 +130,18 @@ function getStatusTypesStrings(): StatusTypesData[] {
 	return statusTypesArray
 }
 
-type FilterSearchProps = {
-	page: number
+export type FilterSearchProps = {
+	setFilter: (filter: string) => void
 }
 
-function FilterSearch(page: FilterSearchProps) {
+function FilterSearch({ setFilter }: FilterSearchProps) {
 	const { classes } = useStyles()
 	const [committees, setCommittees] = useState<ICommittee[]>([])
 	const [chosenCommittees, setChosenCommittees] = useState<string[]>([])
 	const [status, setStatus] = useState<string>('')
 	const [sort, setSort] = useState<string>('date_desc')
 	const [nameSearch, setNameSearch] = useState<string>('')
+	const [page, setPage] = useState<number>(1)
 
 	useEffect(() => {
 		async function getCommittees() {
@@ -150,40 +155,15 @@ function FilterSearch(page: FilterSearchProps) {
 	}, [])
 
 	useEffect(() => {
-		function constructSearchFilterQuery() {
-			let committeesFilterString = ''
-			let statusString = ''
-			let sortString = `sort=${sort}`
-			let searchString = ''
-			let pageString = `page=${page.page}`
-			chosenCommittees.forEach((committee: string) => {
-				committeesFilterString += `&committee=${committee}`
-			})
-
-			if (status !== '') {
-				statusString = `status=${status}`
-			}
-			if (nameSearch !== '') {
-				searchString = `name=${nameSearch}`
-			}
-
-			let searchQuery = new URLSearchParams(
-				committeesFilterString +
-					'&' +
-					statusString +
-					'&' +
-					sortString +
-					'&' +
-					searchString +
-					'&' +
-					pageString
-			)
-
-			return searchQuery
-		}
-		constructSearchFilterQuery()
-		// TODO: query backend with constructed search query
-	}, [chosenCommittees, status, sort, nameSearch, page.page])
+		let query = constructSearchFilterQuery(
+			chosenCommittees,
+			sort,
+			status,
+			nameSearch,
+			page.toString()
+		)
+		setFilter(query.toString())
+	}, [chosenCommittees, status, sort, nameSearch, page, setFilter])
 
 	function committeesToCommitteeData() {
 		let dataList: { value: string; label: string }[] = []
