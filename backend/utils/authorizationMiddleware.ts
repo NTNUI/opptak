@@ -5,8 +5,7 @@ import { CustomError, UnauthorizedUserError } from 'ntnui-tools/customError'
 import { RequestWithNtnuiNo } from './request'
 
 /**
- * Authorization goes as follows:
- *
+ * # The authorization middleware
  * 1. Retrieve access- and refresh-token from cookies
  *     * If none are sent return error
  * 2. Check validity of access token against NTNUI

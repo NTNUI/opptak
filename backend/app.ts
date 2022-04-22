@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import express from 'express'
 import cors from 'cors'
 import axios from 'axios'
@@ -13,10 +14,12 @@ import statusRouter from './routes/statuses'
 
 dotenv.config()
 
-axios.defaults.baseURL = process.env.API_URI
+axios.defaults.baseURL = process.env.API_URI || 'https://api.ntnui.no'
+console.log('📡 API set to', axios.defaults.baseURL)
 
 const app = express()
-// Connect Database
+
+// Connect database
 connectDB()
 
 // Set up middleware
@@ -37,5 +40,4 @@ app.use(errorHandler)
 
 const port = 8082
 
-// eslint-disable-next-line no-console
-app.listen(port, () => console.log(`Server running on port ${port}`))
+app.listen(port, () => console.log(`🍑 Express.js app running on port ${port}`))

@@ -15,7 +15,7 @@ import applicationQueryValidator from '../utils/applicationQueryMiddleware'
 
 const applicationRouter = express.Router()
 
-// @route GET applications
+// @route GET /applications
 // @description Get all applications that user has access to
 // @access Private
 applicationRouter.get(
@@ -25,33 +25,33 @@ applicationRouter.get(
 	getApplications
 )
 
-// @route POST applications
-// @description Add application
+// @route POST /applications
+// @description Post a new application
 // @access Public
 applicationRouter.post('/', postApplication)
 
-// @route GET applications/period
-// @description Get the application period
+// @route GET /applications/period
+// @description Get the current admission period
 // @access Public
 applicationRouter.get('/period', getAdmissionPeriod)
 
-// @route PUT applications/period
-// @description Update/set application period
+// @route PUT /applications/period
+// @description Update/set admission period
 // @access Private
 applicationRouter.put('/period', authorization, putAdmissionPeriod)
 
-// @route GET applications/period/active
+// @route GET /applications/period/active
 // @description Get if admission period is active
 // @access Public
 applicationRouter.get('/period/active', getAdmissionPeriodStatus)
 
-// @route GET applications/:application_id
+// @route GET /applications/:application_id
 // @description Get application by id if user has access
 // @access Private
 applicationRouter.get('/:application_id', authorization, getApplicationById)
 
-// @route DELETE applications
-// @description Delete all admission data
+// @route DELETE /applications
+// @description Delete all admission data if user has access
 // @access Private
 applicationRouter.delete('/', authorization, wipeAdmissionData)
 

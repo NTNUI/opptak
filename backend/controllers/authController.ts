@@ -87,7 +87,7 @@ export async function verify(req: Request, res: Response) {
 }
 
 /**
- * The login process works as follows:
+ * # The login process
  * 1. Send request to NTNUI and retrieve tokens
  * 2. Decode token and get ntnui_no
  * 3. Check users role in each committee in NTNUI membership system
