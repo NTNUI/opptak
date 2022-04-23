@@ -1,10 +1,10 @@
 import { createStyles, Group, Input, MultiSelect, Select } from '@mantine/core'
 import { forwardRef, useEffect, useState } from 'react'
 import { ChevronDown, Menu2, Search } from 'tabler-icons-react'
-import { constructSearchFilterQuery } from '../services/Applications'
 import { getAllCommittees } from '../services/Committees'
 import { ICommittee } from '../types/types'
 import StatusTypes from '../utils/enums'
+import constructSearchFilterQuery from '../utils/filter'
 import { getIconForStatus, getStatusTranslation } from '../utils/status'
 
 const useStyles = createStyles((theme) => ({
@@ -49,16 +49,12 @@ const useStyles = createStyles((theme) => ({
 	withIcon: {
 		color: 'white',
 	},
-	filter: {},
 	selectLabel: {
 		color: 'black',
 	},
-	selectSortingRoot: {},
-	selectStatusRoot: {},
 	multiselectInput: {
 		background: 'transparent',
 		color: 'white',
-		//border: '1px solid' + theme.colors.ntnui_yellow[9],
 	},
 	multiselectValue: {
 		background: theme.colors.ntnui_yellow[9],
@@ -67,7 +63,6 @@ const useStyles = createStyles((theme) => ({
 	selectInput: {
 		background: 'transparent',
 		color: 'white',
-		//border: '1px solid' + theme.colors.ntnui_yellow[9],
 	},
 	badgeLabel: {
 		color: 'white',
@@ -98,10 +93,6 @@ const useStyles = createStyles((theme) => ({
 		alignItems: 'center',
 		flexWrap: 'wrap',
 	},
-	filterBadgeRoot: {
-		color: theme.colors.ntnui_yellow[9],
-		border: ' 1px solid' + theme.colors.ntnui_yellow[9],
-	},
 	multiselectRoot: {
 		gridColumn: '1 / 3',
 	},
@@ -115,9 +106,7 @@ interface StatusTypesData {
 	label: string
 }
 
-function getStatusTypesStrings(): StatusTypesData[] {
-	// .push({ label: 'Alle', value: 'all' })
-
+function mapStatusTypeToSelectData(): StatusTypesData[] {
 	const statusTypesArray: StatusTypesData[] = Object.values(StatusTypes).map(
 		(status: StatusTypes) => {
 			return { label: getStatusTranslation(status), value: status }
@@ -140,6 +129,7 @@ function FilterSearch({ setFilter }: FilterSearchProps) {
 	const [nameSearch, setNameSearch] = useState<string>('')
 
 	useEffect(() => {
+		// Retrieve committees for multiselect
 		async function getCommittees() {
 			try {
 				let allCommittees: ICommittee[] = []
@@ -151,6 +141,7 @@ function FilterSearch({ setFilter }: FilterSearchProps) {
 	}, [])
 
 	useEffect(() => {
+		// Update query string based on input-change
 		let query = constructSearchFilterQuery(
 			chosenCommittees,
 			sort,
@@ -160,7 +151,7 @@ function FilterSearch({ setFilter }: FilterSearchProps) {
 		setFilter(query.toString())
 	}, [chosenCommittees, status, sort, nameSearch, setFilter])
 
-	function committeesToCommitteeData() {
+	function mapCommitteesToMultiselectData() {
 		let dataList: { value: string; label: string }[] = []
 		committees.forEach((committee: ICommittee) => {
 			dataList.push({ value: `${committee._id}`, label: committee.name })
@@ -213,12 +204,11 @@ function FilterSearch({ setFilter }: FilterSearchProps) {
 			<div className={classes.filterPreview}>
 				<Select
 					classNames={{
-						root: classes.selectStatusRoot,
 						label: classes.selectLabel,
 						input: classes.selectInput,
 						rightSection: classes.selectRightSection,
 					}}
-					data={getStatusTypesStrings()}
+					data={mapStatusTypeToSelectData()}
 					itemComponent={SelectItem}
 					icon={getFilterStatusIcon(status)}
 					label={<span className={classes.badgeLabel}>Velg status</span>}
@@ -231,7 +221,6 @@ function FilterSearch({ setFilter }: FilterSearchProps) {
 
 				<Select
 					classNames={{
-						root: classes.selectSortingRoot,
 						label: classes.selectLabel,
 						input: classes.selectInput,
 						rightSection: classes.selectRightSection,
@@ -256,7 +245,7 @@ function FilterSearch({ setFilter }: FilterSearchProps) {
 						input: classes.multiselectInput,
 						value: classes.multiselectValue,
 					}}
-					data={committeesToCommitteeData()}
+					data={mapCommitteesToMultiselectData()}
 					label={<span className={classes.badgeLabel}>Velg utvalg</span>}
 					placeholder='Velg utvalg'
 					searchable
