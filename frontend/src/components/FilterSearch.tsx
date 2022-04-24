@@ -1,4 +1,6 @@
 import { createStyles, Group, Input, MultiSelect, Select } from '@mantine/core'
+import debounce from 'lodash.debounce'
+import { useMemo } from 'react'
 import { forwardRef, useEffect, useState } from 'react'
 import { ChevronDown, Menu2, Search } from 'tabler-icons-react'
 import { getAllCommittees } from '../services/Committees'
@@ -128,6 +130,20 @@ function FilterSearch({ setFilter }: FilterSearchProps) {
 	const [sort, setSort] = useState<string>('date_desc')
 	const [nameSearch, setNameSearch] = useState<string>('')
 
+	const handleChangeFilter = useMemo(
+		() =>
+			debounce((query) => {
+				setFilter(query.toString())
+			}, 500),
+		[setFilter]
+	)
+
+	useEffect(() => {
+		return () => {
+			handleChangeFilter.cancel()
+		}
+	}, [handleChangeFilter])
+
 	useEffect(() => {
 		// Retrieve committees for multiselect
 		async function getCommittees() {
@@ -148,8 +164,8 @@ function FilterSearch({ setFilter }: FilterSearchProps) {
 			status,
 			nameSearch
 		)
-		setFilter(query.toString())
-	}, [chosenCommittees, status, sort, nameSearch, setFilter])
+		handleChangeFilter(query)
+	}, [chosenCommittees, status, sort, nameSearch, setFilter, handleChangeFilter])
 
 	function mapCommitteesToMultiselectData() {
 		let dataList: { value: string; label: string }[] = []
