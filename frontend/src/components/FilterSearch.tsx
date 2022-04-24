@@ -126,23 +126,10 @@ function FilterSearch({ setFilter }: FilterSearchProps) {
 	const { classes } = useStyles()
 	const [committees, setCommittees] = useState<ICommittee[]>([])
 	const [chosenCommittees, setChosenCommittees] = useState<string[]>([])
+	const [filterCommittees, setFilterCommittees] = useState<string[]>([])
 	const [status, setStatus] = useState<string>('')
 	const [sort, setSort] = useState<string>('date_desc')
 	const [nameSearch, setNameSearch] = useState<string>('')
-
-	const handleChangeFilter = useMemo(
-		() =>
-			debounce((query) => {
-				setFilter(query.toString())
-			}, 500),
-		[setFilter]
-	)
-
-	useEffect(() => {
-		return () => {
-			handleChangeFilter.cancel()
-		}
-	}, [handleChangeFilter])
 
 	useEffect(() => {
 		// Retrieve committees for multiselect
@@ -156,16 +143,42 @@ function FilterSearch({ setFilter }: FilterSearchProps) {
 		getCommittees()
 	}, [])
 
+	// Debouncing nameSearch
+	const handleChangeFilter = useMemo(
+		() =>
+			debounce((query) => {
+				setFilter(query.toString())
+			}, 300),
+		[setFilter]
+	)
+
 	useEffect(() => {
-		// Update query string based on input-change
+		return () => {
+			handleChangeFilter.cancel()
+		}
+	}, [handleChangeFilter])
+
+	// Update filter with nameSearch using debouncer
+	useEffect(() => {
 		let query = constructSearchFilterQuery(
-			chosenCommittees,
+			filterCommittees,
 			sort,
 			status,
 			nameSearch
 		)
 		handleChangeFilter(query)
-	}, [chosenCommittees, status, sort, nameSearch, setFilter, handleChangeFilter])
+	}, [nameSearch, setFilter, handleChangeFilter])
+
+	// Update filter with other fields on input-change
+	useEffect(() => {
+		let query = constructSearchFilterQuery(
+			filterCommittees,
+			sort,
+			status,
+			nameSearch
+		)
+		setFilter(query.toString())
+	}, [status, filterCommittees, sort, setFilter])
 
 	function mapCommitteesToMultiselectData() {
 		let dataList: { value: string; label: string }[] = []
@@ -267,6 +280,7 @@ function FilterSearch({ setFilter }: FilterSearchProps) {
 					searchable
 					clearable
 					nothingFound='Nothing found'
+					onDropdownClose={() => setFilterCommittees(chosenCommittees)}
 					value={chosenCommittees}
 					onChange={setChosenCommittees}
 					rightSectionWidth={40}
