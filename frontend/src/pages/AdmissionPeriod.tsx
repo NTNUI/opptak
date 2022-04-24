@@ -1,6 +1,6 @@
 import { Button, createStyles, Loader } from '@mantine/core'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useForm } from '@mantine/form'
 import { DateRangePicker } from '@mantine/dates'
 import 'dayjs/locale/nb'
@@ -12,7 +12,6 @@ import {
 import { IAdmissionPeriod } from '../types/types'
 import dayjs from 'dayjs'
 import { useNotifications } from '@mantine/notifications'
-import isOrganizer from '../utils/isOrganizer'
 
 const useStyles = createStyles((theme) => ({
 	pageWrapper: {
@@ -101,9 +100,14 @@ const useStyles = createStyles((theme) => ({
 	},
 }))
 
+interface stateType {
+	isOrganizer: boolean
+}
+
 function AdmissionPeriod() {
 	const { classes } = useStyles()
 	const navigate = useNavigate()
+	const location = useLocation()
 	const notifications = useNotifications()
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	// Has period been set in the db before
@@ -133,8 +137,11 @@ function AdmissionPeriod() {
 		setIsLoading(true)
 		const getAdmissionPeriodAsync = async () => {
 			try {
-				if (!(await isOrganizer())) {
-					return navigate('/dashboard')
+				// If not organizer, redirect to dashboard
+				const locationState = location.state as stateType
+				if (!locationState.isOrganizer) {
+					navigate('/dashboard')
+					return
 				}
 				const response = await getAdmissionPeriod()
 				// TODO: Refactor response.admissionPeriod when backend matches

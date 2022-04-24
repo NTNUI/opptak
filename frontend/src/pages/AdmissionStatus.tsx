@@ -1,7 +1,7 @@
 import { Container, createStyles, Loader } from '@mantine/core'
 import { useNotifications } from '@mantine/notifications'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { AlertTriangle, X } from 'tabler-icons-react'
 import CommitteeSwitch from '../components/CommitteeSwitch'
 import { getAdmissionPeriod } from '../services/Applications'
@@ -12,7 +12,6 @@ import {
 } from '../services/Committees'
 
 import { ICommittee } from '../types/types'
-import isOrganizer from '../utils/isOrganizer'
 
 const useStyles = createStyles((theme) => ({
 	container: {
@@ -99,9 +98,14 @@ const useStyles = createStyles((theme) => ({
 	},
 }))
 
+interface stateType {
+	isOrganizer: boolean
+}
+
 function AdmissionStatus() {
 	const { classes } = useStyles()
 	let navigate = useNavigate()
+	const location = useLocation()
 	const [committees, setCommittees] = useState<ICommittee[]>([])
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const [fromPeriod, setFromPeriod] = useState<string>('DD/MM/YYYY')
@@ -129,8 +133,9 @@ function AdmissionStatus() {
 		async function getCommittees() {
 			try {
 				let allCommittees: ICommittee[] = []
-
-				if (await isOrganizer()) {
+				// Get organizer value
+				const locationState = location.state as stateType
+				if (locationState.isOrganizer) {
 					allCommittees = await getAllCommittees()
 				} else {
 					const committeesRes = await getUserCommittees()

@@ -28,6 +28,7 @@ interface ICommitteeInSelect {
 
 const useStyles = createStyles((theme) => ({
 	labelText: {
+		fontSize: '1rem',
 		fontWeight: 'italic',
 		color: 'white',
 	},
@@ -149,9 +150,24 @@ export function Form() {
 
 	const mapCommitteeToSelect = (committees: ICommittee[]) => {
 		return committees
-			.filter((committee) => committee.accepts_admissions)
 			.map((committee: ICommittee) => {
+				if (!committee.accepts_admissions) {
+					return {
+						value: committee._id.toString(),
+						label: `${committee.name} (ikke opptak)`,
+						disabled: true,
+					}
+				}
 				return { value: committee._id.toString(), label: committee.name }
+			})
+			.sort((a, b) => {
+				if (a.label < b.label) {
+					return -1
+				}
+				if (a.label > b.label) {
+					return 1
+				}
+				return 0
 			})
 	}
 
