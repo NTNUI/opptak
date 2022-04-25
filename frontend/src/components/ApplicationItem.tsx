@@ -14,6 +14,7 @@ const useStyles = createStyles((theme) => ({
 		flexDirection: 'row',
 		gap: '0.5rem',
 		transition: 'ease-in-out 0.1s',
+		boxShadow: '0rem 0.2rem 0.4rem ' + theme.colors.dark[7],
 
 		'&:hover': {
 			color: '#F8F082',
