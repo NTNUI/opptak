@@ -20,9 +20,12 @@ const useStyles = createStyles((theme) => ({
 		textAlign: 'left',
 		color: 'white',
 		'@media (max-width: 1550px)': {
-			width: '50%',
+			width: '45%',
 		},
 		'@media (max-width: 1200px)': {
+			width: '60%',
+		},
+		'@media (max-width: 900px)': {
 			width: '70%',
 		},
 		'@media (max-width: 700px)': {
