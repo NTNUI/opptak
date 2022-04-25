@@ -15,7 +15,7 @@ import {
 import CommitteBanner from '../components/CommitteeBanner'
 import StatusInput from '../components/StatusInput'
 import { getApplication } from '../services/Applications'
-import { getUserCommittees } from '../services/Committees'
+import { getUserCommittees, IRoleInCommittee } from '../services/Committees'
 import { IApplication, IStatus } from '../types/types'
 
 interface IStatusesStyleProps {
@@ -221,6 +221,7 @@ function ApplicationDetailPage() {
 	const [amountOfStatuses, setAmountOfStatuses] = useState<number>(0)
 	const { classes } = useStyles({ amountOfStatuses })
 	const [userCommitteeIds, setUserCommitteeIds] = useState<number[]>([])
+	const [userCommittees, setUserCommittees] = useState<IRoleInCommittee[]>([])
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const [isError, setIsError] = useState<boolean>(false)
 	const [errorMessage, setErrorMessage] = useState('')
@@ -237,6 +238,7 @@ function ApplicationDetailPage() {
 					setUserCommitteeIds(
 						userCommitteesRes.map((committee) => committee.committee._id)
 					)
+					setUserCommittees(userCommitteesRes)
 					setIsLoading(false)
 					setAmountOfStatuses(response.application.statuses.length)
 				} catch (error: any) {
@@ -271,11 +273,21 @@ function ApplicationDetailPage() {
 	}
 
 	function statusByRelevancy(statuses: IStatus[]): IStatusWithRelevancy[] {
+		const isUserInElectionCommittee = userCommittees.some(
+			(roleInCommittee: IRoleInCommittee) => {
+				return roleInCommittee.committee.slug === 'valgkomiteen'
+			}
+		)
 		const statByRel = statuses
 			.map((status) => {
 				// If the status can be edited by the user, it should be shown on the top
-				if (userCommitteeIds.includes(status.committee._id))
+				const isStatusForMainBoard = status.committee.name === 'Hovedstyret'
+				if (
+					userCommitteeIds.includes(status.committee._id) ||
+					(isUserInElectionCommittee && isStatusForMainBoard)
+				) {
 					return { status, isRelevant: true }
+				}
 				return { status, isRelevant: false }
 			})
 			.sort((a, b) => {
