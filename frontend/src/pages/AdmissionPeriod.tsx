@@ -144,7 +144,6 @@ function AdmissionPeriod() {
 					return
 				}
 				const response = await getAdmissionPeriod()
-				// TODO: Refactor response.admissionPeriod when backend matches
 				const retrievedPeriod = [
 					new Date(response.admissionPeriod.start_date),
 					new Date(response.admissionPeriod.end_date),

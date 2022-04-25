@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 
@@ -8,10 +9,9 @@ const db = process.env.DB_URI || ''
 const connectDB = async () => {
 	try {
 		await mongoose.connect(db)
-
-		console.log('✨ MongoDB connected') // eslint-disable-line no-console
+		console.log('✨ MongoDB connected')
 	} catch (err: any) {
-		console.error(err.message) // eslint-disable-line no-console
+		console.error(err.message)
 		process.exit(1)
 	}
 }

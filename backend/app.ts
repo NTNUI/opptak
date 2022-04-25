@@ -19,7 +19,6 @@ console.log('📡 API_URI set to', axios.defaults.baseURL)
 
 const app = express()
 
-// Connect database
 connectDB()
 
 // Set up middleware

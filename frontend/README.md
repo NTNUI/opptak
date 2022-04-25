@@ -3,8 +3,7 @@
 - [React](https://reactjs.org/) with [TypeScript](https://www.typescriptlang.org/) - framework
 - [Axios](https://github.com/axios/axios) - http client
 - [ESLint](https://eslint.org/) and [prettier](https://prettier.io/) - lint and code formatting
-- [Emotion](https://emotion.sh/) - styling library
-- [Mantine](https://mantine.dev/) - component library
+- [Mantine](https://mantine.dev/) and [Emotion](https://emotion.sh/) - component and styling libraries
 - [Router](https://reactrouter.com/) - routing
 
 ## Environment variables
