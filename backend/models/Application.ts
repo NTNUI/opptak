@@ -28,7 +28,6 @@ const ApplicationModel = mongoose.model<IApplication>(
 			},
 			text: {
 				type: String,
-				required: true,
 				validate: {
 					validator: (text: string) => text.length <= 2500,
 				},

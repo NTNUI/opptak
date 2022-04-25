@@ -150,6 +150,9 @@ export function Form() {
 
 	const mapCommitteeToSelect = (committees: ICommittee[]) => {
 		return committees
+			.filter((committee: ICommittee) => {
+				return committee.slug !== 'valgkomiteen'
+			})
 			.map((committee: ICommittee) => {
 				if (!committee.accepts_admissions) {
 					return {
@@ -191,12 +194,7 @@ export function Form() {
 				/^\+{0,1}[0-9]+$/.test(value)
 					? null
 					: 'Telefonnummer kan kun inneholde tall',
-			text: (value) =>
-				value.trim().length < 1
-					? 'Søknadsfeltet kan ikke være tomt'
-					: value.trim().length > 2500
-					? 'Maks 2500 tegn'
-					: null,
+			text: (value) => (value.trim().length > 2500 ? 'Maks 2500 tegn' : null),
 			committees: (value) => (value.length > 0 ? null : 'Velg minst 1 komité'),
 		},
 	})
@@ -264,7 +262,6 @@ export function Form() {
 				/>
 			)}
 			<Textarea
-				required
 				classNames={{
 					label: classes.labelText,
 					input: classes.formField,

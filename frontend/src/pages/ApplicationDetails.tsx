@@ -383,9 +383,13 @@ function ApplicationDetailPage() {
 							<h2 className={classes.sectionTitle}>
 								<AlignJustified size={32} /> Søknadstekst
 							</h2>
-							<p>
-								{isLoading || !application ? <YellowDotLoader /> : application.text}
-							</p>
+							{isLoading || !application ? (
+								<YellowDotLoader />
+							) : !application.text.length ? (
+								<i>Ingen søknadstekst</i>
+							) : (
+								<p>{application.text}</p>
+							)}
 						</Box>
 					</Box>
 				</>
