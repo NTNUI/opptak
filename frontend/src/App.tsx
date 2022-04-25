@@ -15,7 +15,8 @@ import colors from './utils/theme'
 import RequireAuth from './utils/authRouter'
 
 function App() {
-	axios.defaults.baseURL = 'http://localhost:8082'
+	axios.defaults.baseURL =
+		process.env.REACT_APP_BASE_URL || 'http://localhost:8082'
 	axios.defaults.withCredentials = true
 	return (
 		<MantineProvider
@@ -33,7 +34,7 @@ function App() {
 								<Route
 									path='/dashboard'
 									element={
-										<RequireAuth organizer>
+										<RequireAuth>
 											<>
 												<Navbar />
 												<Dashboard />
@@ -66,7 +67,7 @@ function App() {
 								<Route
 									path='/admission-status'
 									element={
-										<RequireAuth organizer>
+										<RequireAuth>
 											<>
 												<Navbar />
 												<AdmissionStatus />
@@ -77,7 +78,7 @@ function App() {
 								<Route
 									path='/admission-period'
 									element={
-										<RequireAuth organizer>
+										<RequireAuth>
 											<>
 												<Navbar />
 												<AdmissionPeriod />

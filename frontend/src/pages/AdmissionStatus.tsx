@@ -100,6 +100,7 @@ const useStyles = createStyles((theme) => ({
 
 interface stateType {
 	isOrganizer: boolean
+	isElectionCommittee: boolean
 }
 
 function AdmissionStatus() {
@@ -133,10 +134,28 @@ function AdmissionStatus() {
 		async function getCommittees() {
 			try {
 				let allCommittees: ICommittee[] = []
-				// Get organizer value
 				const locationState = location.state as stateType
+				// Organizers see all committee-statuses except main board
 				if (locationState.isOrganizer) {
 					allCommittees = await getAllCommittees()
+					allCommittees = allCommittees.filter((committee: ICommittee) => {
+						return (
+							committee.slug !== 'valgkomiteen' && committee.slug !== 'hovedstyret'
+						)
+					})
+					// Election committee can see main board
+				} else if (locationState.isElectionCommittee) {
+					allCommittees = await getAllCommittees()
+					allCommittees = allCommittees.filter((committee: ICommittee) => {
+						return committee.slug === 'hovedstyret'
+					})
+					// Include the users other committees
+					const committeesRes = await getUserCommittees()
+					committeesRes.forEach((item: IRoleInCommittee) => {
+						if (item.committee.slug !== 'valgkomiteen') {
+							allCommittees.push(item.committee)
+						}
+					})
 				} else {
 					const committeesRes = await getUserCommittees()
 					committeesRes.forEach((item: IRoleInCommittee) => {

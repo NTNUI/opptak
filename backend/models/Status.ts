@@ -47,6 +47,7 @@ const statusSchema = new mongoose.Schema<IStatus>(
 		},
 	},
 	{
+		collection: 'statuses',
 		versionKey: false,
 		timestamps: { createdAt: false, updatedAt: 'updated_date' },
 	}

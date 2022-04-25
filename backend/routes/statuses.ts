@@ -4,7 +4,7 @@ import authorization from '../utils/authorizationMiddleware'
 
 const statusRouter = express.Router()
 
-// @route PUT statuses
+// @route PUT /statuses/:statusId
 // @description Put status for application by id
 // @access Private
 statusRouter.put('/:statusId', authorization, putStatus)

@@ -1,5 +1,12 @@
 [
 	{
+		"_id": 1,
+		"name": "Sprint",
+		"slug": "sprint",
+		"access_roles": ["deputy_leader", "cashier"],
+		"accepts_admissions": true
+	},
+	{
 		"_id": 2,
 		"name": "Triatlon",
 		"slug": "triatlon",
@@ -62,9 +69,14 @@
 	},
 	{
 		"_id": 10,
-		"name": "Sprint",
-		"slug": "sprint",
-		"access_roles": ["deputy_leader", "cashier"],
-		"accepts_admissions": true
+		"name": "Valgkomiteen",
+		"slug": "valgkomiteen",
+		"access_roles": [
+			"deputy_leader",
+			"cashier",
+			"board_member",
+			"deputy_board_member"
+		],
+		"accepts_admissions": false
 	}
 ]

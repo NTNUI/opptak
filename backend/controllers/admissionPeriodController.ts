@@ -5,7 +5,7 @@ import { AdmissionPeriodModel } from '../models/AdmissionPeriod'
 import { getUserCommitteeIdsByUserId } from '../utils/userCommittee'
 import { RequestWithNtnuiNo } from '../utils/request'
 import { MAIN_BOARD_ID } from '../utils/constants'
-import isAdmissionPeriodActive from '../utils/isApplicationPeriodActive'
+import isAdmissionPeriodActive from '../utils/isAdmissionPeriodActive'
 
 function validateAndFormatDateString(value: string): string {
 	// Expect ISO-string (YYYY-MM-DDTHH:mm:ss.sssZ)

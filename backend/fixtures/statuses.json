@@ -1,6 +1,17 @@
 [
 	{
 		"_id": {
+			"$oid": "62500dbfb0a502a2feda6afa"
+		},
+		"value": "Pending",
+		"set_by": null,
+		"committee": 1,
+		"updated_date": {
+			"$date": "2022-04-08T10:26:07.322Z"
+		}
+	},
+	{
+		"_id": {
 			"$oid": "62500ace8515676685700dde"
 		},
 		"value": "Pending",
@@ -61,17 +72,6 @@
 		"value": "Pending",
 		"set_by": null,
 		"committee": 9,
-		"updated_date": {
-			"$date": "2022-04-08T10:26:07.322Z"
-		}
-	},
-	{
-		"_id": {
-			"$oid": "62500dbfb0a502a2feda6afa"
-		},
-		"value": "Pending",
-		"set_by": null,
-		"committee": 10,
 		"updated_date": {
 			"$date": "2022-04-08T10:26:07.322Z"
 		}

@@ -3,6 +3,7 @@ import { CustomError, UnauthorizedUserError } from 'ntnui-tools/customError'
 import { RequestWithNtnuiNo } from '../utils/request'
 import { IUser, UserModel } from '../models/User'
 import { StatusModel } from '../models/Status'
+import { ELECTION_COMMITTEE_ID, MAIN_BOARD_ID } from '../utils/constants'
 
 const putStatus = async (
 	req: RequestWithNtnuiNo,
@@ -33,28 +34,37 @@ const putStatus = async (
 		const isUserInCommittee = user.committees.find(
 			(committee) => committee.committee === status.committee
 		)
-		if (!isUserInCommittee) {
-			throw new CustomError(
-				'You do not have access to change the status of this application for this committee',
-				403
-			)
-		}
-		status.value = req.body.value
-		status.set_by = `${user.first_name} ${user.last_name}`
-		// Save status
-		return status
-			.save()
-			.then((newStatus) =>
-				res.status(200).json({
-					status: newStatus,
+		// Check if user is in election committee
+		const isUserInElectionCommittee = user.committees
+			.map((committee) => committee.committee)
+			.includes(ELECTION_COMMITTEE_ID)
+		// Check if status is for main board
+		const isStatusForMainBoard = status.committee === MAIN_BOARD_ID
+		if (
+			isUserInCommittee ||
+			(isStatusForMainBoard && isUserInElectionCommittee)
+		) {
+			status.value = req.body.value
+			status.set_by = `${user.first_name} ${user.last_name}`
+			// Save status
+			return status
+				.save()
+				.then((newStatus) =>
+					res.status(200).json({
+						status: newStatus,
+					})
+				)
+				.catch((err) => {
+					if (err.name === 'ValidationError') {
+						return res.status(400).json({ message: err.message })
+					}
+					throw new CustomError('Could not update status', 500)
 				})
-			)
-			.catch((err) => {
-				if (err.name === 'ValidationError') {
-					return res.status(400).json({ message: err.message })
-				}
-				throw new CustomError('Could not update status', 500)
-			})
+		}
+		throw new CustomError(
+			'You do not have access to change the status of this application for this committee',
+			403
+		)
 	} catch (error) {
 		return next(error)
 	}

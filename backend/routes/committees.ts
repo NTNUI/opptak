@@ -7,13 +7,13 @@ import authorization from '../utils/authorizationMiddleware'
 
 const committeeRouter = express.Router()
 
-// @route GET committees
+// @route GET /committees
 // @description Get all committees
 // @access Public
 committeeRouter.get('/', getCommittees)
 
 // @route PUT /committees/:slug/accept-admissions
-// @description Open/close committee for admissions
+// @description Toggle open/close admission for committee by slug
 // @access Private
 committeeRouter.put('/:slug/accept-admissions', authorization, acceptAdmissions)
 

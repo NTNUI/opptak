@@ -7,13 +7,13 @@ import authorization from '../utils/authorizationMiddleware'
 
 const userRouter = express.Router()
 
-// @route GET users committees
+// @route GET /users/committees
 // @description Get all committees that user is member of
 // @access Private
 userRouter.get('/committees', authorization, getUserCommittees)
 
-// @route GET users profile
-// @description Get profile of user
+// @route GET /users/profile
+// @description Get profile of logged in user
 // @access Private
 userRouter.get('/profile', authorization, getUserProfile)
 
