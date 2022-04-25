@@ -1,20 +1,24 @@
 import { useEffect, useState } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import { verifyToken } from '../services/Auth'
-import isOrganizer from './isOrganizer'
+import { getUserCommittees, IRoleInCommittee } from '../services/Committees'
 
 type RequireAuthProps = {
 	children: JSX.Element
-	organizer?: boolean
 }
 
-function RequireAuth({ children, organizer }: RequireAuthProps) {
+function RequireAuth({ children }: RequireAuthProps) {
 	const [authed, setAuthed] = useState<boolean>(false)
 	const [isLoading, setIsLoading] = useState<boolean>(true)
 	const [isTheOrganizer, setIsTheOrganizer] = useState<boolean>(false)
-	const location = useLocation()
-	location.state = { isOrganizer: isTheOrganizer }
+	const [isInElectionCommittee, setIsInElectionCommittee] =
+		useState<boolean>(false)
 
+	const location = useLocation()
+	location.state = {
+		isOrganizer: isTheOrganizer,
+		isElectionCommittee: isInElectionCommittee,
+	}
 	useEffect(() => {
 		const requestAsync = async () => {
 			setIsLoading(true)
@@ -24,10 +28,15 @@ function RequireAuth({ children, organizer }: RequireAuthProps) {
 				if (response.status === 200) {
 					setAuthed(true)
 				}
-				// Check if user is organizer
-				if (organizer && (await isOrganizer())) {
-					setIsTheOrganizer(true)
-				}
+				// Check if user is organizer or election committee
+				const userCommittees = await getUserCommittees()
+				userCommittees.forEach((roleInCommittee: IRoleInCommittee) => {
+					if (roleInCommittee.committee.slug === 'hovedstyret') {
+						setIsTheOrganizer(true)
+					} else if (roleInCommittee.committee.slug === 'valgkomiteen') {
+						setIsInElectionCommittee(true)
+					}
+				})
 				setIsLoading(false)
 			} catch (error) {
 				setIsLoading(false)

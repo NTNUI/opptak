@@ -34,7 +34,7 @@ function App() {
 								<Route
 									path='/dashboard'
 									element={
-										<RequireAuth organizer>
+										<RequireAuth>
 											<>
 												<Navbar />
 												<Dashboard />
@@ -67,7 +67,7 @@ function App() {
 								<Route
 									path='/admission-status'
 									element={
-										<RequireAuth organizer>
+										<RequireAuth>
 											<>
 												<Navbar />
 												<AdmissionStatus />
@@ -78,7 +78,7 @@ function App() {
 								<Route
 									path='/admission-period'
 									element={
-										<RequireAuth organizer>
+										<RequireAuth>
 											<>
 												<Navbar />
 												<AdmissionPeriod />
