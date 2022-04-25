@@ -32,9 +32,8 @@ const useStyles = createStyles(
 			alignItems: 'center',
 			'@media (max-width: 1200px)': {
 				width: '70%',
-				gridTemplateColumns: '1fr',
 			},
-			'@media (max-width: 700px)': {
+			'@media (max-width: 900px)': {
 				width: '85%',
 				gridTemplateColumns: '1fr',
 			},
@@ -53,7 +52,7 @@ const useStyles = createStyles(
 				background: 'transparent',
 				transform: 'translateX(-0.2em)',
 			},
-			'@media (max-width: 1200px)': {
+			'@media (max-width: 900px)': {
 				display: 'none',
 			},
 		},
@@ -62,7 +61,7 @@ const useStyles = createStyles(
 			textAlign: 'center',
 			color: 'white',
 			fontWeight: 'lighter',
-			'@media (max-width: 1200px)': {
+			'@media (max-width: 900px)': {
 				fontSize: 'x-large',
 				gridColumn: 1,
 			},

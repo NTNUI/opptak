@@ -16,10 +16,12 @@ const useStyles = createStyles((theme) => ({
 		transition: 'ease-in-out 0.1s',
 
 		'&:hover': {
-			backgroundColor: theme.colors.ntnui_background[9],
-			boxShadow: '0rem 0.6rem 0.4rem ' + theme.colors.dark[7],
-			fontWeight: 500,
-			transform: 'translateY(-0.2em)',
+			color: '#F8F082',
+			boxShadow: '0 0 5px #F8F082',
+		},
+		'&:active': {
+			color: '#F8F082',
+			boxShadow: '0 0 2px #F8F082',
 		},
 	},
 	grid: {
