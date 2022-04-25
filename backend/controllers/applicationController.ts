@@ -73,8 +73,7 @@ const getApplicationById = async (
 		}
 
 		const applicationCommittees: ICommittee[] = application.committees
-		// Main board are allowed to see all applied committees,
-		// but not to the main board
+		// Main board are allowed to see all applied committees, but not to the main board
 		if (userCommitteeIds.includes(MAIN_BOARD_ID)) {
 			for (let i = 0; i < applicationCommittees.length; i += 1) {
 				if (applicationCommittees[i]._id === MAIN_BOARD_ID) {
@@ -87,14 +86,18 @@ const getApplicationById = async (
 			if (applicationCommittees.length > 0) {
 				return res.status(200).json({ application })
 			}
-			return res.status(403).json({ message: 'Not authorized' })
+			return res
+				.status(403)
+				.json({ message: 'You do not have access to this application' })
 		}
 
 		let authorized = false
+		// Only election committee should see if application includes main board
 		for (let id = 0; id < applicationCommittees.length; id += 1) {
 			const appCommitteeId = applicationCommittees[id]._id
 			if (userCommitteeIds.includes(appCommitteeId)) {
 				authorized = true
+				// Hide parts with main board
 			} else if (appCommitteeId === MAIN_BOARD_ID) {
 				applicationCommittees.splice(id, 1)
 				application.statuses.splice(id, 1)
@@ -183,7 +186,7 @@ const getApplications = async (
 		// Populate status to query on status for committee value
 		const populateStatus = {
 			$lookup: {
-				from: 'status',
+				from: 'statuses',
 				localField: 'statuses',
 				foreignField: '_id',
 				as: 'statuses',
@@ -326,12 +329,8 @@ const getApplications = async (
 			})
 
 		const { applications } = applicationRes
-		// If user is part of main board, hide parts with main board
-		if (
-			applications &&
-			!userCommitteeIds.includes(ELECTION_COMMITTEE_ID) &&
-			userCommitteeIds.includes(MAIN_BOARD_ID)
-		) {
+		// If application is sent to main board, hide parts with main board
+		if (applications && !userCommitteeIds.includes(ELECTION_COMMITTEE_ID)) {
 			for (let i = 0; i < applications.length; i += 1) {
 				// Remove status and committee if it's main board
 				applications[i].committees = applications[i].committees.filter(
