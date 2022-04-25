@@ -13,21 +13,26 @@ const useStyles = createStyles((theme) => ({
 		backgroundColor: 'transparent',
 		width: '35%',
 		justifyContent: 'center',
-		margin: 'auto',
+		margin: 'auto auto 2rem auto',
 		border: '2px solid ' + theme.colors.ntnui_yellow[9],
+		boxShadow: '0rem 0rem 1rem 0.4rem ' + theme.colors.dark[7],
 		borderRadius: '20px',
 		textAlign: 'left',
 		color: 'white',
 		'@media (max-width: 1550px)': {
-			width: '50%',
+			width: '45%',
 		},
 		'@media (max-width: 1200px)': {
+			width: '60%',
+		},
+		'@media (max-width: 900px)': {
 			width: '70%',
 		},
 		'@media (max-width: 700px)': {
 			width: '85%',
 			border: 'none',
 			backgroundColor: 'transparent',
+			boxShadow: 'none',
 			padding: '1rem',
 		},
 	},
