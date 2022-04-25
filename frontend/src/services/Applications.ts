@@ -6,9 +6,9 @@ import {
 } from '../types/types'
 
 const getApplications = async (
-	currentPage: number
+	query: string
 ): Promise<IApplicationsResponse> => {
-	const response = await axios.get(`/applications/?page=${currentPage}`)
+	const response = await axios.get(`/applications/?${query}`)
 	return response.data
 }
 

@@ -35,6 +35,29 @@ export function getStatusTranslation(status: StatusTypes) {
 	}
 }
 
+export function getStatus(status: string) {
+	switch (status) {
+		case 'Pending':
+			return StatusTypes.PENDING
+		case 'Invited to interview':
+			return StatusTypes.INVITED_TO_INTERVIEW
+		case 'Interview declined':
+			return StatusTypes.INTERVIEW_DECLINED
+		case 'Interview completed':
+			return StatusTypes.INTERVIEW_COMPLETED
+		case 'Offer given':
+			return StatusTypes.OFFER_GIVEN
+		case 'Offer declined':
+			return StatusTypes.OFFER_DECLINED
+		case 'Accepted':
+			return StatusTypes.ACCEPTED
+		case 'Rejected':
+			return StatusTypes.REJECTED
+		default:
+			return 'Ukjent status'
+	}
+}
+
 export function getStatusColor(status: StatusTypes, theme: MantineTheme) {
 	switch (status) {
 		case StatusTypes.PENDING:
@@ -58,7 +81,7 @@ export function getStatusColor(status: StatusTypes, theme: MantineTheme) {
 	}
 }
 
-export function getIconForStatus(status: StatusTypes) {
+export function getIconForStatus(status: string) {
 	switch (status) {
 		case StatusTypes.PENDING:
 			return <File size={20} />
