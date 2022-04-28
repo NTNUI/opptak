@@ -4,7 +4,7 @@ Semester project in the course [IT2901 Informatics Project II](https://www.ntnu.
 
 ## About the application
 
-This is a proof of concept application for development and usage of an npm package, [ntnui-tools](https://github.com/NTNUI/ntnui-tools), an API wrapper for easier utilization of [NTNUI API](https://api.ntnui.no/). 
+This is a proof of concept application for development and usage of an npm package, [ntnui-tools](https://github.com/NTNUI/ntnui-tools), an API wrapper for easier utilization of [NTNUI API](https://api.ntnui.no/).
 
 The application is a dynamic admission form with automatic access control using [NTNUI API](https://api.ntnui.no/) (NTNUIs membership system) authorization and roles. The admission form itself is dynamic and uses ntnui-tools to fetch committees from the NTNUI API.
 
@@ -28,28 +28,18 @@ The **election committee** is directly connected to the election committee in th
 The **normal administrative committes** have the following permissions:
 
 - Can change the admission status of their own committees
-- Can *only* see applications that include their own committee
+- Can _only_ see applications that include their own committee
 - Can change the statuses for the applications to their own committees
 
 The normal administrative committes experience the same form of censorship from indications of the main board as the organizers experience.
 
-### Permission tables
+### Permission table
 
-|               role              | Admission period |       Admission status       |                      Application visibility                      | Application status | Wipe admission data |
-|:-------------------------------:|:----------------:|:----------------------------:|:----------------------------------------------------------------:|:------------------:|:-------------------:|
-|      organizer (main board)     |       Edit       | Change all except main board |                 All committees  except main board                |  Cannot change any |         Yes         |
-|        election committee       |       View       |       Change main board      |                          All committees                          |  Change main board |          No         |
-| normal administrative committee |       View       |       Change their own       | Applications that include their own committee  except main board |  Change their own  |          No         |
-
-
-| member of➡  ⬇access to |         Blits         |         Event         |       Paraidrett      |         Sprint        |    Økonomiutvalget    | Hovedstyret | Valgkomiteen |
-|:---------------------:|:---------------------:|:---------------------:|:---------------------:|:---------------------:|:---------------------:|:-----------:|:------------:|
-|         Blits         | leader + access group |                       |                       |                       |                       | Group board |  Group board |
-|         Event         |                       | leader + access group |                       |                       |                       | Group board |  Group board |
-|       Paraidrett      |                       |                       | leader + access group |                       |                       | Group board |  Group board |
-|         Sprint        |                       |                       |                       | leader + access group |                       | Group board |  Group board |
-|    Økonomiutvalget    |                       |                       |                       |                       | leader + access group | Group board |  Group board |
-|      Hovedstyret      |                       |                       |                       |                       |                       |             |  Group board |
+|              role               | Admission period |       Admission status       |                     Application visibility                      | Application status | Wipe admission data |
+| :-----------------------------: | :--------------: | :--------------------------: | :-------------------------------------------------------------: | :----------------: | :-----------------: |
+|     organizer (main board)      |       Edit       | Change all except main board |                All committees except main board                 | Cannot change any  |         Yes         |
+|       election committee        |       View       |      Change main board       |                         All committees                          | Change main board  |         No          |
+| normal administrative committee |       View       |       Change their own       | Applications that include their own committee except main board |  Change their own  |         No          |
 
 ## Development
 
