@@ -8,7 +8,6 @@ import {
 import {
 	getAdmissionPeriod,
 	putAdmissionPeriod,
-	getAdmissionPeriodStatus,
 } from '../controllers/admissionPeriodController'
 import authorization from '../utils/authorizationMiddleware'
 import applicationQueryValidator from '../utils/applicationQueryMiddleware'
@@ -39,11 +38,6 @@ applicationRouter.get('/period', getAdmissionPeriod)
 // @description Update/set admission period
 // @access Private
 applicationRouter.put('/period', authorization, putAdmissionPeriod)
-
-// @route GET /applications/period/active
-// @description Get if admission period is active
-// @access Public
-applicationRouter.get('/period/active', getAdmissionPeriodStatus)
 
 // @route GET /applications/:application_id
 // @description Get application by id if user has access

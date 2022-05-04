@@ -10,7 +10,6 @@ import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { CalendarEvent, FileText, Trash, Users } from 'tabler-icons-react'
 import {
-	isApplicationPeriodActive,
 	getAdmissionPeriod,
 } from '../services/Applications'
 import { IUserProfile, getUserProfile } from '../services/User'
@@ -127,22 +126,24 @@ function Dashboard() {
 				const locationState = location.state as stateType
 				setTheOrganizer(locationState.isOrganizer)
 				// Check if application period active
-				const response = await isApplicationPeriodActive()
-				setPeriodOpen(response)
+				const response = await getAdmissionPeriod()
+				const admissionPeriod = response.admissionPeriod
+				const today = new Date().toISOString()
+				const isAdmissionPeriodOpen = (admissionPeriod <= today && today <= admissionPeriod)
+				
+				setPeriodOpen(isAdmissionPeriodOpen)
 				// If active, get application period
-				if (response) {
-					const response = await getAdmissionPeriod()
-					const parsedStartDate = dayjs(response.admissionPeriod.start_date)
+				if (isAdmissionPeriodOpen) {
+					const parsedStartDate = dayjs(admissionPeriod.start_date)
 						.locale('nb')
 						.format('D. MMMM YYYY')
-					const parsedEndDate = dayjs(response.admissionPeriod.end_date)
+					const parsedEndDate = dayjs(admissionPeriod.end_date)
 						.locale('nb')
 						.format('D. MMMM YYYY')
 					setStartDate(parsedStartDate)
 					setEndDate(parsedEndDate)
 				}
-				setIsLoading(false)
-			} catch (err) {
+			} finally {
 				setIsLoading(false)
 			}
 		}

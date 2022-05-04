@@ -70,19 +70,5 @@ const putAdmissionPeriod = async (req: RequestWithNtnuiNo, res: Response) => {
 	return res.status(403).json({ message: 'Not authorized' })
 }
 
-const getAdmissionPeriodStatus = async (req: Request, res: Response) => {
-	try {
-		if (await isAdmissionPeriodActive()) {
-			return res.status(200).json({ response: true })
-		}
-		return res.status(200).json({ response: false })
-	} catch (error: any) {
-		// If no application period exists
-		if (error.status === 404) {
-			return res.status(200).json({ response: false })
-		}
-		return res.status(500).json({ message: error })
-	}
-}
 
-export { getAdmissionPeriod, putAdmissionPeriod, getAdmissionPeriodStatus }
+export { getAdmissionPeriod, putAdmissionPeriod }
