@@ -5,7 +5,7 @@ import { forwardRef, useEffect, useState } from 'react'
 import { ChevronDown, Menu2, Search } from 'tabler-icons-react'
 import { getAllCommittees } from '../services/Committees'
 import { ICommittee } from '../types/types'
-import StatusTypes from '../utils/enums'
+import { StatusTypes } from '../utils/enums'
 import constructSearchFilterQuery from '../utils/filter'
 import { getIconForStatus, getStatusTranslation } from '../utils/status'
 

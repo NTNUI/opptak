@@ -6,7 +6,7 @@ import { forwardRef } from 'react'
 import { useState } from 'react'
 import { ChevronDown, X } from 'tabler-icons-react'
 
-import StatusTypes from '../utils/enums'
+import { StatusTypes } from '../utils/enums'
 import {
 	getIconForStatus,
 	getStatusColor,

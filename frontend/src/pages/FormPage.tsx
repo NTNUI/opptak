@@ -3,9 +3,8 @@ import { FileText, Login } from 'tabler-icons-react'
 import { Form } from '../components/ApplicationForm'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import {
-	getAdmissionPeriod,
-} from '../services/Applications'
+import { getAdmissionPeriod } from '../services/Applications'
+import { AdmissionPeriodStatus } from '../utils/enums'
 
 const useStyles = createStyles((theme) => ({
 	formTitleAndBodyWrapper: {
@@ -155,8 +154,9 @@ const useStyles = createStyles((theme) => ({
 
 function FormBox() {
 	const { classes } = useStyles()
-	const [isPeriodOpen, setIsPeriodOpen] = useState<boolean>(false)
-	const [isPeriodUpcoming, setIsPeriodUpcoming] = useState<boolean>(false)
+	const [periodStatus, setPeriodStatus] = useState<AdmissionPeriodStatus>(
+		AdmissionPeriodStatus.open
+	)
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const [startDate, setStartDate] = useState<string>('')
 	const [endDate, setEndDate] = useState<string>('')
@@ -168,12 +168,9 @@ function FormBox() {
 			try {
 				const response = await getAdmissionPeriod()
 				const admissionPeriod = response.admissionPeriod
-				const today = new Date().toISOString()
-				const isAdmissionPeriodOpen = (admissionPeriod.start_date <= today && today <= admissionPeriod.end_date) 
-				const isAdmissionPeriodUpcoming = today < admissionPeriod.start_date
-				setIsPeriodOpen(isAdmissionPeriodOpen)
-				setIsPeriodUpcoming(isAdmissionPeriodUpcoming)
-				if (isAdmissionPeriodOpen) {
+
+				setPeriodStatus(response.admissionStatus)
+				if (response.admissionStatus === AdmissionPeriodStatus.open) {
 					const parsedEndDate = new Date(admissionPeriod.end_date)
 						.toLocaleDateString('no-No', {
 							month: 'long',
@@ -182,10 +179,10 @@ function FormBox() {
 						})
 						.concat(' 23:59')
 					setEndDate(parsedEndDate)
-				}
-				else if (isAdmissionPeriodUpcoming) {
-					const parsedStartDate = new Date(admissionPeriod.start_date)
-					.toLocaleDateString('no-No', {
+				} else if (response.admissionStatus === AdmissionPeriodStatus.upcoming) {
+					const parsedStartDate = new Date(
+						admissionPeriod.start_date
+					).toLocaleDateString('no-No', {
 						month: 'long',
 						day: '2-digit',
 						year: 'numeric',
@@ -193,7 +190,6 @@ function FormBox() {
 					setStartDate(parsedStartDate)
 				}
 			} catch (err) {
-				setIsPeriodOpen(false)
 			} finally {
 				setIsLoading(false)
 			}
@@ -219,7 +215,7 @@ function FormBox() {
 			</Box>
 			{isLoading ? (
 				<Loader size='xl' color='yellow' className={classes.loading} />
-			) : isPeriodOpen ? (
+			) : periodStatus === AdmissionPeriodStatus.open ? (
 				<Box className={classes.formTitleAndBodyWrapper}>
 					<h1 className={classes.formTitle}>
 						<FileText />
@@ -230,13 +226,13 @@ function FormBox() {
 					)}
 					<Form />
 				</Box>
-			) : isPeriodUpcoming ? (
+			) : periodStatus === AdmissionPeriodStatus.upcoming ? (
 				<Box className={classes.closedPeriod}>
 					<h1 className={classes.formTitle}>
 						NTNUI Admin har for tiden ingen opptak
 					</h1>
 					<p className={classes.closedText}>
-						.. men søknadsperioden åpner {startDate}!
+						... men søknadsperioden åpner {startDate}!
 					</p>
 				</Box>
 			) : (
