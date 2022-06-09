@@ -210,7 +210,7 @@ export function Form() {
 			text: (value) => (value.trim().length > 2500 ? 'Maks 2500 tegn' : null),
 			main_board_text: (value) =>
 				value.trim().length > 2500 ? 'Maks 2500 tegn' : null,
-			committees: (value) => (value.length > 0 ? null : 'Velg minst 1 komité'),
+			committees: (value) => (value.length > 0 ? null : 'Velg minst 1 utvalg'),
 		},
 	})
 
@@ -300,7 +300,7 @@ export function Form() {
 				}}
 				label={
 					form.values.committees.length > 1 && isToMainBoard
-						? 'Søknadstekst for andre kommitteer'
+						? 'Søknadstekst for andre utvalg'
 						: 'Søknadstekst'
 				}
 				autosize
