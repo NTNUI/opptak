@@ -151,19 +151,14 @@ const useStyles = createStyles(
 				margin: '10px 0 0 0',
 			},
 		},
-		scrollAreaScrollBar: {
-			':hover': {
-				backgroundColor: theme.colors.ntnui_yellow[9] + '1A',
-			},
-		},
-		scrollAreaCorner: {
-			backgroundColor: theme.colors.ntnui_yellow[9] + '1A',
-			color: 'red',
-			':hover': {},
-		},
 		applicationTextSection: {
 			gridArea: 'applicationtext',
 			alignSelf: 'start',
+			display: 'flex',
+			flexDirection: 'column',
+			gap: '1rem',
+		},
+		applicationTextItem: {
 			color: 'white',
 			p: {
 				// Adjusted for icons
@@ -378,7 +373,6 @@ function ApplicationDetailPage() {
 							<h2 className={classes.sectionTitle}>
 								<Gavel size={32} /> Status
 							</h2>
-
 							{isLoading || !application ? (
 								<YellowDotLoader />
 							) : (
@@ -392,15 +386,34 @@ function ApplicationDetailPage() {
 							)}
 						</Box>
 						<Box className={classes.applicationTextSection}>
-							<h2 className={classes.sectionTitle}>
-								<AlignJustified size={32} /> Søknadstekst
-							</h2>
-							{isLoading || !application ? (
-								<YellowDotLoader />
-							) : !application.text.length ? (
-								<i>Ingen søknadstekst</i>
-							) : (
-								<p>{application.text}</p>
+							{!isLoading &&
+								application &&
+								!(
+									application.main_board_text.length > 0 &&
+									application.committees.length === 1
+								) && (
+									<Box className={classes.applicationTextItem}>
+										<h2 className={classes.sectionTitle}>
+											<AlignJustified size={32} /> Søknadstekst
+										</h2>
+										{!application.text.length ? (
+											<i>Ingen søknadstekst</i>
+										) : (
+											<p>{application.text}</p>
+										)}
+									</Box>
+								)}
+							{!isLoading && application && application.main_board_text.length > 0 && (
+								<Box className={classes.applicationTextItem}>
+									<h2 className={classes.sectionTitle}>
+										<AlignJustified size={32} /> Søknadstekst til hovedstyret
+									</h2>
+									{!application.main_board_text.length ? (
+										<i>Ingen søknadstekst</i>
+									) : (
+										<p>{application.main_board_text}</p>
+									)}
+								</Box>
 							)}
 						</Box>
 					</Box>
