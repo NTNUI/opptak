@@ -13,14 +13,17 @@ import { useEffect, useState } from 'react'
 import { useNotifications } from '@mantine/notifications'
 import { Check, ChevronDown, X } from 'tabler-icons-react'
 import { ICommittee } from '../types/types'
+import { REACT_APP_MAIN_BOARD_ID } from '../utils/constants'
 
 interface ISubmissionApplication {
 	email: string
 	name: string
 	phone_number: string
 	text: string
+	main_board_text: string
 	committees: string[]
 }
+
 interface ICommitteeInSelect {
 	value: string
 	label: string
@@ -86,6 +89,7 @@ export function Form() {
 	const { classes } = useStyles()
 	const [committees, setCommittees] = useState<ICommitteeInSelect[]>([])
 	const [committeesFailed, setCommitteesFailed] = useState<boolean>(false)
+	const [isToMainBoard, setIsToMainBoard] = useState<boolean>(false)
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const notifications = useNotifications()
 	const committeeNotification = useNotifications()
@@ -119,6 +123,14 @@ export function Form() {
 			message: '',
 			loading: true,
 		})
+		// Wipe main board text if it is not sent to main board
+		if (!isToMainBoard) {
+			values.main_board_text = ''
+		}
+		// Wipe normal text if it is only sent to main board
+		if (isToMainBoard && values.committees.length === 1) {
+			values.text = ''
+		}
 		axios
 			.post('/applications', values)
 			.then((response) => {
@@ -180,6 +192,7 @@ export function Form() {
 			name: '',
 			phone_number: '',
 			text: '',
+			main_board_text: '',
 			committees: [],
 		},
 
@@ -195,6 +208,8 @@ export function Form() {
 					? null
 					: 'Telefonnummer kan kun inneholde tall',
 			text: (value) => (value.trim().length > 2500 ? 'Maks 2500 tegn' : null),
+			main_board_text: (value) =>
+				value.trim().length > 2500 ? 'Maks 2500 tegn' : null,
 			committees: (value) => (value.length > 0 ? null : 'Velg minst 1 komité'),
 		},
 	})
@@ -203,7 +218,23 @@ export function Form() {
 		if (form.values.text.length) {
 			form.validateField('text')
 		}
-	}, [form.values.text])
+		if (form.values.main_board_text.length) {
+			form.validateField('main_board_text')
+		}
+	}, [form.values.text, form.values.main_board_text])
+
+	useEffect(() => {
+		if (
+			form.values.committees.length &&
+			form.values.committees.some(
+				(committee) => committee === REACT_APP_MAIN_BOARD_ID.toString()
+			)
+		) {
+			setIsToMainBoard(true)
+		} else {
+			setIsToMainBoard(false)
+		}
+	}, [form.values.committees])
 
 	return (
 		<form
@@ -267,18 +298,57 @@ export function Form() {
 					input: classes.formField,
 					error: classes.textareaError,
 				}}
-				label='Søknadstekst'
+				label={
+					form.values.committees.length > 1 && isToMainBoard
+						? 'Søknadstekst for andre kommitteer'
+						: 'Søknadstekst'
+				}
 				autosize
 				maxRows={10}
 				minRows={3}
-				onBlur={() => form.validateField('text')}
-				{...form.getInputProps('text')}
+				onBlur={() =>
+					form.validateField(
+						form.values.committees.length === 1 && isToMainBoard
+							? 'main_board_text'
+							: 'text'
+					)
+				}
+				{...form.getInputProps(
+					form.values.committees.length === 1 && isToMainBoard
+						? 'main_board_text'
+						: 'text'
+				)}
 			/>
 			<Collapse in={form.values.text.length > 2500}>
 				<div className={classes.textareaBottomLabel}>
 					<p className={classes.textareaCustomError}>{form.errors.text}</p>
 					<p className={classes.textareaCustomError}>
 						{form.values.text.length}/2500
+					</p>
+				</div>
+			</Collapse>
+			<Collapse in={isToMainBoard && form.values.committees.length > 1}>
+				<Textarea
+					classNames={{
+						label: classes.labelText,
+						input: classes.formField,
+						error: classes.textareaError,
+					}}
+					label='Søknadstekst for Hovedstyret'
+					autosize
+					maxRows={10}
+					minRows={3}
+					onBlur={() => form.validateField('main_board_text')}
+					{...form.getInputProps('main_board_text')}
+				/>
+			</Collapse>
+			<Collapse in={form.values.main_board_text.length > 2500}>
+				<div className={classes.textareaBottomLabel}>
+					<p className={classes.textareaCustomError}>
+						{form.errors.main_board_text}
+					</p>
+					<p className={classes.textareaCustomError}>
+						{form.values.main_board_text.length}/2500
 					</p>
 				</div>
 			</Collapse>
