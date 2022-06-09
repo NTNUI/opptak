@@ -5,6 +5,7 @@ interface IApplication {
 	phone_number: string
 	email: string
 	text: string
+	main_board_text: string
 	submitted_date: Date
 	committees: number[]
 	statuses: ObjectId[]
@@ -27,6 +28,12 @@ const ApplicationModel = mongoose.model<IApplication>(
 				required: true,
 			},
 			text: {
+				type: String,
+				validate: {
+					validator: (text: string) => text.length <= 2500,
+				},
+			},
+			main_board_text: {
 				type: String,
 				validate: {
 					validator: (text: string) => text.length <= 2500,
