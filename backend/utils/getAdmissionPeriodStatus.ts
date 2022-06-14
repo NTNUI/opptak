@@ -1,7 +1,7 @@
 import { CustomError } from 'ntnui-tools/customError'
 import dayjs from 'dayjs'
 import { AdmissionPeriodModel } from '../models/AdmissionPeriod'
-import { AdmissionPeriodStatus } from "./enums"
+import { AdmissionPeriodStatus } from './enums'
 
 const getAdmissionPeriodStatus = async () => {
 	const admissionPeriod = await AdmissionPeriodModel.findOne()

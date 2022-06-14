@@ -179,13 +179,15 @@ function Dashboard() {
 											<span className={classes.date}>{endDate}</span>
 										</>
 									) : periodStatus === AdmissionPeriodStatus.finished ? (
-										<span className={classes.date}>
-											Opptaksperioden sluttet {endDate}
-										</span>
+										<>
+											Opptaksperioden avsluttet{' '}
+											<span className={classes.date}>{endDate}</span>
+										</>
 									) : (
-										<span className={classes.date}>
-											Opptaksperioden begynner {startDate}
-										</span>
+										<>
+											Opptaksperioden begynner{' '}
+											<span className={classes.date}>{startDate}</span>
+										</>
 									)}
 								</p>
 								<div style={styles} className={classes.metroBoxWrapper}>
