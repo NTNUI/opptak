@@ -5,12 +5,12 @@ import { RequestWithNtnuiNo } from '../utils/request'
 import { ApplicationModel, IApplication } from '../models/Application'
 import { UserModel } from '../models/User'
 import { CommitteeModel, ICommittee } from '../models/Committee'
-import isAdmissionPeriodActive from '../utils/isAdmissionPeriodActive'
-import { SortTypes, StatusTypes } from '../utils/enums'
+import { AdmissionPeriodStatus, SortTypes, StatusTypes } from '../utils/enums'
 import { IStatus, StatusModel } from '../models/Status'
 import { AdmissionPeriodModel } from '../models/AdmissionPeriod'
 import { getSortTypeValue } from '../utils/applicationQueryMiddleware'
 import { ELECTION_COMMITTEE_ID, MAIN_BOARD_ID } from '../utils/constants'
+import getAdmissionPeriodStatus from '../utils/getAdmissionPeriodStatus'
 
 async function getUserCommitteeIdsByUserId(userId: number | string) {
 	let committeeIds: number[] = []
@@ -354,7 +354,7 @@ const postApplication = async (
 	next: NextFunction
 ) => {
 	try {
-		if (!(await isAdmissionPeriodActive())) {
+		if (!((await getAdmissionPeriodStatus()) === AdmissionPeriodStatus.open)) {
 			throw new CustomError('Admission period is not active', 403)
 		}
 		// Check that all applied committees accepts admissions

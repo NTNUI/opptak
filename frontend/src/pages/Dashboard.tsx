@@ -9,13 +9,11 @@ import {
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { CalendarEvent, FileText, Trash, Users } from 'tabler-icons-react'
-import {
-	isApplicationPeriodActive,
-	getAdmissionPeriod,
-} from '../services/Applications'
+import { getAdmissionPeriod } from '../services/Applications'
 import { IUserProfile, getUserProfile } from '../services/User'
 import dayjs from 'dayjs'
 import WipeModal from '../components/WipeAdmissionDataModal'
+import { AdmissionPeriodStatus } from '../utils/enums'
 require('dayjs/locale/nb')
 
 const useStyles = createStyles((theme) => ({
@@ -108,7 +106,9 @@ function Dashboard() {
 	const { classes } = useStyles()
 	const navigate = useNavigate()
 	const location = useLocation()
-	const [periodOpen, setPeriodOpen] = useState<boolean>(true)
+	const [periodStatus, setPeriodStatus] = useState<AdmissionPeriodStatus>(
+		AdmissionPeriodStatus.open
+	)
 	const [startDate, setStartDate] = useState<string>('')
 	const [endDate, setEndDate] = useState<string>('')
 	const [isTheOrganizer, setTheOrganizer] = useState<boolean>(false)
@@ -120,29 +120,25 @@ function Dashboard() {
 		const getDashboardDataAsync = async () => {
 			setIsLoading(true)
 			try {
-				// Get user
 				const user = await getUserProfile()
 				setUserName(user)
-				// Get organizer value
+
 				const locationState = location.state as stateType
 				setTheOrganizer(locationState.isOrganizer)
-				// Check if application period active
-				const response = await isApplicationPeriodActive()
-				setPeriodOpen(response)
-				// If active, get application period
-				if (response) {
-					const response = await getAdmissionPeriod()
-					const parsedStartDate = dayjs(response.admissionPeriod.start_date)
-						.locale('nb')
-						.format('D. MMMM YYYY')
-					const parsedEndDate = dayjs(response.admissionPeriod.end_date)
-						.locale('nb')
-						.format('D. MMMM YYYY')
-					setStartDate(parsedStartDate)
-					setEndDate(parsedEndDate)
-				}
-				setIsLoading(false)
-			} catch (err) {
+
+				const response = await getAdmissionPeriod()
+				const admissionPeriod = response.admissionPeriod
+				setPeriodStatus(response.admissionStatus)
+
+				const parsedStartDate = dayjs(admissionPeriod.start_date)
+					.locale('nb')
+					.format('D. MMMM YYYY')
+				const parsedEndDate = dayjs(admissionPeriod.end_date)
+					.locale('nb')
+					.format('D. MMMM YYYY')
+				setStartDate(parsedStartDate)
+				setEndDate(parsedEndDate)
+			} finally {
 				setIsLoading(false)
 			}
 		}
@@ -174,14 +170,24 @@ function Dashboard() {
 									</span>
 								</h1>
 								<p style={styles} className={classes.text}>
-									{periodOpen && startDate && endDate ? (
+									{periodStatus === AdmissionPeriodStatus.open &&
+									startDate &&
+									endDate ? (
 										<>
 											<CalendarEvent size={24} strokeWidth={1.5} /> Opptaksperioden er satt
 											fra <span className={classes.date}>{startDate}</span> til{' '}
 											<span className={classes.date}>{endDate}</span>
 										</>
+									) : periodStatus === AdmissionPeriodStatus.finished ? (
+										<>
+											Opptaksperioden avsluttet{' '}
+											<span className={classes.date}>{endDate}</span>
+										</>
 									) : (
-										<span>Det er for tiden ingen satt opptaksperiode</span>
+										<>
+											Opptaksperioden begynner{' '}
+											<span className={classes.date}>{startDate}</span>
+										</>
 									)}
 								</p>
 								<div style={styles} className={classes.metroBoxWrapper}>

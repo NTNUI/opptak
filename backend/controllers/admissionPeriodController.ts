@@ -5,7 +5,7 @@ import { AdmissionPeriodModel } from '../models/AdmissionPeriod'
 import { getUserCommitteeIdsByUserId } from '../utils/userCommittee'
 import { RequestWithNtnuiNo } from '../utils/request'
 import { MAIN_BOARD_ID } from '../utils/constants'
-import isAdmissionPeriodActive from '../utils/isAdmissionPeriodActive'
+import getAdmissionPeriodStatus from '../utils/getAdmissionPeriodStatus'
 
 function validateAndFormatDateString(value: string): string {
 	// Expect ISO-string (YYYY-MM-DDTHH:mm:ss.sssZ)
@@ -22,13 +22,14 @@ const getAdmissionPeriod = async (req: Request, res: Response) => {
 	// Only one admission period in the db at any time, so findOne() returns only the one object
 	const admissionPeriod = await AdmissionPeriodModel.findOne()
 
-	if (admissionPeriod) {
-		return res.status(200).json({ admissionPeriod })
+	if (!admissionPeriod) {
+		return res
+			.status(404)
+			.json({ message: 'There is no admission period in the db' })
 	}
-
 	return res
-		.status(404)
-		.json({ message: 'There is no admission period in the db' })
+		.status(200)
+		.json({ admissionPeriod, admissionStatus: await getAdmissionPeriodStatus() })
 }
 
 const putAdmissionPeriod = async (req: RequestWithNtnuiNo, res: Response) => {
@@ -70,19 +71,4 @@ const putAdmissionPeriod = async (req: RequestWithNtnuiNo, res: Response) => {
 	return res.status(403).json({ message: 'Not authorized' })
 }
 
-const getAdmissionPeriodStatus = async (req: Request, res: Response) => {
-	try {
-		if (await isAdmissionPeriodActive()) {
-			return res.status(200).json({ response: true })
-		}
-		return res.status(200).json({ response: false })
-	} catch (error: any) {
-		// If no application period exists
-		if (error.status === 404) {
-			return res.status(200).json({ response: false })
-		}
-		return res.status(500).json({ message: error })
-	}
-}
-
-export { getAdmissionPeriod, putAdmissionPeriod, getAdmissionPeriodStatus }
+export { getAdmissionPeriod, putAdmissionPeriod }

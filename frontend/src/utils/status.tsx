@@ -1,5 +1,5 @@
 import { MantineTheme } from '@mantine/core'
-import StatusTypes from './enums'
+import { StatusTypes } from './enums'
 import {
 	Check,
 	File,
