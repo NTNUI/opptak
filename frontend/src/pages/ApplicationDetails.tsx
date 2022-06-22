@@ -17,6 +17,7 @@ import StatusInput from '../components/StatusInput'
 import { getApplication } from '../services/Applications'
 import { getUserCommittees, IRoleInCommittee } from '../services/Committees'
 import { IApplication, IStatus } from '../types/types'
+import { REACT_APP_MAIN_BOARD_ID } from '../utils/constants'
 
 interface IStatusesStyleProps {
 	amountOfStatuses: number
@@ -151,19 +152,14 @@ const useStyles = createStyles(
 				margin: '10px 0 0 0',
 			},
 		},
-		scrollAreaScrollBar: {
-			':hover': {
-				backgroundColor: theme.colors.ntnui_yellow[9] + '1A',
-			},
-		},
-		scrollAreaCorner: {
-			backgroundColor: theme.colors.ntnui_yellow[9] + '1A',
-			color: 'red',
-			':hover': {},
-		},
 		applicationTextSection: {
 			gridArea: 'applicationtext',
 			alignSelf: 'start',
+			display: 'flex',
+			flexDirection: 'column',
+			gap: '1rem',
+		},
+		applicationTextItem: {
 			color: 'white',
 			p: {
 				// Adjusted for icons
@@ -219,6 +215,7 @@ function ApplicationDetailPage() {
 	const navigate = useNavigate()
 	const [application, setApplication] = useState<IApplication | null>(null)
 	const [amountOfStatuses, setAmountOfStatuses] = useState<number>(0)
+	const [isToMainBoard, setIsToMainBoard] = useState<boolean>(false)
 	const { classes } = useStyles({ amountOfStatuses })
 	const [userCommitteeIds, setUserCommitteeIds] = useState<number[]>([])
 	const [userCommittees, setUserCommittees] = useState<IRoleInCommittee[]>([])
@@ -241,6 +238,11 @@ function ApplicationDetailPage() {
 					setUserCommittees(userCommitteesRes)
 					setIsLoading(false)
 					setAmountOfStatuses(response.application.statuses.length)
+					setIsToMainBoard(
+						response.application.committees.some((committee) => {
+							return committee._id === REACT_APP_MAIN_BOARD_ID
+						})
+					)
 				} catch (error: any) {
 					setIsLoading(false)
 					if (error.response.status === 403) {
@@ -378,7 +380,6 @@ function ApplicationDetailPage() {
 							<h2 className={classes.sectionTitle}>
 								<Gavel size={32} /> Status
 							</h2>
-
 							{isLoading || !application ? (
 								<YellowDotLoader />
 							) : (
@@ -392,15 +393,31 @@ function ApplicationDetailPage() {
 							)}
 						</Box>
 						<Box className={classes.applicationTextSection}>
-							<h2 className={classes.sectionTitle}>
-								<AlignJustified size={32} /> Søknadstekst
-							</h2>
-							{isLoading || !application ? (
-								<YellowDotLoader />
-							) : !application.text.length ? (
-								<i>Ingen søknadstekst</i>
-							) : (
-								<p>{application.text}</p>
+							{!isLoading &&
+								application &&
+								!(isToMainBoard && application.committees.length === 1) && (
+									<Box className={classes.applicationTextItem}>
+										<h2 className={classes.sectionTitle}>
+											<AlignJustified size={32} /> Søknadstekst
+										</h2>
+										{!application.text.length ? (
+											<i>Ingen søknadstekst</i>
+										) : (
+											<p>{application.text}</p>
+										)}
+									</Box>
+								)}
+							{!isLoading && application && isToMainBoard && (
+								<Box className={classes.applicationTextItem}>
+									<h2 className={classes.sectionTitle}>
+										<AlignJustified size={32} /> Søknadstekst til Hovedstyret
+									</h2>
+									{!application.main_board_text.length ? (
+										<i>Ingen søknadstekst</i>
+									) : (
+										<p>{application.main_board_text}</p>
+									)}
+								</Box>
 							)}
 						</Box>
 					</Box>
