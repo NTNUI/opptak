@@ -5,12 +5,12 @@ import { RequestWithNtnuiNo } from '../utils/request'
 import { ApplicationModel, IApplication } from '../models/Application'
 import { UserModel } from '../models/User'
 import { CommitteeModel, ICommittee } from '../models/Committee'
-import isAdmissionPeriodActive from '../utils/isAdmissionPeriodActive'
-import { SortTypes, StatusTypes } from '../utils/enums'
+import { AdmissionPeriodStatus, SortTypes, StatusTypes } from '../utils/enums'
 import { IStatus, StatusModel } from '../models/Status'
 import { AdmissionPeriodModel } from '../models/AdmissionPeriod'
 import { getSortTypeValue } from '../utils/applicationQueryMiddleware'
 import { ELECTION_COMMITTEE_ID, MAIN_BOARD_ID } from '../utils/constants'
+import getAdmissionPeriodStatus from '../utils/getAdmissionPeriodStatus'
 
 async function getUserCommitteeIdsByUserId(userId: number | string) {
 	let committeeIds: number[] = []
@@ -71,40 +71,41 @@ const getApplicationById = async (
 		if (userCommitteeIds.includes(ELECTION_COMMITTEE_ID)) {
 			return res.status(200).json({ application })
 		}
-
 		const applicationCommittees: ICommittee[] = application.committees
 		// Main board are allowed to see all applied committees, but not to the main board
 		if (userCommitteeIds.includes(MAIN_BOARD_ID)) {
 			for (let i = 0; i < applicationCommittees.length; i += 1) {
+				// Hide parts with main board
 				if (applicationCommittees[i]._id === MAIN_BOARD_ID) {
 					applicationCommittees.splice(i, 1)
 					application.statuses.splice(i, 1)
+					application.main_board_text = ''
 					break
 				}
+				// If the application is only to the main board
+				if (applicationCommittees.length === 0) {
+					return res
+						.status(403)
+						.json({ message: 'You do not have access to this application' })
+				}
 			}
-
-			if (applicationCommittees.length > 0) {
-				return res.status(200).json({ application })
-			}
-			return res
-				.status(403)
-				.json({ message: 'You do not have access to this application' })
+			return res.status(200).json({ application })
 		}
-
-		let authorized = false
-		// Only election committee should see if application includes main board
+		// Check if user is member of any committee that application is sent to
+		let isAuthorized = false
 		for (let id = 0; id < applicationCommittees.length; id += 1) {
 			const appCommitteeId = applicationCommittees[id]._id
 			if (userCommitteeIds.includes(appCommitteeId)) {
-				authorized = true
-				// Hide parts with main board
+				isAuthorized = true
 			} else if (appCommitteeId === MAIN_BOARD_ID) {
+				// Hide parts with main board from normal users
 				applicationCommittees.splice(id, 1)
 				application.statuses.splice(id, 1)
+				application.main_board_text = ''
 				id -= 1
 			}
 		}
-		if (authorized === true) {
+		if (isAuthorized) {
 			return res.status(200).json({ application })
 		}
 		throw new CustomError('You do not have access to this application', 403)
@@ -339,6 +340,7 @@ const getApplications = async (
 				applications[i].statuses = applications[i].statuses.filter(
 					(stat) => stat.committee !== MAIN_BOARD_ID
 				)
+				applications[i].main_board_text = ''
 			}
 		}
 
@@ -354,7 +356,7 @@ const postApplication = async (
 	next: NextFunction
 ) => {
 	try {
-		if (!(await isAdmissionPeriodActive())) {
+		if (!((await getAdmissionPeriodStatus()) === AdmissionPeriodStatus.open)) {
 			throw new CustomError('Admission period is not active', 403)
 		}
 		// Check that all applied committees accepts admissions

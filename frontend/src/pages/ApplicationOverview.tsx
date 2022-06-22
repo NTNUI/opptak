@@ -53,7 +53,7 @@ function ApplicationOverview() {
 	const [numberOfPages, setNumberOfPages] = useState(1)
 	const [isLoading, setIsLoading] = useState(false)
 	const [applications, setApplications] = useState<IApplication[]>([])
-	const [filters, setFilters] = useState<string>('')
+	const [filters, setFilters] = useState<string>('sort=date_desc')
 
 	let navigate = useNavigate()
 

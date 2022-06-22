@@ -1,4 +1,4 @@
-import StatusTypes from '../utils/enums'
+import { StatusTypes } from '../utils/enums'
 
 export interface IStatus {
 	_id: string
@@ -17,6 +17,7 @@ interface IApplication {
 	phone_number: string
 	email: string
 	text: string
+	main_board_text: string
 	committees: ICommittee[]
 	submitted_date: Date
 	statuses: IStatus[]

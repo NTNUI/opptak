@@ -13,7 +13,7 @@ const getApplications = async (
 }
 
 const getAdmissionPeriod = async () => {
-	const response = await axios.get(`/applications/period`)
+	const response = await axios.get(`/applications/period/`)
 	return response.data
 }
 
@@ -29,11 +29,6 @@ const getApplication = async (id: String): Promise<IApplicationResponse> => {
 	return response.data
 }
 
-const isApplicationPeriodActive = async (): Promise<boolean> => {
-	const response = await axios.get('/applications/period/active')
-	return response.data.response
-}
-
 const wipeApplicationData = async () => {
 	const response = await axios.delete('/applications/')
 	return response
@@ -44,6 +39,5 @@ export {
 	getApplication,
 	getAdmissionPeriod,
 	putAdmissionPeriod,
-	isApplicationPeriodActive,
 	wipeApplicationData,
 }
