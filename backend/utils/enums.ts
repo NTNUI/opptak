@@ -1,3 +1,9 @@
+enum AdmissionPeriodStatus {
+	finished = 'finished',
+	open = 'open',
+	upcoming = 'upcoming',
+}
+
 enum MembershipType {
 	leader = 'leader',
 	deputy_leader = 'deputy_leader',
@@ -26,4 +32,4 @@ enum SortTypes {
 	DATE_DESC = 'date_desc',
 }
 
-export { StatusTypes, MembershipType, SortTypes }
+export { AdmissionPeriodStatus, StatusTypes, MembershipType, SortTypes }

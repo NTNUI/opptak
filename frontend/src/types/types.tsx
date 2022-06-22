@@ -1,4 +1,4 @@
-import StatusTypes from '../utils/enums'
+import { StatusTypes } from '../utils/enums'
 
 export interface IStatus {
 	_id: string

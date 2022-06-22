@@ -1,3 +1,9 @@
+enum AdmissionPeriodStatus {
+	finished = 'finished',
+	open = 'open',
+	upcoming = 'upcoming',
+}
+
 enum StatusTypes {
 	PENDING = 'Pending',
 	INVITED_TO_INTERVIEW = 'Invited to interview',
@@ -9,4 +15,4 @@ enum StatusTypes {
 	REJECTED = 'Rejected',
 }
 
-export default StatusTypes
+export { AdmissionPeriodStatus, StatusTypes }

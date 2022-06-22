@@ -111,7 +111,7 @@ function AdmissionPeriod() {
 	const notifications = useNotifications()
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	// Has period been set in the db before
-	const [isPeriodSet, setisPeriodSet] = useState<boolean>(false)
+	const [isPeriodSet, setIsPeriodSet] = useState<boolean>(false)
 	// Save previous dates to allow resetting
 	const today = dayjs(new Date()).startOf('day')
 	const [previousDates, setPreviousDates] = useState<Date[]>([
@@ -150,7 +150,7 @@ function AdmissionPeriod() {
 				]
 				form.setValues({ dateRangeInput: retrievedPeriod })
 				setPreviousDates(retrievedPeriod)
-				setisPeriodSet(true)
+				setIsPeriodSet(true)
 				setIsLoading(false)
 				setHasInitialChange(false)
 			} catch (error: any) {
@@ -191,7 +191,7 @@ function AdmissionPeriod() {
 			putAdmissionPeriod(admissionPeriod)
 				.then(() => {
 					setChanged(false)
-					setisPeriodSet(true)
+					setIsPeriodSet(true)
 					setPreviousDates([start, end])
 					notifications.updateNotification(id, {
 						id,
