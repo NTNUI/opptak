@@ -1,0 +1,29 @@
+name: Deploy opptak frontend container to Azure
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - backend/**
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: azure/docker-login@v1
+      with:
+        login-server: ntnuiopptak.azurecr.io
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+
+    - run: |
+        docker build ./frontend -f frontend/Dockerfile.prod -t ntnuiopptak.azurecr.io/opptak-frontend:latest
+        docker push ntnuiopptak.azurecr.io/opptak-frontend:latest
+    - uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'ntnuiopptak-frontend'
+        publish-profile: ${{ secrets.OPPTAK_FRONTEND_AZURE_PUBLISH_PROFILE }}
+        images: 'ntnuiopptak.azurecr.io/opptak-frontend:latest'
