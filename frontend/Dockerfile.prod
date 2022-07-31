@@ -1,0 +1,17 @@
+FROM node:16-alpine as build
+ARG REACT_APP_BACKEND_URI
+
+WORKDIR /app
+ENV PATH /app/node_modules/.bin:$PATH
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
+# Handle Nginx 
+FROM nginx:latest
+COPY --from=build /app/build /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

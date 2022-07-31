@@ -1,7 +1,18 @@
 {
-	"name": "ntnui-application-form-wrapper",
-	"version": "0.1.0",
-	"description": "NTNUI Admin application form wrapper",
+	"name": "ntnui-admission-form-wrapper",
+	"author": {
+		"name": "NTNUI Sprint",
+		"email": "sprint@ntnui.no",
+		"url": "https://ntnui.no/sprint"
+	},
+	"version": "1.0.0",
+	"private": true,
+	"description": "NTNUI Admin admission form wrapper",
+	"repository": "github:NTNUI/opptak",
+	"bugs": {
+		"url": "https://github.com/NTNUI/opptak/issues"
+	},
+	"homepage": "https://github.com/NTNUI/opptak#readme",
 	"scripts": {
 		"prefrontend": "cd frontend && npm install",
 		"frontend": "cd frontend && npm run start",
@@ -13,15 +24,6 @@
 		"check": "npm install && eslint . --ext ts --ext tsx && prettier --check .",
 		"fix": "npm install && npx prettier --write . && eslint . --ext .ts,.tsx --fix"
 	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/NTNUI/it2901-v22.git"
-	},
-	"author": "NTNUI",
-	"bugs": {
-		"url": "https://github.com/NTNUI/it2901-v22/issues"
-	},
-	"homepage": "https://github.com/NTNUI/it2901-v22#readme",
 	"devDependencies": {
 		"@types/react": "^17.0.39",
 		"@typescript-eslint/eslint-plugin": "^5.12.1",

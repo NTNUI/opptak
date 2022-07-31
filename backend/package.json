@@ -1,17 +1,25 @@
 {
-	"name": "ntnui-application-form-backend",
-	"version": "0.1.0",
+	"name": "ntnui-admission-form-backend",
+	"author": {
+		"name": "NTNUI Sprint",
+		"email": "sprint@ntnui.no",
+		"url": "https://ntnui.no/sprint"
+	},
+	"version": "1.0.0",
 	"private": true,
-	"author": "NTNUI",
-	"description": "NTNUI Admin application form backend",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/NTNUI/it2901-v22.git"
-	},
+	"description": "NTNUI Admin admission form backend",
+	"repository": "github:NTNUI/opptak",
 	"bugs": {
-		"url": "https://github.com/NTNUI/it2901-v22/issues"
+		"url": "https://github.com/NTNUI/opptak/issues"
 	},
-	"homepage": "https://github.com/NTNUI/it2901-v22/backend#readme",
+	"homepage": "https://github.com/NTNUI/opptak/tree/master/backend#readme",
+	"scripts": {
+		"build": "tsc",
+		"start": "ts-node app.ts",
+		"start:prod": "node build/app.js",
+		"app": "npx nodemon --exec npx ts-node app.ts",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
 	"dependencies": {
 		"axios": "^0.26.0",
 		"bcryptjs": "^2.4.3",
@@ -29,11 +37,6 @@
 		"validation": "^0.0.1"
 	},
 	"main": "app.ts",
-	"scripts": {
-		"start": "ts-node app.ts",
-		"app": "npx nodemon --exec npx ts-node app.ts",
-		"test": "echo \"Error: no test specified\" && exit 1"
-	},
 	"devDependencies": {
 		"@types/config": "^0.0.41",
 		"@types/cookie-parser": "^1.4.2",
