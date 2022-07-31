@@ -1,0 +1,29 @@
+name: Deploy opptak backend container to Azure
+
+on:
+ push:
+  branches:
+   - master
+  paths-ignore:
+   - frontend/**
+jobs:
+ build:
+  runs-on: ubuntu-latest
+
+  steps:
+   - uses: actions/checkout@v3
+
+   - uses: azure/docker-login@v1
+     with:
+      login-server: ntnuiopptak.azurecr.io
+      username: ${{ secrets.REGISTRY_USERNAME }}
+      password: ${{ secrets.REGISTRY_PASSWORD }}
+
+   - run: |
+      docker build ./backend -t ntnuiopptak.azurecr.io/opptak-backend:latest
+      docker push ntnuiopptak.azurecr.io/opptak-backend:latest
+   - uses: azure/webapps-deploy@v2
+     with:
+      app-name: 'ntnuiopptak-backend'
+      publish-profile: ${{ secrets.OPPTAK_BACKEND_AZURE_PUBLISH_PROFILE }}
+      images: 'ntnuiopptak.azurecr.io/opptak-backend:latest'
