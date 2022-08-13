@@ -1,0 +1,87 @@
+[
+	{
+		"_id": 92,
+		"name": "aktivCampus",
+		"slug": "aktivcampus",
+		"access_roles": ["deputy_leader"],
+		"accepts_admissions": false
+	},
+	{
+		"_id": 44,
+		"name": "Blits",
+		"slug": "blits",
+		"access_roles": ["deputy_leader"],
+		"accepts_admissions": true
+	},
+	{
+		"_id": 74,
+		"name": "Event",
+		"slug": "event",
+		"access_roles": ["deputy_leader"],
+		"accepts_admissions": true
+	},
+	{
+		"_id": 52,
+		"name": "Hovedstyret",
+		"slug": "hovedstyret",
+		"access_roles": [
+			"deputy_leader",
+			"cashier",
+			"board_member",
+			"deputy_board_member"
+		],
+		"accepts_admissions": true
+	},
+	{
+		"_id": 93,
+		"name": "Moment",
+		"slug": "moment",
+		"access_roles": [],
+		"accepts_admissions": false
+	},
+	{
+		"_id": 76,
+		"name": "Økonomiutvalget",
+		"slug": "okonomiutvalget",
+		"access_roles": ["deputy_leader"],
+		"accepts_admissions": true
+	},
+	{
+		"_id": 75,
+		"name": "Paraidrett",
+		"slug": "paraidrett",
+		"access_roles": ["deputy_leader"],
+		"accepts_admissions": true
+	},
+	{
+		"_id": 6,
+		"name": "Sprint",
+		"slug": "sprint",
+		"access_roles": ["deputy_leader", "cashier"],
+		"accepts_admissions": true
+	},
+	{
+		"_id": 80,
+		"name": "Studentlekene",
+		"slug": "studentlekene",
+		"access_roles": [
+			"deputy_leader",
+			"cashier",
+			"board_member",
+			"deputy_board_member"
+		],
+		"accepts_admissions": false
+	},
+	{
+		"_id": 71,
+		"name": "Valgkomiteen",
+		"slug": "valgkomiteen",
+		"access_roles": [
+			"deputy_leader",
+			"cashier",
+			"board_member",
+			"deputy_board_member"
+		],
+		"accepts_admissions": false
+	}
+]
