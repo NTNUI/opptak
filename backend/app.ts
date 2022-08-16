@@ -23,7 +23,16 @@ connectDB()
 
 // Set up middleware
 app.use(cookieParser())
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
+app.use(
+	cors({
+		origin: process.env.FRONTEND_URI || [
+			'https://opptak.ntnui.no',
+			'https://medlem.ntnui.no',
+			'https://dev.medlem.ntnui.no',
+		],
+		credentials: true,
+	})
+)
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
@@ -37,6 +46,6 @@ app.use('/user', userRouter)
 // Error handling middleware
 app.use(errorHandler)
 
-const port = 8082
+const port = process.env.PORT || 8082
 
 app.listen(port, () => console.log(`🍑 Express.js app running on port ${port}`))

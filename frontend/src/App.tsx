@@ -16,7 +16,7 @@ import RequireAuth from './utils/authRouter'
 
 function App() {
 	axios.defaults.baseURL =
-		process.env.REACT_APP_BASE_URL || 'http://localhost:8082'
+		process.env.REACT_APP_BACKEND_URI || 'https://api.opptak.ntnui.no'
 	axios.defaults.withCredentials = true
 	return (
 		<MantineProvider

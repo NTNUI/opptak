@@ -13,11 +13,9 @@ Add environment variables to an `.env` file in the frontend folder to connect to
 ```sh
 # .env
 
-## URL to the Express.js backend
-REACT_APP_BASE_URL = 'http://localhost:8082'
-
-## Optional variables to use in development
-REACT_APP_MAIN_BOARD_ID = 9
+## Optional environment variables to use in development
+REACT_APP_BACKEND_URI = 'http://localhost:8082'
+REACT_APP_MAIN_BOARD_ID = 9 # dev.api.ntnui.no main board ID
 ```
 
 ## Scripts
