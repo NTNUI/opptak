@@ -92,6 +92,10 @@ const useStyles = createStyles((theme) => ({
 	},
 }))
 
+interface stateType {
+	isOrganizer: boolean
+}
+
 function Navbar() {
 	const { classes } = useStyles()
 	const navigate = useNavigate()
@@ -171,17 +175,19 @@ function Navbar() {
 					>
 						Opptaksstatus
 					</Menu.Item>
-					<Menu.Item
-						icon={<CalendarEvent size={18} />}
-						className={
-							location.pathname === '/admission-period'
-								? classes.active
-								: classes.menuItemBody
-						}
-						onClick={() => navigate('/admission-period')}
-					>
-						Opptaksperiode
-					</Menu.Item>
+					{(location.state as stateType).isOrganizer && (
+						<Menu.Item
+							icon={<CalendarEvent size={18} />}
+							className={
+								location.pathname === '/admission-period'
+									? classes.active
+									: classes.menuItemBody
+							}
+							onClick={() => navigate('/admission-period')}
+						>
+							Opptaksperiode
+						</Menu.Item>
+					)}
 					<Menu.Item
 						icon={<Logout size={18} />}
 						onClick={logOut}
