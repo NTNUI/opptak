@@ -18,6 +18,20 @@ function App() {
 	axios.defaults.baseURL =
 		process.env.REACT_APP_BACKEND_URI || 'https://api.opptak.ntnui.no'
 	axios.defaults.withCredentials = true
+
+	// eslint-disable-next-line no-console
+	console.log(
+		'%cLaget av %cNTNUI Sprint',
+		'font-weight: bold; font-size: 1rem;color: yellow;',
+		'font-weight: bold; padding-bottom: 10px; padding-right: 10px; font-size: 3rem;color: yellow; text-shadow: 3px 3px 0 rgb(217,31,38) , 6px 6px 0 rgb(226,91,14) , 9px 9px 0 green , 12px 12px 0 rgb(5,148,68) , 15px 15px 0 rgb(2,135,206) , 18px 18px 0 rgb(4,77,145) , 21px 21px 0 rgb(42,21,113)'
+	)
+	// eslint-disable-next-line no-console
+	console.log(
+		'%cSnoker rundt du? Det liker vi. Sprint ser etter nye medlemmer.',
+		'font-weight: bold; font-size: 1rem;color: yellow;',
+		''
+	)
+
 	return (
 		<MantineProvider
 			theme={{
