@@ -12,7 +12,6 @@
 	"bugs": {
 		"url": "https://github.com/NTNUI/opptak/issues"
 	},
-	"homepage": "https://github.com/NTNUI/opptak/tree/master/backend#readme",
 	"scripts": {
 		"build": "tsc",
 		"start": "ts-node app.ts",
