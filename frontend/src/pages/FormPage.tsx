@@ -58,7 +58,7 @@ const useStyles = createStyles((theme) => ({
 			margin: '0 0 -3px 0',
 		},
 		'@media (max-width: 700px)': {
-			fontSize: 'large',
+			fontSize: 'x-large',
 			marginBottom: '1rem',
 		},
 	},
@@ -134,7 +134,7 @@ const useStyles = createStyles((theme) => ({
 			margin: '0 0 -3px 0',
 		},
 		'@media (max-width: 700px)': {
-			fontSize: 'large',
+			fontSize: 'medium',
 			marginBottom: '1rem',
 		},
 		a: {
@@ -229,10 +229,13 @@ function FormBox() {
 			) : periodStatus === AdmissionPeriodStatus.upcoming ? (
 				<Box className={classes.closedPeriod}>
 					<h1 className={classes.formTitle}>
-						NTNUI Admin har for tiden ingen opptak
+						Opptaket til NTNUI Admin starter {startDate}!
 					</h1>
 					<p className={classes.closedText}>
-						... men søknadsperioden åpner {startDate}!
+						<div className=''>
+							Les mer om våre utvalg på <a href='https://ntnui.no/opptak/'>ntnui.no</a>
+							!
+						</div>
 					</p>
 				</Box>
 			) : (
@@ -241,9 +244,8 @@ function FormBox() {
 						NTNUI Admin har for tiden ingen opptak
 					</h1>
 					<p className={classes.closedText}>
-						Vi har vanligvis opptak på starten av hvert semester. Leter du etter
-						opptak til en NTNUI gruppe eller lag? Sjekk{' '}
-						<a href='https://medlem.ntnui.no/'>gruppens</a> egen nettside!
+						Leter du etter opptak til en NTNUI gruppe eller et lag? Finn gruppens egen
+						nettside på <a href='https://medlem.ntnui.no/groups'>medlem.ntnui.no</a>!
 					</p>
 				</Box>
 			)}
