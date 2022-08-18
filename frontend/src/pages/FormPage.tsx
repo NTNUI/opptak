@@ -174,7 +174,7 @@ function FormBox() {
 					const parsedEndDate = new Date(admissionPeriod.end_date)
 						.toLocaleDateString('no-No', {
 							month: 'long',
-							day: '2-digit',
+							day: 'numeric',
 							year: 'numeric',
 						})
 						.concat(' 23:59')
@@ -184,7 +184,7 @@ function FormBox() {
 						admissionPeriod.start_date
 					).toLocaleDateString('no-No', {
 						month: 'long',
-						day: '2-digit',
+						day: 'numeric',
 						year: 'numeric',
 					})
 					setStartDate(parsedStartDate)
