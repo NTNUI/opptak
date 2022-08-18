@@ -58,7 +58,7 @@ const getApplicationById = async (
 			.populate<IPopulatedApplicationCommittees>('committees', 'name slug')
 			.populate({
 				path: 'statuses',
-				populate: { path: 'committee', model: 'Committee', select: 'name' },
+				populate: { path: 'committee', model: 'Committee', select: 'name slug' },
 				select: '-__v',
 			})
 			.then((applicationRes) => applicationRes)
