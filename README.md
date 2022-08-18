@@ -1,4 +1,4 @@
-# 📄 NTNUI Admin application form
+# 📄 NTNUI Admin admission form
 
 Semester project in the course [IT2901 Informatics Project II](https://www.ntnu.edu/studies/courses/IT2901/2021), spring 2022 @ Norwegian University of Science and Technology.
 
