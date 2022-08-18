@@ -6,6 +6,7 @@ export interface IStatus {
 	set_by: string | null
 	committee: {
 		name: string
+		slug: string
 		_id: number
 	}
 	updated_date: Date

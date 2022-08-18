@@ -283,7 +283,7 @@ function ApplicationDetailPage() {
 		const statByRel = statuses
 			.map((status) => {
 				// If the status can be edited by the user, it should be shown on the top
-				const isStatusForMainBoard = status.committee.name === 'Hovedstyret'
+				const isStatusForMainBoard = status.committee.slug === 'hovedstyret'
 				if (
 					userCommitteeIds.includes(status.committee._id) ||
 					(isUserInElectionCommittee && isStatusForMainBoard)
