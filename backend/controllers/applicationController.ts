@@ -262,7 +262,7 @@ const getApplications = async (
 		if (sortparam) aggregationPipeline.push(sort)
 
 		// Pagination
-		const LIMIT = 4
+		const LIMIT = 15
 		const startIndex = page ? (Number(page) - 1) * LIMIT : 0
 		const pagination = {
 			$facet: {
