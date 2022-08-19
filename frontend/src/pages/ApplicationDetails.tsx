@@ -160,7 +160,7 @@ const useStyles = createStyles(
 			gap: '1rem',
 		},
 		applicationTextItem: {
-			whiteSpace: 'pre',
+			whiteSpace: 'break-spaces',
 			color: 'white',
 			p: {
 				// Adjusted for icons
