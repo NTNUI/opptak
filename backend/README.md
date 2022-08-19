@@ -22,7 +22,7 @@ Add environment variables to an `.env` file in the backend folder.
 DB_URI = "mongodb://<username>:<password>@<host>:<port>/<database>"
 
 ## Optional development variables
-FRONTEND_URI = "https://localhost:3000"
+FRONTEND_URI = "http://localhost:3000"
 API_URI = "https://dev.api.ntnui.no"
 MAIN_BOARD_ID = 9
 ELECTION_COMMITTEE_ID = 10

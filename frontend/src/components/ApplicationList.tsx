@@ -8,7 +8,6 @@ const useStyles = createStyles((theme) => ({
 		display: 'flex',
 		padding: '0',
 		flexDirection: 'column',
-		gap: '1rem',
 		maxWidth: '100%',
 		'@media (max-width: 600px)': {
 			width: '90%',
@@ -37,7 +36,12 @@ function ApplicationList(applications: ApplicationListProps) {
 	return (
 		<Container className={classes.container}>
 			{applications.applications.map((item: IApplication, idx: number) => (
-				<ApplicationItem key={idx} handleClick={itemClickHandler} {...item} />
+				<ApplicationItem
+					key={idx}
+					handleClick={itemClickHandler}
+					{...item}
+					idx={idx}
+				/>
 			))}
 		</Container>
 	)
