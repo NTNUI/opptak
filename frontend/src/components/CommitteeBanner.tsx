@@ -5,8 +5,8 @@ import { ICommittee } from '../types/types'
 const useStyles = createStyles((theme) => ({
 	banner: {
 		boxSizing: 'border-box',
-		backgroundColor: theme.colors.ntnui_red[9] + '1A',
-		border: '2px solid ' + theme.colors.ntnui_red[9],
+		backgroundColor: theme.colors.orange[5] + '1A',
+		border: '2px solid ' + theme.colors.orange[5],
 		borderRadius: theme.radius.sm,
 		width: '60%',
 		margin: 'auto auto 15px auto',
@@ -31,7 +31,7 @@ const useStyles = createStyles((theme) => ({
 		svg: {
 			gridArea: 'icon',
 			alignSelf: 'center',
-			color: theme.colors.ntnui_red[9],
+			color: theme.colors.orange[5],
 			margin: '0 0 -7px 0',
 		},
 		'@media (max-width: 1200px)': {
