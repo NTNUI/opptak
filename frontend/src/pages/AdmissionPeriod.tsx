@@ -1,4 +1,4 @@
-import { Button, createStyles, Loader } from '@mantine/core'
+import { Button, createStyles, Loader, Text } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useForm } from '@mantine/form'
@@ -255,13 +255,7 @@ function AdmissionPeriod() {
 
 	const admissionPeriodStatusText = isPeriodSet ? (
 		<>
-			Lagret opptaksperiode{' '}
-			{setBy && (
-				<>
-					satt av <i> {setBy}</i>
-				</>
-			)}
-			<br />
+			Lagret opptaksperiode <br />
 			<b>
 				{previousDates[0]?.toLocaleDateString('no-No', {
 					month: '2-digit',
@@ -275,6 +269,11 @@ function AdmissionPeriod() {
 					year: '2-digit',
 				})}
 			</b>
+			{setBy && (
+				<Text color='dimmed' size='sm'>
+					Satt av {setBy}
+				</Text>
+			)}
 		</>
 	) : (
 		<>Det er ikke satt noen opptaksperiode enda.</>
