@@ -6,13 +6,7 @@ import {
 	Select,
 	TextInput,
 } from '@mantine/core'
-import {
-	ChevronDown,
-	Lock,
-	Phone,
-	World,
-	X,
-} from 'tabler-icons-react'
+import { ChevronDown, Lock, Phone, World, X } from 'tabler-icons-react'
 import { useForm } from '@mantine/form'
 import { Notification } from '@mantine/core'
 import countryCodes from '../utils/countryCodes'
@@ -102,7 +96,7 @@ const useStyles = createStyles((theme) => ({
 		textDecoration: 'none',
 		color: theme.colors.ntnui_blue[9],
 	},
-	
+
 	loginErrorRoot: {
 		backgroundColor: theme.colors.ntnui_background[9],
 		borderColor: theme.colors.ntnui_red[9],

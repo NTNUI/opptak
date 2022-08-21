@@ -292,12 +292,41 @@ export function Form() {
 					label={<span className={classes.labelText}>Hva ønsker du å søke?</span>}
 				/>
 			)}
+			<Collapse in={isToMainBoard && form.values.committees.length > 1}>
+				<Textarea
+					classNames={{
+						label: classes.labelText,
+						input: classes.formField,
+						error: classes.textareaError,
+					}}
+					description='Nevn gjerne alder, klasse, studieretning, erfaring og motivasjon'
+					label='Søknadstekst for Hovedstyret'
+					autosize
+					maxRows={10}
+					minRows={3}
+					onBlur={() => form.validateField('main_board_text')}
+					{...form.getInputProps('main_board_text')}
+				/>
+			</Collapse>
+			<Collapse in={form.values.main_board_text.length > 2500}>
+				<div className={classes.textareaBottomLabel}>
+					<p className={classes.textareaCustomError}>
+						{form.errors.main_board_text}
+					</p>
+					<p className={classes.textareaCustomError}>
+						{form.values.main_board_text.length}/2500
+					</p>
+				</div>
+			</Collapse>
 			<Textarea
 				classNames={{
 					label: classes.labelText,
 					input: classes.formField,
 					error: classes.textareaError,
 				}}
+				description={
+					'Nevn gjerne alder, klasse, studieretning, erfaring og motivasjon'
+				}
 				label={
 					form.values.committees.length > 1 && isToMainBoard
 						? 'Søknadstekst for andre utvalg'
@@ -324,31 +353,6 @@ export function Form() {
 					<p className={classes.textareaCustomError}>{form.errors.text}</p>
 					<p className={classes.textareaCustomError}>
 						{form.values.text.length}/2500
-					</p>
-				</div>
-			</Collapse>
-			<Collapse in={isToMainBoard && form.values.committees.length > 1}>
-				<Textarea
-					classNames={{
-						label: classes.labelText,
-						input: classes.formField,
-						error: classes.textareaError,
-					}}
-					label='Søknadstekst for Hovedstyret'
-					autosize
-					maxRows={10}
-					minRows={3}
-					onBlur={() => form.validateField('main_board_text')}
-					{...form.getInputProps('main_board_text')}
-				/>
-			</Collapse>
-			<Collapse in={form.values.main_board_text.length > 2500}>
-				<div className={classes.textareaBottomLabel}>
-					<p className={classes.textareaCustomError}>
-						{form.errors.main_board_text}
-					</p>
-					<p className={classes.textareaCustomError}>
-						{form.values.main_board_text.length}/2500
 					</p>
 				</div>
 			</Collapse>
