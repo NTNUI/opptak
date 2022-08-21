@@ -67,7 +67,7 @@ const putAdmissionPeriod = async (req: RequestWithNtnuiNo, res: Response) => {
 				upsert: true,
 			})
 		) {
-			return res.status(200).json({ message: 'Admission period updated' })
+			return res.status(200).json({ admissionPeriod: update })
 		}
 		return res
 			.status(500)

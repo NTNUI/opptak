@@ -122,6 +122,7 @@ function AdmissionPeriod() {
 	const [differentFromDb, setChanged] = useState<boolean>(false)
 	const [hasError, setHasError] = useState<boolean>(false)
 	const [initialChange, setHasInitialChange] = useState<boolean>(false)
+	const [setBy, setSetBy] = useState<string>('')
 
 	const form = useForm({
 		initialValues: {
@@ -148,6 +149,7 @@ function AdmissionPeriod() {
 					new Date(response.admissionPeriod.start_date),
 					new Date(response.admissionPeriod.end_date),
 				]
+				setSetBy(response.admissionPeriod.set_by)
 				form.setValues({ dateRangeInput: retrievedPeriod })
 				setPreviousDates(retrievedPeriod)
 				setIsPeriodSet(true)
@@ -189,10 +191,12 @@ function AdmissionPeriod() {
 				autoClose: false,
 			})
 			putAdmissionPeriod(admissionPeriod)
-				.then(() => {
+				.then((response) => {
+					console.log(response)
 					setChanged(false)
 					setIsPeriodSet(true)
 					setPreviousDates([start, end])
+					setSetBy(response.admissionPeriod.set_by)
 					notifications.updateNotification(id, {
 						id,
 						loading: false,
@@ -251,7 +255,13 @@ function AdmissionPeriod() {
 
 	const admissionPeriodStatusText = isPeriodSet ? (
 		<>
-			Lagret opptaksperiode: <br />
+			Lagret opptaksperiode{' '}
+			{setBy && (
+				<>
+					satt av <i> {setBy}</i>
+				</>
+			)}
+			<br />
 			<b>
 				{previousDates[0]?.toLocaleDateString('no-No', {
 					month: '2-digit',
