@@ -123,6 +123,7 @@ function AdmissionPeriod() {
 	const [hasError, setHasError] = useState<boolean>(false)
 	const [initialChange, setHasInitialChange] = useState<boolean>(false)
 	const [setBy, setSetBy] = useState<string>('')
+	const [updatedDateValue, setUpdatedDateValue] = useState<Date>(updated_date)
 
 	const form = useForm({
 		initialValues: {
@@ -305,7 +306,12 @@ function AdmissionPeriod() {
 					}}
 					label='Opptaksperiode'
 					placeholder='Velg en tidsperiode'
-					description={setBy && `Satt av ${setBy}`}
+					description={
+						setBy &&
+						`Satt av ${setBy} ${dayjs(updatedDateValue)
+							.locale('nb')
+							.format('D. MMM HH:mm')}`
+					}
 					{...form.getInputProps('dateRangeInput')}
 					onBlur={() => form.validateField('dateRangeInput')}
 				/>
