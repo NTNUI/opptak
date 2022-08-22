@@ -269,11 +269,6 @@ function AdmissionPeriod() {
 					year: '2-digit',
 				})}
 			</b>
-			{setBy && (
-				<Text color='dimmed' size='sm'>
-					Satt av {setBy}
-				</Text>
-			)}
 		</>
 	) : (
 		<>Det er ikke satt noen opptaksperiode enda.</>
@@ -310,6 +305,7 @@ function AdmissionPeriod() {
 					}}
 					label='Opptaksperiode'
 					placeholder='Velg en tidsperiode'
+					description={setBy && `Satt av ${setBy}`}
 					{...form.getInputProps('dateRangeInput')}
 					onBlur={() => form.validateField('dateRangeInput')}
 				/>
