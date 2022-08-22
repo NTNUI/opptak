@@ -57,6 +57,7 @@ const useStyles = createStyles((theme, { statusValue }: IStatusStyleProps) => ({
 function isYellow(value: StatusTypes): boolean {
 	// The following status-types are yellow
 	return (
+		value === StatusTypes.PLANNED_INTERVIEW ||
 		value === StatusTypes.INVITED_TO_INTERVIEW ||
 		value === StatusTypes.OFFER_GIVEN ||
 		value === StatusTypes.INTERVIEW_COMPLETED
