@@ -300,7 +300,7 @@ export function Form() {
 						error: classes.textareaError,
 					}}
 					description='Nevn gjerne alder, klasse, studieretning, erfaring og motivasjon'
-					label='Søknadstekst for Hovedstyret'
+					label='Søknadstekst for Introstyret'
 					autosize
 					maxRows={10}
 					minRows={3}
