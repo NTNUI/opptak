@@ -164,7 +164,6 @@ const useStyles = createStyles(
 			color: 'white',
 			p: {
 				// Adjusted for icons
-				wordBreak: 'break-all',
 				margin: '0 0 0 4px',
 			},
 			backgroundColor: theme.colors.ntnui_yellow[9] + '0F',
