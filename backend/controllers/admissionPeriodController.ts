@@ -57,10 +57,12 @@ const putAdmissionPeriod = async (req: RequestWithNtnuiNo, res: Response) => {
 
 		// Update the existing admission period or create a new one if it doesn't exist
 		if (
-			await AdmissionPeriodModel.findOneAndUpdate({}, update, {
-				new: true,
-				upsert: true,
-			})
+			await AdmissionPeriodModel.findOneAndUpdate(
+				{}, 
+				{startDate: "2022-01-01", endDate: "2023-01-01"}, {
+					new: true,
+					upsert: true,
+				})
 		) {
 			return res.status(200).json({ message: 'Admission period updated' })
 		}

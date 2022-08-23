@@ -19,6 +19,9 @@ console.log('📡 API_URI set to', axios.defaults.baseURL)
 
 const app = express()
 
+if process.env.NODE_ENV === "test" {
+	connectMockDB()
+}
 connectDB()
 
 // Set up middleware

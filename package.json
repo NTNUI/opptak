@@ -1,4 +1,5 @@
 {
+	"type": "module",
 	"name": "ntnui-admission-form-wrapper",
 	"author": {
 		"name": "NTNUI Sprint",
@@ -19,7 +20,7 @@
 		"frontend": "cd frontend && npm run start",
 		"prebackend": "cd backend && npm install",
 		"backend": "cd backend && npx nodemon --exec npx ts-node app.ts",
-		"test": "echo \"Error: no test specified\" && exit 1",
+		"test": "NODE_ENV=test jest",
 		"prettier": "npm install && prettier --check .",
 		"eslint": "npm install && eslint . --ext ts --ext tsx",
 		"check": "npm install && eslint . --ext ts --ext tsx && prettier --check .",
@@ -37,7 +38,10 @@
 		"eslint-plugin-jsx-a11y": "^6.6.1",
 		"eslint-plugin-react": "^7.30.1",
 		"eslint-plugin-react-hooks": "^4.6.0",
+		"jest": "^28.1.3",
+		"mongodb-memory-server": "^8.8.0",
 		"prettier": "^2.7.1",
+		"supertest": "^6.2.4",
 		"typescript": "^4.5.5"
 	}
 }
