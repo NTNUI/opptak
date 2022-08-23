@@ -196,7 +196,7 @@ const getApplications = async (
 		aggregationPipeline.push(populateStatus)
 
 		// Prepare committees query
-		const committeeIds = []
+		let committeeIds = []
 		if (committee) {
 			// Parse query parameter to numbers
 			if (Array.isArray(committee)) {
@@ -205,6 +205,16 @@ const getApplications = async (
 				committeeIds.push(parseInt(committee, 10))
 			}
 		}
+		// Remove disallowed committees
+		committeeIds = committeeIds.filter((id) => {
+			if (
+				id === MAIN_BOARD_ID &&
+				!userCommitteeIds.includes(ELECTION_COMMITTEE_ID)
+			) {
+				return false
+			}
+			return true
+		})
 		// Filter on both status and committees if both query parameters are sent
 		if (status && committee) {
 			const statusForCommittee = {

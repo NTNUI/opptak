@@ -2,6 +2,7 @@ import { MantineTheme } from '@mantine/core'
 import { StatusTypes } from './enums'
 import {
 	Check,
+	ClipboardText,
 	File,
 	PhoneCheck,
 	PhoneIncoming,
@@ -16,6 +17,8 @@ export function getStatusTranslation(status: StatusTypes) {
 	switch (status) {
 		case StatusTypes.PENDING:
 			return 'Ubehandlet'
+		case StatusTypes.PLANNED_INTERVIEW:
+			return 'Planlagt intervju'
 		case StatusTypes.INVITED_TO_INTERVIEW:
 			return 'Invitert til intervju'
 		case StatusTypes.INTERVIEW_DECLINED:
@@ -39,6 +42,8 @@ export function getStatus(status: string) {
 	switch (status) {
 		case 'Pending':
 			return StatusTypes.PENDING
+		case 'Planned interview':
+			return StatusTypes.PLANNED_INTERVIEW
 		case 'Invited to interview':
 			return StatusTypes.INVITED_TO_INTERVIEW
 		case 'Interview declined':
@@ -62,6 +67,8 @@ export function getStatusColor(status: StatusTypes, theme: MantineTheme) {
 	switch (status) {
 		case StatusTypes.PENDING:
 			return theme.colors.ntnui_blue[9]
+		case StatusTypes.PLANNED_INTERVIEW:
+			return theme.colors.ntnui_yellow[9]
 		case StatusTypes.INVITED_TO_INTERVIEW:
 			return theme.colors.ntnui_yellow[9]
 		case StatusTypes.INTERVIEW_DECLINED:
@@ -85,6 +92,8 @@ export function getIconForStatus(status: string) {
 	switch (status) {
 		case StatusTypes.PENDING:
 			return <File size={20} />
+		case StatusTypes.PLANNED_INTERVIEW:
+			return <ClipboardText size={20} />
 		case StatusTypes.INVITED_TO_INTERVIEW:
 			return <PhoneIncoming size={20} />
 		case StatusTypes.INTERVIEW_DECLINED:
