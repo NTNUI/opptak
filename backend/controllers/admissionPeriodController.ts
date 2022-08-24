@@ -61,17 +61,18 @@ const putAdmissionPeriod = async (req: RequestWithNtnuiNo, res: Response) => {
 		}
 
 		// Update the existing admission period or create a new one if it doesn't exist
-		if (
-			await AdmissionPeriodModel.findOneAndUpdate({}, update, {
-				new: true,
-				upsert: true,
-			})
-		) {
-			return res.status(200).json({ admissionPeriod: update })
-		}
-		return res
-			.status(500)
-			.json({ message: 'Something went wrong updating the admission period' })
+		return AdmissionPeriodModel.findOneAndUpdate({}, update, {
+			new: true,
+			upsert: true,
+		})
+			.then((updatedAdmission) =>
+				res.status(200).json({ admissionPeriod: updatedAdmission })
+			)
+			.catch(() =>
+				res
+					.status(500)
+					.json({ message: 'Something went wrong updating the admission period' })
+			)
 	}
 	return res.status(403).json({ message: 'Not authorized' })
 }

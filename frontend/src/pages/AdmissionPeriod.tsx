@@ -123,7 +123,7 @@ function AdmissionPeriod() {
 	const [hasError, setHasError] = useState<boolean>(false)
 	const [initialChange, setHasInitialChange] = useState<boolean>(false)
 	const [setBy, setSetBy] = useState<string>('')
-	const [updatedDateValue, setUpdatedDateValue] = useState<Date>(updated_date)
+	const [updatedDateValue, setUpdatedDateValue] = useState<Date>()
 
 	const form = useForm({
 		initialValues: {
@@ -193,11 +193,11 @@ function AdmissionPeriod() {
 			})
 			putAdmissionPeriod(admissionPeriod)
 				.then((response) => {
-					console.log(response)
 					setChanged(false)
 					setIsPeriodSet(true)
 					setPreviousDates([start, end])
 					setSetBy(response.admissionPeriod.set_by)
+					setUpdatedDateValue(response.admissionPeriod.updated_date)
 					notifications.updateNotification(id, {
 						id,
 						loading: false,
@@ -308,6 +308,7 @@ function AdmissionPeriod() {
 					placeholder='Velg en tidsperiode'
 					description={
 						setBy &&
+						updatedDateValue &&
 						`Satt av ${setBy} ${dayjs(updatedDateValue)
 							.locale('nb')
 							.format('D. MMM HH:mm')}`
