@@ -16,6 +16,7 @@ enum MembershipType {
 
 enum StatusTypes {
 	PENDING = 'Pending',
+	PLANNED_INTERVIEW = 'Planned interview',
 	INVITED_TO_INTERVIEW = 'Invited to interview',
 	INTERVIEW_DECLINED = 'Interview declined',
 	INTERVIEW_COMPLETED = 'Interview completed',
