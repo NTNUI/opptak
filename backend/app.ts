@@ -22,7 +22,15 @@ const app = express()
 connectDB()
 
 // Set up middleware
-app.use(cookiePa,
+app.use(cookieParser())
+app.use(
+	cors({
+		origin: process.env.FRONTEND_URI || [
+			'https://opptak.ntnui.no',
+			'https://medlem.ntnui.no',
+			'https://dev.medlem.ntnui.no',
+		],
+		credentials: true,
 	})
 )
 app.use(express.urlencoded({ extended: true }))
