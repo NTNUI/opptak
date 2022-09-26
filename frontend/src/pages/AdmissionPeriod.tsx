@@ -151,6 +151,7 @@ function AdmissionPeriod() {
 					new Date(response.admissionPeriod.end_date),
 				]
 				setSetBy(response.admissionPeriod.set_by)
+				setUpdatedDateValue(response.admissionPeriod.updated_date)
 				form.setValues({ dateRangeInput: retrievedPeriod })
 				setPreviousDates(retrievedPeriod)
 				setIsPeriodSet(true)
