@@ -1,4 +1,4 @@
-import { Button, createStyles, Loader } from '@mantine/core'
+import { Button, createStyles, Loader, Text } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useForm } from '@mantine/form'
@@ -122,6 +122,8 @@ function AdmissionPeriod() {
 	const [differentFromDb, setChanged] = useState<boolean>(false)
 	const [hasError, setHasError] = useState<boolean>(false)
 	const [initialChange, setHasInitialChange] = useState<boolean>(false)
+	const [setBy, setSetBy] = useState<string>('')
+	const [updatedDateValue, setUpdatedDateValue] = useState<Date>()
 
 	const form = useForm({
 		initialValues: {
@@ -148,6 +150,8 @@ function AdmissionPeriod() {
 					new Date(response.admissionPeriod.start_date),
 					new Date(response.admissionPeriod.end_date),
 				]
+				setSetBy(response.admissionPeriod.set_by)
+				setUpdatedDateValue(response.admissionPeriod.updated_date)
 				form.setValues({ dateRangeInput: retrievedPeriod })
 				setPreviousDates(retrievedPeriod)
 				setIsPeriodSet(true)
@@ -189,10 +193,12 @@ function AdmissionPeriod() {
 				autoClose: false,
 			})
 			putAdmissionPeriod(admissionPeriod)
-				.then(() => {
+				.then((response) => {
 					setChanged(false)
 					setIsPeriodSet(true)
 					setPreviousDates([start, end])
+					setSetBy(response.admissionPeriod.set_by)
+					setUpdatedDateValue(response.admissionPeriod.updated_date)
 					notifications.updateNotification(id, {
 						id,
 						loading: false,
@@ -251,7 +257,7 @@ function AdmissionPeriod() {
 
 	const admissionPeriodStatusText = isPeriodSet ? (
 		<>
-			Lagret opptaksperiode: <br />
+			Lagret opptaksperiode <br />
 			<b>
 				{previousDates[0]?.toLocaleDateString('no-No', {
 					month: '2-digit',
@@ -301,6 +307,13 @@ function AdmissionPeriod() {
 					}}
 					label='Opptaksperiode'
 					placeholder='Velg en tidsperiode'
+					description={
+						setBy &&
+						updatedDateValue &&
+						`Satt av ${setBy} ${dayjs(updatedDateValue)
+							.locale('nb')
+							.format('D. MMM HH:mm')}`
+					}
 					{...form.getInputProps('dateRangeInput')}
 					onBlur={() => form.validateField('dateRangeInput')}
 				/>
