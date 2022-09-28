@@ -13,10 +13,10 @@ const useStyles = createStyles((theme) => ({
 			width: '90%',
 		},
 		'@media (min-width: 600px)': {
-			width: '80%',
+			width: '90%',
 		},
 		'@media (min-width: 1200px)': {
-			width: '70%',
+			width: '90%',
 		},
 	},
 }))

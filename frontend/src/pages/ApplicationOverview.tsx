@@ -19,7 +19,7 @@ const useStyles = createStyles((theme) => ({
 			width: '100%',
 		},
 		'@media (min-width: 500px)': {
-			width: '80%',
+			width: '90%',
 		},
 	},
 	pagination: {

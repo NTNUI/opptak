@@ -147,7 +147,7 @@ const useStyles = createStyles(
 		},
 		statusSection: {
 			gridArea: 'status',
-
+			
 			'> div': {
 				margin: '10px 0 0 0',
 			},
@@ -386,6 +386,7 @@ function ApplicationDetailPage() {
 								statusByRelevancy(application.statuses).map((statusRel, index) => (
 									<StatusInput
 										allowedToChange={!!statusRel.isRelevant}
+										showDescription
 										key={index}
 										{...statusRel.status}
 									/>

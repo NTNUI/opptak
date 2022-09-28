@@ -1,6 +1,7 @@
-import { Box, createStyles } from '@mantine/core'
+import { createStyles, MediaQuery } from '@mantine/core'
 import { useMemo } from 'react'
 import { IApplication, ICommittee } from '../types/types'
+import StatusInput from './StatusInput'
 
 interface IApplicationOverviewStyleProps {
 	idx: number
@@ -10,6 +11,7 @@ const useStyles = createStyles(
 	(theme, { idx }: IApplicationOverviewStyleProps) => ({
 		box: {
 			color: theme.colors.gray[2],
+			textAlign: 'left',
 			border: '0px solid #F8F082',
 			padding: theme.spacing.sm,
 			borderRadius: theme.radius.sm,
@@ -19,7 +21,7 @@ const useStyles = createStyles(
 			flexDirection: 'row',
 			gap: '0.5rem',
 			transition: 'ease-in-out 0.1s',
-			backgroundColor: idx % 2 === 0 ? '#F8F0820F' : 'none',
+			backgroundColor: idx % 2 === 0 ? '#F8F0820F' : 'transparent',
 			'&:hover': {
 				backgroundColor: '#F8F0822D',
 				color: '#F8F082',
@@ -37,20 +39,37 @@ const useStyles = createStyles(
 			fontSize: 'medium',
 			display: 'grid',
 			gap: '1em',
-			gridTemplateColumns: '6fr 10fr 2fr',
+			'@media (max-width: 1200px)': {
+				gridTemplateColumns: '6fr 10fr 10fr',
+			},
+			gridTemplateColumns: '1fr 5fr 5fr 4fr',
 		},
 		nameDiv: {
-			minWidth: '8em',
+			textAlign: 'left',
 			overflow: 'hidden',
 			textOverflow: 'ellipsis',
 		},
 		committeeDiv: {
+			p: {
+				margin: '0',
+				overflow: 'hidden',
+				textOverflow: 'ellipsis',
+			},
+			minWidth: '4rem',
 			borderLeft: '1px solid #F8F082',
 			paddingLeft: '1rem',
-			overflow: 'hidden',
-			textOverflow: 'ellipsis',
+			display: 'flex',
+			alignItems: 'center',
+			gap: '0.5rem',
+			justifyContent: 'space-between',
 		},
-		badgeDiv: {
+		emailDiv: {
+			textOverflow: 'ellipsis',
+			minWidth: '5em',
+			overflow: 'hidden',
+			alignSelf: 'left',
+		},
+		dateBadgeDiv: {
 			display: 'flex',
 			alignContent: 'center',
 			color: theme.colors.ntnui_yellow[9],
@@ -77,7 +96,9 @@ function ApplicationItem({
 	_id,
 	idx,
 	name,
+	email,
 	committees,
+	statuses,
 	submitted_date,
 	handleClick,
 }: IApplicationItem) {
@@ -107,17 +128,38 @@ function ApplicationItem({
 	)
 
 	return (
-		<Box className={classes.box} onClick={() => handleClick(_id)}>
+		<div className={classes.box}>
 			<div className={classes.grid}>
-				<div className={classes.nameDiv}>{name}</div>
-				<div id='committee' className={classes.committeeDiv}>
-					{stringifiedCommittees}
-				</div>
-				<div className={classes.badgeDiv}>
+				<div className={classes.dateBadgeDiv}>
 					<span className={classes.date}>{submittedDate.toUpperCase()}</span>
 				</div>
+				<div onClick={() => handleClick(_id)} className={classes.nameDiv}>
+					{name}
+				</div>
+				<MediaQuery query='(max-width: 1200px)' styles={{ display: 'none' }}>
+					<div className={classes.emailDiv}>{email}</div>
+				</MediaQuery>
+				{statuses.length === 1 ? (
+					<>
+						<MediaQuery query='(max-width: 1200px)' styles={{ display: 'none' }}>
+							<div className={classes.committeeDiv}>
+								<p>{committees[0].name}</p>
+								<StatusInput {...statuses[0]} allowedToChange={true} />
+							</div>
+						</MediaQuery>
+						<MediaQuery query='(min-width: 1200px)' styles={{ display: 'none' }}>
+							<div id='committee' className={classes.committeeDiv}>
+								<p>{stringifiedCommittees}</p>
+							</div>
+						</MediaQuery>
+					</>
+				) : (
+					<div id='committee' className={classes.committeeDiv}>
+						<p>{stringifiedCommittees}</p>
+					</div>
+				)}
 			</div>
-		</Box>
+		</div>
 	)
 }
 

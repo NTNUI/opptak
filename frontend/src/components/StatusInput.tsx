@@ -24,6 +24,7 @@ export interface IStatusInputProps {
 	}
 	updated_date: Date
 	allowedToChange: boolean
+	showDescription?: boolean
 }
 
 interface IStatusStyleProps {
@@ -43,6 +44,9 @@ const useStyles = createStyles((theme, { statusValue }: IStatusStyleProps) => ({
 			opacity: 1,
 			backgroundColor: getStatusColor(statusValue, theme),
 			color: isYellow(statusValue) ? 'black' : 'white',
+		},
+		':focus': {
+			border: `1px solid ${getStatusColor(statusValue, theme)}`,
 		},
 	},
 	rightSection: {
@@ -71,6 +75,7 @@ function StatusInput({
 	committee,
 	updated_date,
 	allowedToChange,
+	showDescription,
 }: IStatusInputProps) {
 	const [statusValue, setStatusValue] = useState<StatusTypes>(value)
 	const [setByValue, setSetByValue] = useState<string | null>(set_by)
@@ -135,38 +140,37 @@ function StatusInput({
 	)
 
 	return (
-		<>
-			<Select
-				label={committee.name}
-				description={
-					setByValue &&
-					`Satt av ${setByValue} ${dayjs(updatedDateValue)
-						.locale('nb')
-						.format('D. MMM HH:mm')}`
-				}
-				disabled={!allowedToChange || isLoading}
-				placeholder='Pick one'
-				rightSection={
-					allowedToChange ? <ChevronDown size={20} /> : <ChevronDown size={0} />
-				}
-				rightSectionWidth={40}
-				defaultValue={statusValue}
-				value={statusValue}
-				itemComponent={SelectItem}
-				icon={getIconForStatus(statusValue)}
-				classNames={{
-					label: classes.label,
-					icon: classes.icon,
-					input: classes.input,
-					rightSection: classes.rightSection,
-				}}
-				onChange={(e) => {
-					setStatusValue(e as StatusTypes)
-					postStatus(e as StatusTypes)
-				}}
-				data={StatusOptions()}
-			/>
-		</>
+		<Select
+			label={committee.name}
+			description={
+				showDescription &&
+				setByValue &&
+				`Satt av ${setByValue} ${dayjs(updatedDateValue)
+					.locale('nb')
+					.format('D. MMM HH:mm')}`
+			}
+			disabled={!allowedToChange || isLoading}
+			placeholder='Pick one'
+			rightSection={
+				allowedToChange ? <ChevronDown size={20} /> : <ChevronDown size={0} />
+			}
+			rightSectionWidth={40}
+			defaultValue={statusValue}
+			value={statusValue}
+			itemComponent={SelectItem}
+			icon={getIconForStatus(statusValue)}
+			classNames={{
+				label: classes.label,
+				icon: classes.icon,
+				input: classes.input,
+				rightSection: classes.rightSection,
+			}}
+			onChange={(e) => {
+				setStatusValue(e as StatusTypes)
+				postStatus(e as StatusTypes)
+			}}
+			data={StatusOptions()}
+		/>
 	)
 }
 
