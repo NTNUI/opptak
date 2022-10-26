@@ -218,7 +218,6 @@ function FilterSearch({ setFilter }: FilterSearchProps) {
 				<Input
 					classNames={{
 						wrapper: classes.searchInputRoot,
-						defaultVariant: classes.searchInput,
 						input: classes.searchInputField,
 						withIcon: classes.withIcon,
 					}}

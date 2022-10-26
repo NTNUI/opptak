@@ -1,5 +1,5 @@
 import { Container, createStyles, Loader } from '@mantine/core'
-import { useNotifications } from '@mantine/notifications'
+import { useNotifications, showNotification } from '@mantine/notifications'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { AlertTriangle, X } from 'tabler-icons-react'
@@ -55,7 +55,7 @@ const useStyles = createStyles((theme) => ({
 		padding: '0.75rem 1.25rem',
 		borderRadius: theme.radius.sm,
 		whiteSpace: 'nowrap',
-		fontWeight: '300',
+		fontWeight: 300,
 		fontSize: 'medium',
 		display: 'flex',
 		justifyContent: 'space-between',
@@ -70,7 +70,7 @@ const useStyles = createStyles((theme) => ({
 		},
 	},
 	date: {
-		fontWeight: '600',
+		fontWeight: 600,
 	},
 	loader: {
 		margin: '2rem auto',
@@ -168,7 +168,7 @@ function AdmissionStatus() {
 				if (error.response.status === 401) {
 					navigate('/login')
 				} else {
-					committeeNotification.showNotification({
+					showNotification({
 						title: 'Det skjedde en feil!',
 						message: 'Det skjedde en uforutsett feil.',
 						color: 'red',

@@ -19,14 +19,14 @@ const NtnuiInfoTooltip = (label: JSX.Element) => {
 	return (
 		<Tooltip
 			position='top'
-			allowPointerEvents
+			events={{ hover: true, focus: true, touch: true }}
 			className={classes.tooltip}
-			classNames={{ body: classes.tooltip }}
+			classNames={{ tooltip: classes.tooltip }}
 			color='dark'
 			width={250}
 			transition='pop'
 			label={label}
-			wrapLines
+			multiline
 		>
 			<InfoCircle size={16} />
 		</Tooltip>

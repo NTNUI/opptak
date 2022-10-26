@@ -128,20 +128,20 @@ function Navbar() {
 			<MediaQuery largerThan='xs' styles={{ display: 'none' }}>
 				<Menu
 					opened={opened}
-					gutter={13}
+					offset={13}
 					transition='scale-y'
 					transitionDuration={100}
-					transitionTimingFunction='ease'
 					shadow='xl'
 					onOpen={handlers.open}
 					onClose={handlers.close}
-					control={<Burger opened={opened} color='white' />}
-					className={classes.menu}
 					classNames={{
-						body: classes.menuBody,
+						dropdown: classes.menuBody,
 						item: classes.menuItemBody,
 					}}
 				>
+					<Menu.Target>
+						<Burger className={classes.menu} opened={opened} color='white' />
+					</Menu.Target>
 					<Menu.Item
 						icon={<Home size={18} />}
 						className={

@@ -1,5 +1,5 @@
 import { createStyles, Group, Select } from '@mantine/core'
-import { useNotifications } from '@mantine/notifications'
+import { useNotifications, showNotification } from '@mantine/notifications'
 import axios from 'axios'
 import dayjs from 'dayjs'
 import { forwardRef } from 'react'
@@ -103,7 +103,7 @@ function StatusInput({
 				})
 				.catch((err) => {
 					setIsLoading(false)
-					notification.showNotification({
+					showNotification({
 						title: 'Kunne ikke endre status!',
 						message:
 							'En feil oppstod. Ta kontakt med sprint@ntnui.no dersom problemet vedvarer',

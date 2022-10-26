@@ -40,12 +40,6 @@ const useStyles = createStyles((theme) => ({
 			fontSize: theme.fontSizes.md,
 		},
 	},
-	pagintationActive: {
-		backgroundColor: theme.colors.ntnui_blue[9],
-		'&:hover': {
-			backgroundColor: theme.colors.ntnui_blue[9],
-		},
-	},
 }))
 
 function ApplicationOverview() {
@@ -94,7 +88,6 @@ function ApplicationOverview() {
 				className={classes.pagination}
 				classNames={{
 					item: classes.paginationItems,
-					active: classes.pagintationActive,
 				}}
 				total={numberOfPages}
 				noWrap

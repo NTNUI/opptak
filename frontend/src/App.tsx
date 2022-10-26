@@ -18,6 +18,7 @@ function App() {
 	axios.defaults.baseURL =
 		process.env.REACT_APP_BACKEND_URI || 'https://api.opptak.ntnui.no'
 	axios.defaults.withCredentials = true
+	console.log(axios.defaults.baseURL)
 
 	// eslint-disable-next-line no-console
 	console.log(

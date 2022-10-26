@@ -1,5 +1,5 @@
 import { createStyles, Switch } from '@mantine/core'
-import { useNotifications } from '@mantine/notifications'
+import { useNotifications, showNotification } from '@mantine/notifications'
 import { ChangeEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AlertTriangle } from 'tabler-icons-react'
@@ -13,7 +13,7 @@ const useStyles = createStyles((theme) => ({
 		padding: '0.75rem 1.25rem',
 		borderRadius: theme.radius.sm,
 		whiteSpace: 'nowrap',
-		fontWeight: '300',
+		fontWeight: 300,
 		fontSize: 'medium',
 		display: 'flex',
 		justifyContent: 'space-between',
@@ -56,7 +56,7 @@ function CommitteeSwitch({ name, accepts_admissions, slug }: ICommittee) {
 			if (error.response.status === 401) {
 				navigate('/login')
 			} else {
-				committeeNotification.showNotification({
+				showNotification({
 					title: 'Det skjedde en feil!',
 					message:
 						'Last inn siden på nytt og prøv igjen. Ta kontakt med sprint@ntnui.no dersom problemet vedvarer',

@@ -10,7 +10,7 @@ import {
 import { useForm } from '@mantine/form'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
-import { useNotifications } from '@mantine/notifications'
+import { useNotifications, showNotification, updateNotification } from '@mantine/notifications'
 import { Check, ChevronDown, X } from 'tabler-icons-react'
 import { ICommittee } from '../types/types'
 import { REACT_APP_MAIN_BOARD_ID } from '../utils/constants'
@@ -32,7 +32,6 @@ interface ICommitteeInSelect {
 const useStyles = createStyles((theme) => ({
 	labelText: {
 		fontSize: '1rem',
-		fontWeight: 'italic',
 		color: 'white',
 	},
 	form: {
@@ -103,7 +102,7 @@ export function Form() {
 				})
 				.catch((err) => {
 					setCommitteesFailed(true)
-					committeeNotification.showNotification({
+					showNotification({
 						title: 'Kunne ikke laste inn kommitteer!',
 						message:
 							'Last inn siden på nytt og prøv igjen. Ta kontakt med sprint@ntnui.no dersom problemet vedvarer',
@@ -117,7 +116,7 @@ export function Form() {
 
 	const submitForm = (values: ISubmissionApplication) => {
 		setIsLoading(true)
-		const id = notifications.showNotification({
+		showNotification({
 			id: 'form-notification',
 			title: 'Sender søknad',
 			message: '',
@@ -136,8 +135,8 @@ export function Form() {
 			.then((response) => {
 				setIsLoading(false)
 				form.reset()
-				notifications.updateNotification(id, {
-					id,
+				updateNotification({
+					id: 'form-notification',
 					loading: false,
 					color: 'green',
 					icon: <Check size={18} />,
@@ -148,8 +147,8 @@ export function Form() {
 			})
 			.catch((err) => {
 				setIsLoading(false)
-				notifications.updateNotification(id, {
-					id,
+				updateNotification({
+					id: 'form-notification',
 					loading: false,
 					color: 'red',
 					icon: <X size={18} />,
