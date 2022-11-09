@@ -47,7 +47,7 @@ const putStatus = async (
 			status.value = req.body.value
 			status.set_by = `${user.first_name} ${user.last_name}`
 			// Save status
-			return status
+			return await status
 				.save()
 				.then((newStatus) =>
 					res.status(200).json({

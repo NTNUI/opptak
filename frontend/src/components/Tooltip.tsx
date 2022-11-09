@@ -1,4 +1,5 @@
 import { createStyles, Tooltip } from '@mantine/core'
+import { forwardRef } from 'react'
 import { InfoCircle } from 'tabler-icons-react'
 
 const useStyles = createStyles(() => ({
@@ -19,7 +20,6 @@ const NtnuiInfoTooltip = (label: JSX.Element) => {
 	return (
 		<Tooltip
 			position='top'
-			events={{ hover: true, focus: true, touch: true }}
 			className={classes.tooltip}
 			classNames={{ tooltip: classes.tooltip }}
 			color='dark'
@@ -27,10 +27,17 @@ const NtnuiInfoTooltip = (label: JSX.Element) => {
 			transition='pop'
 			label={label}
 			multiline
-		>
-			<InfoCircle size={16} />
-		</Tooltip>
+			children={<ReferencedInfoCircle />}
+		/>
 	)
 }
+
+const ReferencedInfoCircle = forwardRef<HTMLDivElement>((props, ref) => {
+	return (
+		<div ref={ref} {...props}>
+			<InfoCircle size={16} />
+		</div>
+	)
+})
 
 export default NtnuiInfoTooltip

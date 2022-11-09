@@ -43,7 +43,7 @@ async function acceptAdmissions(
 			// Toggle accepts_admissions for a committee
 			committee.accepts_admissions = !committee.accepts_admissions
 
-			return committee
+			return await committee
 				.save()
 				.then(() =>
 					res.status(200).json({
