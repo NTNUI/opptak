@@ -91,6 +91,7 @@ function ApplicationOverview() {
 				}}
 				total={numberOfPages}
 				noWrap
+				disabled={applications.length === 0}
 				page={currentPage}
 				onChange={setCurrentPage}
 			/>
