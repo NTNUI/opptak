@@ -1,5 +1,5 @@
 import { createStyles, Switch } from '@mantine/core'
-import { useNotifications, showNotification } from '@mantine/notifications'
+import { showNotification } from '@mantine/notifications'
 import { ChangeEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AlertTriangle } from 'tabler-icons-react'
@@ -21,13 +21,12 @@ const useStyles = createStyles((theme) => ({
 		boxShadow: '0rem 0.2rem 0.4rem ' + theme.colors.dark[7],
 	},
 	switch: {
-		input: {
-			background: theme.colors.ntnui_red[9],
-			border: 'none',
-			'&:checked': {
-				background: theme.colors.ntnui_green[9],
-			},
-		},
+		backgroundColor: theme.colors.ntnui_red[9],
+		border: 'none',
+		'&:checked': {
+			backgroundColor: theme.colors.ntnui_green[9],
+		}
+
 	},
 }))
 
@@ -36,7 +35,6 @@ function CommitteeSwitch({ name, accepts_admissions, slug }: ICommittee) {
 	let navigate = useNavigate()
 	const [checked, setChecked] = useState<boolean>(accepts_admissions)
 	const [switchStatus, setSwitchStatus] = useState<boolean>(false)
-	const committeeNotification = useNotifications()
 
 	/**
 	 * On toggle, check input value and compare it to value on server
@@ -57,6 +55,7 @@ function CommitteeSwitch({ name, accepts_admissions, slug }: ICommittee) {
 				navigate('/login')
 			} else {
 				showNotification({
+					id: 'toggle-committee-failed',
 					title: 'Det skjedde en feil!',
 					message:
 						'Last inn siden på nytt og prøv igjen. Ta kontakt med sprint@ntnui.no dersom problemet vedvarer',
@@ -64,6 +63,7 @@ function CommitteeSwitch({ name, accepts_admissions, slug }: ICommittee) {
 					autoClose: false,
 					icon: <AlertTriangle size={18} />,
 				})
+				setChecked(accepts_admissions)
 			}
 		}
 	}
@@ -72,8 +72,9 @@ function CommitteeSwitch({ name, accepts_admissions, slug }: ICommittee) {
 		<div className={classes.committees}>
 			<div>{name}</div>
 			<Switch
-				className={classes.switch}
+				classNames={{ track: classes.switch }}
 				checked={checked}
+				color={'ntnui_green.9'}
 				onChange={(event) => handleToggle(event)}
 				size='md'
 				radius='lg'

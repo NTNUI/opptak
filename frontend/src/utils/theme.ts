@@ -13,7 +13,7 @@ const colors: Record<string, Tuple<string, 10>> = {
 	// 	'#13161f',
 	// 	'#10131a',
 	// ],
-	ntnui_yellow: [
+	'ntnui_yellow': [
 		'#f1edc8',
 		'#f2edc1',
 		'#f3eeb9',
@@ -25,7 +25,7 @@ const colors: Record<string, Tuple<string, 10>> = {
 		'#f7f08a',
 		'#f8f082',
 	],
-	ntnui_green: [
+	'ntnui_green': [
 		'#d6f9db',
 		'#c4f1ca',
 		'#b3e9b9',
@@ -37,7 +37,7 @@ const colors: Record<string, Tuple<string, 10>> = {
 		'#47b550',
 		'#2fac3d',
 	],
-	ntnui_red: [
+	'ntnui_red': [
 		'#b59191',
 		'#bc8888',
 		'#c37f7e',
@@ -49,7 +49,7 @@ const colors: Record<string, Tuple<string, 10>> = {
 		'#d93e3c',
 		'#da2f2f',
 	],
-	ntnui_blue: [
+	'ntnui_blue': [
 		'#c9d7ff',
 		'#baccff',
 		'#abc0ff',
@@ -61,7 +61,7 @@ const colors: Record<string, Tuple<string, 10>> = {
 		'#4e79ff',
 		'#3b6dff',
 	],
-	ntnui_background: [
+	'ntnui_background': [
 		'#3a3e46',
 		'#363b43',
 		'#333740',
