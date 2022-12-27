@@ -11,10 +11,7 @@ import {
 } from '../services/Applications'
 import { IAdmissionPeriod } from '../types/types'
 import dayjs from 'dayjs'
-import {
-	showNotification,
-	updateNotification,
-} from '@mantine/notifications'
+import { showNotification, updateNotification } from '@mantine/notifications'
 
 const useStyles = createStyles((theme) => ({
 	pageWrapper: {

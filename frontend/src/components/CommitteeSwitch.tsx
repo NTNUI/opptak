@@ -25,8 +25,7 @@ const useStyles = createStyles((theme) => ({
 		border: 'none',
 		'&:checked': {
 			backgroundColor: theme.colors.ntnui_green[9],
-		}
-
+		},
 	},
 }))
 

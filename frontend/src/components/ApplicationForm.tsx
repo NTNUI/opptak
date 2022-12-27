@@ -10,10 +10,7 @@ import {
 import { useForm } from '@mantine/form'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
-import {
-	showNotification,
-	updateNotification,
-} from '@mantine/notifications'
+import { showNotification, updateNotification } from '@mantine/notifications'
 import { Check, ChevronDown, X } from 'tabler-icons-react'
 import { ICommittee } from '../types/types'
 import { REACT_APP_MAIN_BOARD_ID } from '../utils/constants'
@@ -89,14 +86,13 @@ interface ICommitteeInSelect {
 }
 
 interface IFormProps {
-	committees: ICommittee[] | null,
+	committees: ICommittee[] | null
 }
 
 export function Form({ committees }: IFormProps) {
 	const { classes } = useStyles()
 	const [isToMainBoard, setIsToMainBoard] = useState<boolean>(false)
 	const [isLoading, setIsLoading] = useState<boolean>(false)
-
 
 	const submitForm = (values: ISubmissionApplication) => {
 		setIsLoading(true)
@@ -143,7 +139,9 @@ export function Form({ committees }: IFormProps) {
 			})
 	}
 
-	const mapCommitteeToSelect = (committees: ICommittee[]): ICommitteeInSelect[] => {
+	const mapCommitteeToSelect = (
+		committees: ICommittee[]
+	): ICommitteeInSelect[] => {
 		return committees
 			.filter((committee: ICommittee) => {
 				return committee.slug !== 'valgkomiteen'
