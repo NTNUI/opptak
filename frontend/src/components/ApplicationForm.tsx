@@ -10,7 +10,10 @@ import {
 import { useForm } from '@mantine/form'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
-import { useNotifications, showNotification, updateNotification } from '@mantine/notifications'
+import {
+	showNotification,
+	updateNotification,
+} from '@mantine/notifications'
 import { Check, ChevronDown, X } from 'tabler-icons-react'
 import { ICommittee } from '../types/types'
 import { REACT_APP_MAIN_BOARD_ID } from '../utils/constants'
@@ -22,11 +25,6 @@ interface ISubmissionApplication {
 	text: string
 	main_board_text: string
 	committees: string[]
-}
-
-interface ICommitteeInSelect {
-	value: string
-	label: string
 }
 
 const useStyles = createStyles((theme) => ({
@@ -84,35 +82,21 @@ const useStyles = createStyles((theme) => ({
 	},
 }))
 
-export function Form() {
+interface ICommitteeInSelect {
+	value: string
+	label: string
+	disabled?: boolean
+}
+
+interface IFormProps {
+	committees: ICommittee[] | null,
+}
+
+export function Form({ committees }: IFormProps) {
 	const { classes } = useStyles()
-	const [committees, setCommittees] = useState<ICommitteeInSelect[]>([])
-	const [committeesFailed, setCommitteesFailed] = useState<boolean>(false)
 	const [isToMainBoard, setIsToMainBoard] = useState<boolean>(false)
 	const [isLoading, setIsLoading] = useState<boolean>(false)
-	const notifications = useNotifications()
-	const committeeNotification = useNotifications()
 
-	useEffect(() => {
-		if (!committeesFailed) {
-			axios
-				.get('/committees')
-				.then((res) => {
-					setCommittees(mapCommitteeToSelect(res.data))
-				})
-				.catch((err) => {
-					setCommitteesFailed(true)
-					showNotification({
-						title: 'Kunne ikke laste inn kommitteer!',
-						message:
-							'Last inn siden på nytt og prøv igjen. Ta kontakt med sprint@ntnui.no dersom problemet vedvarer',
-						color: 'red',
-						autoClose: false,
-						icon: <X size={18} />,
-					})
-				})
-		}
-	}, [committeeNotification, committeesFailed])
 
 	const submitForm = (values: ISubmissionApplication) => {
 		setIsLoading(true)
@@ -159,7 +143,7 @@ export function Form() {
 			})
 	}
 
-	const mapCommitteeToSelect = (committees: ICommittee[]) => {
+	const mapCommitteeToSelect = (committees: ICommittee[]): ICommitteeInSelect[] => {
 		return committees
 			.filter((committee: ICommittee) => {
 				return committee.slug !== 'valgkomiteen'
@@ -266,9 +250,9 @@ export function Form() {
 				onBlur={() => form.validateField('phone_number')}
 				{...form.getInputProps('phone_number')}
 			/>
-			{!committeesFailed ? (
+			{committees !== null ? (
 				<MultiSelect
-					data={committees}
+					data={mapCommitteeToSelect(committees)}
 					required
 					searchable
 					rightSection={<ChevronDown size={14} />}
@@ -282,7 +266,7 @@ export function Form() {
 				/>
 			) : (
 				<MultiSelect
-					data={committees}
+					data={[]}
 					required
 					disabled
 					icon={<X size={18} />}

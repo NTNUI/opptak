@@ -1,10 +1,13 @@
 import { Box, Button, createStyles, Loader } from '@mantine/core'
-import { FileText, Login } from 'tabler-icons-react'
+import { FileText, Login, X } from 'tabler-icons-react'
 import { Form } from '../components/ApplicationForm'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { getAdmissionPeriod } from '../services/Applications'
 import { AdmissionPeriodStatus } from '../utils/enums'
+import { showNotification } from '@mantine/notifications'
+import axios from 'axios'
+import { ICommittee } from '../types/types'
 
 const useStyles = createStyles((theme) => ({
 	formTitleAndBodyWrapper: {
@@ -162,6 +165,9 @@ function FormBox() {
 	const [endDate, setEndDate] = useState<string>('')
 	let navigate = useNavigate()
 
+	// Retrieve committees
+	const [committees, setCommittees] = useState<ICommittee[]>([])
+
 	useEffect(() => {
 		setIsLoading(true)
 		const getApplicationPeriodActiveAsync = async () => {
@@ -179,6 +185,23 @@ function FormBox() {
 						})
 						.concat(' 23:59')
 					setEndDate(parsedEndDate)
+					// Retrieve committees
+					await axios
+						.get('/committees')
+						.then((res) => {
+							setCommittees(res.data)
+						})
+						.catch((err) => {
+							showNotification({
+								id: 'committees-failed',
+								title: 'Kunne ikke laste inn kommitteer!',
+								message:
+									'Last inn siden på nytt og prøv igjen. Ta kontakt med sprint@ntnui.no dersom problemet vedvarer',
+								color: 'red',
+								autoClose: false,
+								icon: <X size={18} />,
+							})
+						})
 				} else if (response.admissionStatus === AdmissionPeriodStatus.upcoming) {
 					const parsedStartDate = new Date(
 						admissionPeriod.start_date
@@ -224,7 +247,7 @@ function FormBox() {
 					{endDate && (
 						<p className={classes.endOfSearchPeriodText}>Søknadsfrist: {endDate}</p>
 					)}
-					<Form />
+					<Form committees={committees} />
 				</Box>
 			) : periodStatus === AdmissionPeriodStatus.upcoming ? (
 				<Box className={classes.closedPeriod}>
