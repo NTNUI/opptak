@@ -1,4 +1,4 @@
-import { Button, createStyles, Loader, Text } from '@mantine/core'
+import { Button, createStyles, Loader } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useForm } from '@mantine/form'
@@ -11,7 +11,10 @@ import {
 } from '../services/Applications'
 import { IAdmissionPeriod } from '../types/types'
 import dayjs from 'dayjs'
-import { useNotifications, showNotification, updateNotification } from '@mantine/notifications'
+import {
+	showNotification,
+	updateNotification,
+} from '@mantine/notifications'
 
 const useStyles = createStyles((theme) => ({
 	pageWrapper: {
@@ -108,7 +111,6 @@ function AdmissionPeriod() {
 	const { classes } = useStyles()
 	const navigate = useNavigate()
 	const location = useLocation()
-	const notifications = useNotifications()
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	// Has period been set in the db before
 	const [isPeriodSet, setIsPeriodSet] = useState<boolean>(false)

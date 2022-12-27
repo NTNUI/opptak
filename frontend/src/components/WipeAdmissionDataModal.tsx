@@ -1,7 +1,11 @@
 import { Box, Button, createStyles, TextInput } from '@mantine/core'
 import { Modal } from '@mantine/core'
 import { useForm } from '@mantine/form'
-import { useNotifications, showNotification, updateNotification } from '@mantine/notifications'
+import {
+	useNotifications,
+	showNotification,
+	updateNotification,
+} from '@mantine/notifications'
 import { Check, Trash, X } from 'tabler-icons-react'
 import { wipeApplicationData } from '../services/Applications'
 
@@ -100,7 +104,7 @@ function WipeModal({ opened, setOpened }: IWipeModal) {
 	const handleWipeApplicationData = async () => {
 		if (form.validate().hasErrors) return
 		// Wipe app data
-		const notificationId = showNotification({
+		showNotification({
 			id: 'wipe-notification',
 			title: 'Sletter opptaksdata...',
 			message: '',
