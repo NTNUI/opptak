@@ -1,5 +1,5 @@
 import { Container, createStyles, Loader } from '@mantine/core'
-import { useNotifications, showNotification } from '@mantine/notifications'
+import { showNotification } from '@mantine/notifications'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { AlertTriangle, X } from 'tabler-icons-react'
@@ -114,7 +114,6 @@ function AdmissionStatus() {
 	const [periodIsMissing, setPeriodIsMissing] = useState<boolean>(false)
 	const [isError, setIsError] = useState<boolean>(false)
 	const [errorMessage, setErrorMessage] = useState('')
-	const committeeNotification = useNotifications()
 
 	function formatDate(dateString: string) {
 		const date = new Date(dateString)
