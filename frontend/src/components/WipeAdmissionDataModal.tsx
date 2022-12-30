@@ -1,11 +1,7 @@
 import { Box, Button, createStyles, TextInput } from '@mantine/core'
 import { Modal } from '@mantine/core'
 import { useForm } from '@mantine/form'
-import {
-	useNotifications,
-	showNotification,
-	updateNotification,
-} from '@mantine/notifications'
+import { showNotification, updateNotification } from '@mantine/notifications'
 import { Check, Trash, X } from 'tabler-icons-react'
 import { wipeApplicationData } from '../services/Applications'
 
@@ -88,7 +84,6 @@ const useStyles = createStyles((theme) => ({
 
 function WipeModal({ opened, setOpened }: IWipeModal) {
 	const { classes } = useStyles()
-	const notifications = useNotifications()
 
 	// Validate input
 	const form = useForm({
