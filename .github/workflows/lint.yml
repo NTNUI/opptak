@@ -40,3 +40,10 @@ jobs:
 
    - name: Prettier
      run: npm run prettier
+
+   - name: Test backend
+     run: cd backend && npm run test && cd ..
+  
+   - name: Test frontend
+     run: cd frontend && npm run test && cd ..
+     
