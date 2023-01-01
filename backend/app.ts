@@ -19,9 +19,6 @@ console.log('📡 API_URI set to', axios.defaults.baseURL)
 
 const app = express()
 
-if process.env.NODE_ENV === "test" {
-	connectMockDB()
-}
 connectDB()
 
 // Set up middleware
@@ -51,4 +48,6 @@ app.use(errorHandler)
 
 const port = process.env.PORT || 8082
 
-app.listen(port, () => console.log(`🍑 Express.js app running on port ${port}`))
+process.env.NODE_ENV !== "test" && app.listen(port, () => console.log(`🍑 Express.js app running on port ${port}`))
+
+export default app;

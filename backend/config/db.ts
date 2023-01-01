@@ -1,18 +1,18 @@
 /* eslint-disable no-console */
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
-import {MongoMemoryServer} from 'mongo-memory-server';
 
+import mockDb from "./mockDb"
 
 dotenv.config()
 
 let db = process.env.DB_URI || ''
 
 const connectDB = async () => {
-	if process.env.NODE_ENV === 'test' {
-		console.log('Using test server')
-		const mongod = await MongoMemoryServer.create();
-		db = mongod.getUri();
+	if (process.env.NODE_ENV === 'test') {
+		await mockDb.connect()
+		console.log('🔨 In-memory test database connected')
+		return
 	}
 
 	try {
@@ -22,10 +22,6 @@ const connectDB = async () => {
 		console.error(err.message)
 		process.exit(1)
 	}
-}
-
-export const connectMockDB = async () => {
-
 }
 
 export default connectDB
