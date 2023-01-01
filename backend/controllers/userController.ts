@@ -1,7 +1,7 @@
 import { NextFunction, Response } from 'express'
 import { UnauthorizedUserError } from 'ntnui-tools/customError'
-import { RequestWithNtnuiNo } from '../utils/request'
-import { UserModel } from '../models/User'
+import { RequestWithNtnuiNo } from 'utils/request'
+import { UserModel } from 'models/User'
 
 const getUserCommittees = async (
 	req: RequestWithNtnuiNo,

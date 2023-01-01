@@ -2,8 +2,8 @@ import { Button, createStyles } from '@mantine/core'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'tabler-icons-react'
-import LoginForm from '../components/LoginForm'
-import { verifyToken } from '../services/Auth'
+import LoginForm from 'components/LoginForm'
+import { verifyToken } from 'services/Auth'
 
 const useStyles = createStyles((theme) => ({
 	backButton: {

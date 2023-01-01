@@ -3,8 +3,8 @@ import { showNotification } from '@mantine/notifications'
 import { ChangeEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AlertTriangle } from 'tabler-icons-react'
-import { toggleAcceptsAdmissions } from '../services/Committees'
-import { ICommittee } from '../types/types'
+import { toggleAcceptsAdmissions } from 'services/Committees'
+import { ICommittee } from 'types/types'
 
 const useStyles = createStyles((theme) => ({
 	committees: {

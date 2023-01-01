@@ -9,11 +9,11 @@ import {
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { CalendarEvent, FileText, Trash, Users } from 'tabler-icons-react'
-import { getAdmissionPeriod } from '../services/Applications'
-import { IUserProfile, getUserProfile } from '../services/User'
+import { getAdmissionPeriod } from 'services/Applications'
+import { IUserProfile, getUserProfile } from 'services/User'
 import dayjs from 'dayjs'
-import WipeModal from '../components/WipeAdmissionDataModal'
-import { AdmissionPeriodStatus } from '../utils/enums'
+import WipeModal from 'components/WipeAdmissionDataModal'
+import { AdmissionPeriodStatus } from 'utils/enums'
 require('dayjs/locale/nb')
 
 const useStyles = createStyles((theme) => ({

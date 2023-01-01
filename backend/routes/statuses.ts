@@ -1,6 +1,6 @@
 import express from 'express'
-import putStatus from '../controllers/statusController'
-import authorization from '../utils/authorizationMiddleware'
+import putStatus from 'controllers/statusController'
+import authorization from 'utils/authorizationMiddleware'
 
 const statusRouter = express.Router()
 

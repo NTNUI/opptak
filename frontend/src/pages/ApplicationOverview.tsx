@@ -1,9 +1,9 @@
 import { createStyles, Loader, Pagination } from '@mantine/core'
 import { useEffect, useState } from 'react'
-import ApplicationList from '../components/ApplicationList'
-import Filter from '../components/FilterSearch'
-import { IApplication } from '../types/types'
-import { getApplications } from '../services/Applications'
+import ApplicationList from 'components/ApplicationList'
+import Filter from 'components/FilterSearch'
+import { IApplication } from 'types/types'
+import { getApplications } from 'services/Applications'
 import { useNavigate } from 'react-router-dom'
 
 const useStyles = createStyles((theme) => ({

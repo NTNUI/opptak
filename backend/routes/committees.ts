@@ -2,8 +2,8 @@ import express from 'express'
 import {
 	getCommittees,
 	acceptAdmissions,
-} from '../controllers/committeeController'
-import authorization from '../utils/authorizationMiddleware'
+} from 'controllers/committeeController'
+import authorization from 'utils/authorizationMiddleware'
 
 const committeeRouter = express.Router()
 

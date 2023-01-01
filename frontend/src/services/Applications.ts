@@ -3,7 +3,7 @@ import {
 	IAdmissionPeriod,
 	IApplicationsResponse,
 	IApplicationResponse,
-} from '../types/types'
+} from 'types/types'
 
 const getApplications = async (
 	query: string

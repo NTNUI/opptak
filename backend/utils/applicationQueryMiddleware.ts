@@ -1,5 +1,5 @@
 import { query } from 'express-validator'
-import { stringifyEnum } from '../models/Status'
+import { stringifyEnum } from 'models/Status'
 import { SortTypes, StatusTypes } from './enums'
 
 const applicationQueryValidator = () => [

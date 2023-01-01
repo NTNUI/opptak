@@ -1,6 +1,6 @@
 import { Container, createStyles } from '@mantine/core'
 import ApplicationItem from './ApplicationItem'
-import { IApplication } from '../types/types'
+import { IApplication } from 'types/types'
 import { useNavigate } from 'react-router-dom'
 
 const useStyles = createStyles((theme) => ({

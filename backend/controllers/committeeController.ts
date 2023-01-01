@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
 import { CustomError, UnauthorizedUserError } from 'ntnui-tools/customError'
-import { CommitteeModel } from '../models/Committee'
-import { ELECTION_COMMITTEE_ID, MAIN_BOARD_ID } from '../utils/constants'
-import { RequestWithNtnuiNo } from '../utils/request'
-import { getUserRoleInCommitteeByUserId } from '../utils/userCommittee'
+import { CommitteeModel } from 'models/Committee'
+import { ELECTION_COMMITTEE_ID, MAIN_BOARD_ID } from 'utils/constants'
+import { RequestWithNtnuiNo } from 'utils/request'
+import { getUserRoleInCommitteeByUserId } from 'utils/userCommittee'
 
 const getCommittees = (_req: Request, res: Response) => {
 	CommitteeModel.find()

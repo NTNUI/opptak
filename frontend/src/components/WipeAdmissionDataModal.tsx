@@ -3,7 +3,7 @@ import { Modal } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { showNotification, updateNotification } from '@mantine/notifications'
 import { Check, Trash, X } from 'tabler-icons-react'
-import { wipeApplicationData } from '../services/Applications'
+import { wipeApplicationData } from 'services/Applications'
 
 interface IWipeModal {
 	opened: boolean

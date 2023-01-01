@@ -1,11 +1,11 @@
 import { Request, Response } from 'express'
 import { UnauthorizedUserError } from 'ntnui-tools/customError'
 import dayjs from 'dayjs'
-import { AdmissionPeriodModel } from '../models/AdmissionPeriod'
-import { RequestWithNtnuiNo } from '../utils/request'
-import { MAIN_BOARD_ID } from '../utils/constants'
-import getAdmissionPeriodStatus from '../utils/getAdmissionPeriodStatus'
-import { UserModel } from '../models/User'
+import { AdmissionPeriodModel } from 'models/AdmissionPeriod'
+import { RequestWithNtnuiNo } from 'utils/request'
+import { MAIN_BOARD_ID } from 'utils/constants'
+import getAdmissionPeriodStatus from 'utils/getAdmissionPeriodStatus'
+import { UserModel } from 'models/User'
 
 function validateAndFormatDateString(value: string): string {
 	// Expect ISO-string (YYYY-MM-DDTHH:mm:ss.sssZ)

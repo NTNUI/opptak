@@ -1,6 +1,6 @@
 import { Box, MediaQuery, createStyles } from '@mantine/core'
 import { AlertTriangle } from 'tabler-icons-react'
-import { ICommittee } from '../types/types'
+import { ICommittee } from 'types/types'
 
 const useStyles = createStyles((theme) => ({
 	banner: {

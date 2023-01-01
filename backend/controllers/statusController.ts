@@ -1,9 +1,9 @@
 import { NextFunction, Response } from 'express'
 import { CustomError, UnauthorizedUserError } from 'ntnui-tools/customError'
-import { RequestWithNtnuiNo } from '../utils/request'
-import { IUser, UserModel } from '../models/User'
-import { StatusModel } from '../models/Status'
-import { ELECTION_COMMITTEE_ID, MAIN_BOARD_ID } from '../utils/constants'
+import { RequestWithNtnuiNo } from 'utils/request'
+import { IUser, UserModel } from 'models/User'
+import { StatusModel } from 'models/Status'
+import { ELECTION_COMMITTEE_ID, MAIN_BOARD_ID } from 'utils/constants'
 
 const putStatus = async (
 	req: RequestWithNtnuiNo,

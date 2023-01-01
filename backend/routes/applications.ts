@@ -4,13 +4,13 @@ import {
 	getApplications,
 	postApplication,
 	wipeAdmissionData,
-} from '../controllers/applicationController'
+} from 'controllers/applicationController'
 import {
 	getAdmissionPeriod,
 	putAdmissionPeriod,
-} from '../controllers/admissionPeriodController'
-import authorization from '../utils/authorizationMiddleware'
-import applicationQueryValidator from '../utils/applicationQueryMiddleware'
+} from 'controllers/admissionPeriodController'
+import authorization from 'utils/authorizationMiddleware'
+import applicationQueryValidator from 'utils/applicationQueryMiddleware'
 
 const applicationRouter = express.Router()
 

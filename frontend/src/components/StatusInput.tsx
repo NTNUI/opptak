@@ -6,12 +6,12 @@ import { forwardRef } from 'react'
 import { useState } from 'react'
 import { ChevronDown, X } from 'tabler-icons-react'
 
-import { StatusTypes } from '../utils/enums'
+import { StatusTypes } from 'utils/enums'
 import {
 	getIconForStatus,
 	getStatusColor,
 	getStatusTranslation,
-} from '../utils/status'
+} from 'utils/status'
 require('dayjs/locale/nb')
 
 export interface IStatusInputProps {

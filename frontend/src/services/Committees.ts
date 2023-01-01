@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { ICommittee } from '../types/types'
+import { ICommittee } from 'types/types'
 
 export interface IRoleInCommittee {
 	committee: ICommittee

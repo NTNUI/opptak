@@ -1,13 +1,13 @@
 import { Box, Button, createStyles, Loader } from '@mantine/core'
 import { FileText, Login, X } from 'tabler-icons-react'
-import { Form } from '../components/ApplicationForm'
+import { Form } from 'components/ApplicationForm'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { getAdmissionPeriod } from '../services/Applications'
-import { AdmissionPeriodStatus } from '../utils/enums'
+import { getAdmissionPeriod } from 'services/Applications'
+import { AdmissionPeriodStatus } from 'utils/enums'
 import { showNotification } from '@mantine/notifications'
 import axios from 'axios'
-import { ICommittee } from '../types/types'
+import { ICommittee } from 'types/types'
 
 const useStyles = createStyles((theme) => ({
 	formTitleAndBodyWrapper: {

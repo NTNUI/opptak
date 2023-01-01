@@ -1,6 +1,6 @@
 import { Box, createStyles } from '@mantine/core'
 import { useMemo } from 'react'
-import { IApplication, ICommittee } from '../types/types'
+import { IApplication, ICommittee } from 'types/types'
 
 interface IApplicationOverviewStyleProps {
 	idx: number

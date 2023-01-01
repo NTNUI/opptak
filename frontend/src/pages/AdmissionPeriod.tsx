@@ -8,8 +8,8 @@ import { Calendar, Check, History, X } from 'tabler-icons-react'
 import {
 	getAdmissionPeriod,
 	putAdmissionPeriod,
-} from '../services/Applications'
-import { IAdmissionPeriod } from '../types/types'
+} from 'services/Applications'
+import { IAdmissionPeriod } from 'types/types'
 import dayjs from 'dayjs'
 import { showNotification, updateNotification } from '@mantine/notifications'
 

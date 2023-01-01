@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import { StatusTypes } from '../utils/enums'
+import { StatusTypes } from 'utils/enums'
 
 interface IStatus {
 	_id: mongoose.Types.ObjectId

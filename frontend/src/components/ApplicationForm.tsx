@@ -12,8 +12,8 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { showNotification, updateNotification } from '@mantine/notifications'
 import { Check, ChevronDown, X } from 'tabler-icons-react'
-import { ICommittee } from '../types/types'
-import { REACT_APP_MAIN_BOARD_ID } from '../utils/constants'
+import { ICommittee } from 'types/types'
+import { REACT_APP_MAIN_BOARD_ID } from 'utils/constants'
 
 interface ISubmissionApplication {
 	email: string

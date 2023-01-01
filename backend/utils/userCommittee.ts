@@ -1,5 +1,5 @@
 import { CustomError } from 'ntnui-tools/customError'
-import { IRoleInCommittee, UserModel } from '../models/User'
+import { IRoleInCommittee, UserModel } from 'models/User'
 
 async function getUserCommitteeIdsByUserId(userId: number | string) {
 	let committeeIds: number[] = []

@@ -2,8 +2,8 @@ import express from 'express'
 import {
 	getUserCommittees,
 	getUserProfile,
-} from '../controllers/userController'
-import authorization from '../utils/authorizationMiddleware'
+} from 'controllers/userController'
+import authorization from 'utils/authorizationMiddleware'
 
 const userRouter = express.Router()
 

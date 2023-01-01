@@ -9,10 +9,10 @@ import {
 import { ChevronDown, Lock, Phone, World, X } from 'tabler-icons-react'
 import { useForm } from '@mantine/form'
 import { Notification } from '@mantine/core'
-import countryCodes from '../utils/countryCodes'
+import countryCodes from 'utils/countryCodes'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import { login } from '../services/Auth'
+import { login } from 'services/Auth'
 import NtnuiInfoTooltip from './Tooltip'
 
 const useStyles = createStyles((theme) => ({

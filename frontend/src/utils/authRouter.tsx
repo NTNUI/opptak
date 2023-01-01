@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
-import { verifyToken } from '../services/Auth'
-import { getUserCommittees, IRoleInCommittee } from '../services/Committees'
+import { verifyToken } from 'services/Auth'
+import { getUserCommittees, IRoleInCommittee } from 'services/Committees'
 
 type RequireAuthProps = {
 	children: JSX.Element

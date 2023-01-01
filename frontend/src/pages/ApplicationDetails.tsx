@@ -12,12 +12,12 @@ import {
 	User,
 	Gavel,
 } from 'tabler-icons-react'
-import CommitteBanner from '../components/CommitteeBanner'
-import StatusInput from '../components/StatusInput'
-import { getApplication } from '../services/Applications'
-import { getUserCommittees, IRoleInCommittee } from '../services/Committees'
-import { IApplication, IStatus } from '../types/types'
-import { REACT_APP_MAIN_BOARD_ID } from '../utils/constants'
+import CommitteBanner from 'components/CommitteeBanner'
+import StatusInput from 'components/StatusInput'
+import { getApplication } from 'services/Applications'
+import { getUserCommittees, IRoleInCommittee } from 'services/Committees'
+import { IApplication, IStatus } from 'types/types'
+import { REACT_APP_MAIN_BOARD_ID } from 'utils/constants'
 
 interface IStatusesStyleProps {
 	amountOfStatuses: number

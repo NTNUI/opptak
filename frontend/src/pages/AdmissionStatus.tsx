@@ -3,15 +3,15 @@ import { showNotification } from '@mantine/notifications'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { AlertTriangle, X } from 'tabler-icons-react'
-import CommitteeSwitch from '../components/CommitteeSwitch'
-import { getAdmissionPeriod } from '../services/Applications'
+import CommitteeSwitch from 'components/CommitteeSwitch'
+import { getAdmissionPeriod } from 'services/Applications'
 import {
 	getAllCommittees,
 	getUserCommittees,
 	IRoleInCommittee,
-} from '../services/Committees'
+} from 'services/Committees'
 
-import { ICommittee } from '../types/types'
+import { ICommittee } from 'types/types'
 
 const useStyles = createStyles((theme) => ({
 	container: {
