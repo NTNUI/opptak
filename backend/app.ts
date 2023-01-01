@@ -48,6 +48,10 @@ app.use(errorHandler)
 
 const port = process.env.PORT || 8082
 
-app.listen(port, () => console.log(`🍑 Express.js app running on port ${port}`))
+if (process.env.NODE_ENV !== 'test') {
+	app.listen(port, () =>
+		console.log(`🍑 Express.js app running on port ${port}`)
+	)
+}
 
 export default app
