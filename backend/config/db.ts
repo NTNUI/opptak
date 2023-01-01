@@ -2,11 +2,11 @@
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 
-import mockDb from "./mockDb"
+import mockDb from './mockDb'
 
 dotenv.config()
 
-let db = process.env.DB_URI || ''
+const db = process.env.DB_URI || ''
 
 const connectDB = async () => {
 	if (process.env.NODE_ENV === 'test') {

@@ -9,4 +9,4 @@ const tomorrowISO = tomorrow.toISOString()
 const yesterday = new Date(Date.now() - DAY_IN_MS)
 const yesterdayISO = yesterday.toISOString()
 
-export { today, todayISO, tomorrow, tomorrowISO, yesterday, yesterdayISO };
+export { today, todayISO, tomorrow, tomorrowISO, yesterday, yesterdayISO }
