@@ -1,4 +1,4 @@
-name: Lint
+name: Build and lint
 
 on:
  pull_request:
@@ -28,6 +28,12 @@ jobs:
 
    - name: Install
      run: npm run prefrontend && npm run prebackend
+
+   - name: Build frontend
+     run: cd frontend && CI=false npm run build
+    
+   - name: Build backend
+     run: cd backend && CI=false npm run build
 
    - name: ESLint
      run: npm run eslint

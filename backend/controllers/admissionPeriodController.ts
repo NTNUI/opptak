@@ -2,10 +2,10 @@ import { Request, Response } from 'express'
 import { UnauthorizedUserError } from 'ntnui-tools/customError'
 import dayjs from 'dayjs'
 import { AdmissionPeriodModel } from '../models/AdmissionPeriod'
-import { getUserCommitteeIdsByUserId } from '../utils/userCommittee'
 import { RequestWithNtnuiNo } from '../utils/request'
 import { MAIN_BOARD_ID } from '../utils/constants'
 import getAdmissionPeriodStatus from '../utils/getAdmissionPeriodStatus'
+import { UserModel } from '../models/User'
 
 function validateAndFormatDateString(value: string): string {
 	// Expect ISO-string (YYYY-MM-DDTHH:mm:ss.sssZ)
@@ -35,15 +35,20 @@ const getAdmissionPeriod = async (req: Request, res: Response) => {
 const putAdmissionPeriod = async (req: RequestWithNtnuiNo, res: Response) => {
 	const { ntnuiNo } = req
 	if (!ntnuiNo) throw UnauthorizedUserError
-	const committeeIds: number[] = await getUserCommitteeIdsByUserId(ntnuiNo)
-
-	if (committeeIds.includes(MAIN_BOARD_ID)) {
+	const user = await UserModel.findById(ntnuiNo)
+	if (!user) throw UnauthorizedUserError
+	if (
+		user.committees.some(
+			(roleInCommittee) => roleInCommittee.committee === MAIN_BOARD_ID
+		)
+	) {
 		let update
 
 		try {
 			update = {
 				start_date: validateAndFormatDateString(req.body.start_date),
 				end_date: validateAndFormatDateString(req.body.end_date),
+				set_by: `${user.first_name} ${user.last_name}`,
 			}
 		} catch (error) {
 			return res.status(400).json({ message: 'The dates are invalid' })
@@ -56,19 +61,18 @@ const putAdmissionPeriod = async (req: RequestWithNtnuiNo, res: Response) => {
 		}
 
 		// Update the existing admission period or create a new one if it doesn't exist
-		if (
-			await AdmissionPeriodModel.findOneAndUpdate(
-				{}, 
-				{startDate: "2022-01-01", endDate: "2023-01-01"}, {
-					new: true,
-					upsert: true,
-				})
-		) {
-			return res.status(200).json({ message: 'Admission period updated' })
-		}
-		return res
-			.status(500)
-			.json({ message: 'Something went wrong updating the admission period' })
+		return AdmissionPeriodModel.findOneAndUpdate({}, update, {
+			new: true,
+			upsert: true,
+		})
+			.then((updatedAdmission) =>
+				res.status(200).json({ admissionPeriod: updatedAdmission })
+			)
+			.catch(() =>
+				res
+					.status(500)
+					.json({ message: 'Something went wrong updating the admission period' })
+			)
 	}
 	return res.status(403).json({ message: 'Not authorized' })
 }

@@ -5,22 +5,15 @@ import {
 	PasswordInput,
 	Select,
 	TextInput,
-	Tooltip,
 } from '@mantine/core'
-import {
-	ChevronDown,
-	InfoCircle,
-	Lock,
-	Phone,
-	World,
-	X,
-} from 'tabler-icons-react'
+import { ChevronDown, Lock, Phone, World, X } from 'tabler-icons-react'
 import { useForm } from '@mantine/form'
 import { Notification } from '@mantine/core'
 import countryCodes from '../utils/countryCodes'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { login } from '../services/Auth'
+import NtnuiInfoTooltip from './Tooltip'
 
 const useStyles = createStyles((theme) => ({
 	phoneNumberWrapper: {
@@ -103,16 +96,7 @@ const useStyles = createStyles((theme) => ({
 		textDecoration: 'none',
 		color: theme.colors.ntnui_blue[9],
 	},
-	loginTooltip: {
-		margin: '0 0 0 2px',
-		textAlign: 'center',
-		svg: {
-			// Aligns info-icon with label
-			display: 'flex',
-			alignContent: 'center',
-			justifyContent: 'center',
-		},
-	},
+
 	loginErrorRoot: {
 		backgroundColor: theme.colors.ntnui_background[9],
 		borderColor: theme.colors.ntnui_red[9],
@@ -178,24 +162,6 @@ function LoginForm() {
 		} catch (error) {
 			setIsLoading(false)
 		}
-	}
-
-	const NtnuiInfoTooltip = (label: JSX.Element) => {
-		return (
-			<Tooltip
-				position='top'
-				allowPointerEvents
-				className={classes.loginTooltip}
-				classNames={{ body: classes.loginTooltip }}
-				color='dark'
-				width={250}
-				transition='pop'
-				label={label}
-				wrapLines
-			>
-				<InfoCircle size={16} />
-			</Tooltip>
-		)
 	}
 
 	const countryCodesToSelect = countryCodes.map((code: CountryCodePair) => {

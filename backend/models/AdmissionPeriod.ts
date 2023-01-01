@@ -6,6 +6,8 @@ import mongoose from 'mongoose'
 interface IAdmissionPeriod {
 	start_date: string
 	end_date: string
+	set_by: string | null
+	updated_date: string
 }
 
 const AdmissionPeriodModel = mongoose.model<IAdmissionPeriod>(
@@ -14,8 +16,13 @@ const AdmissionPeriodModel = mongoose.model<IAdmissionPeriod>(
 		{
 			start_date: { type: String, required: true },
 			end_date: { type: String, required: true },
+			set_by: { type: String, default: null },
 		},
-		{ collection: 'admissionperiod' }
+		{
+			collection: 'admissionperiod',
+			versionKey: false,
+			timestamps: { createdAt: false, updatedAt: 'updated_date' },
+		}
 	)
 )
 
