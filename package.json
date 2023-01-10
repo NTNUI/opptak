@@ -23,7 +23,8 @@
 		"prettier": "npm install && prettier --check .",
 		"eslint": "npm install && eslint . --ext ts --ext tsx",
 		"check": "npm install && eslint . --ext ts --ext tsx && prettier --check .",
-		"fix": "npm install && npx prettier --write . && eslint . --ext .ts,.tsx --fix"
+		"fix": "npm install && npx prettier --write . && eslint . --ext .ts,.tsx --fix",
+		"clean": "rm -rf node_modules && rm -rf frontend/node_modules && rm -rf backend/node_modules"
 	},
 	"devDependencies": {
 		"@types/react": "^17.0.39",
