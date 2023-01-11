@@ -26,6 +26,9 @@ FRONTEND_URI = "http://localhost:3000"
 API_URI = "https://dev.api.ntnui.no"
 MAIN_BOARD_ID = 9
 ELECTION_COMMITTEE_ID = 10
+
+## Optional ntnui-tools development variable
+API_URI = "https://dev.api.ntnui.no"
 ```
 
 ### ☁ Set up MongoDB Atlas
