@@ -128,73 +128,80 @@ function Navbar() {
 			<MediaQuery largerThan='xs' styles={{ display: 'none' }}>
 				<Menu
 					opened={opened}
-					gutter={13}
+					offset={13}
 					transition='scale-y'
 					transitionDuration={100}
-					transitionTimingFunction='ease'
 					shadow='xl'
 					onOpen={handlers.open}
 					onClose={handlers.close}
-					control={<Burger opened={opened} color='white' />}
-					className={classes.menu}
 					classNames={{
-						body: classes.menuBody,
+						dropdown: classes.menuBody,
 						item: classes.menuItemBody,
 					}}
 				>
-					<Menu.Item
-						icon={<Home size={18} />}
-						className={
-							location.pathname === '/dashboard'
-								? classes.active
-								: classes.menuItemBody
-						}
-						onClick={() => navigate('/dashboard')}
-					>
-						Dashbord
-					</Menu.Item>
-					<Menu.Item
-						icon={<FileText size={18} />}
-						className={
-							location.pathname === '/applications'
-								? classes.active
-								: classes.menuItemBody
-						}
-						onClick={() => navigate('/applications')}
-					>
-						Søknader
-					</Menu.Item>
-					<Menu.Item
-						icon={<Users size={18} />}
-						className={
-							location.pathname === '/admission-status'
-								? classes.active
-								: classes.menuItemBody
-						}
-						onClick={() => navigate('/admission-status')}
-					>
-						Opptaksstatus
-					</Menu.Item>
-					{(location.state as stateType).isOrganizer && (
+					<Menu.Target>
+						<Burger
+							title='Open navigation'
+							className={classes.menu}
+							opened={opened}
+							color='white'
+						/>
+					</Menu.Target>
+					<Menu.Dropdown className={classes.menuBody}>
 						<Menu.Item
-							icon={<CalendarEvent size={18} />}
+							icon={<Home size={18} />}
 							className={
-								location.pathname === '/admission-period'
+								location.pathname === '/dashboard'
 									? classes.active
 									: classes.menuItemBody
 							}
-							onClick={() => navigate('/admission-period')}
+							onClick={() => navigate('/dashboard')}
 						>
-							Opptaksperiode
+							Dashbord
 						</Menu.Item>
-					)}
-					<Menu.Item
-						icon={<Logout size={18} />}
-						onClick={logOut}
-						className={classes.menuItemBody}
-					>
-						Logg ut
-					</Menu.Item>
+						<Menu.Item
+							icon={<FileText size={18} />}
+							className={
+								location.pathname === '/applications'
+									? classes.active
+									: classes.menuItemBody
+							}
+							onClick={() => navigate('/applications')}
+						>
+							Søknader
+						</Menu.Item>
+						<Menu.Item
+							icon={<Users size={18} />}
+							className={
+								location.pathname === '/admission-status'
+									? classes.active
+									: classes.menuItemBody
+							}
+							onClick={() => navigate('/admission-status')}
+						>
+							Opptaksstatus
+						</Menu.Item>
+						{(location.state as stateType).isOrganizer && (
+							<Menu.Item
+								icon={<CalendarEvent size={18} />}
+								className={
+									location.pathname === '/admission-period'
+										? classes.active
+										: classes.menuItemBody
+								}
+								onClick={() => navigate('/admission-period')}
+							>
+								Opptaksperiode
+							</Menu.Item>
+						)}
+						<Menu.Item
+							icon={<Logout size={18} />}
+							onClick={logOut}
+							className={classes.menuItemBody}
+						>
+							Logg ut
+						</Menu.Item>
+					</Menu.Dropdown>
 				</Menu>
 			</MediaQuery>
 			{location.pathname !== '/dashboard' && (

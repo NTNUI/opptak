@@ -31,9 +31,9 @@ const useStyles = createStyles(
 		},
 		grid: {
 			marginLeft: '0',
-			flexGrow: '3',
+			flexGrow: 3,
 			whiteSpace: 'nowrap',
-			fontWeight: '300',
+			fontWeight: 300,
 			fontSize: 'medium',
 			display: 'grid',
 			gap: '1em',

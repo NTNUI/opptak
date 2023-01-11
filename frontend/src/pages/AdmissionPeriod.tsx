@@ -1,4 +1,4 @@
-import { Button, createStyles, Loader, Text } from '@mantine/core'
+import { Button, createStyles, Loader } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useForm } from '@mantine/form'
@@ -11,7 +11,7 @@ import {
 } from '../services/Applications'
 import { IAdmissionPeriod } from '../types/types'
 import dayjs from 'dayjs'
-import { useNotifications } from '@mantine/notifications'
+import { showNotification, updateNotification } from '@mantine/notifications'
 
 const useStyles = createStyles((theme) => ({
 	pageWrapper: {
@@ -108,7 +108,6 @@ function AdmissionPeriod() {
 	const { classes } = useStyles()
 	const navigate = useNavigate()
 	const location = useLocation()
-	const notifications = useNotifications()
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	// Has period been set in the db before
 	const [isPeriodSet, setIsPeriodSet] = useState<boolean>(false)
@@ -161,7 +160,7 @@ function AdmissionPeriod() {
 				if (error.response.status === 401) {
 					navigate('/login')
 				} else if (error.response.status !== 404) {
-					notifications.showNotification({
+					showNotification({
 						loading: false,
 						color: 'red',
 						icon: <X size={18} />,
@@ -184,7 +183,8 @@ function AdmissionPeriod() {
 				start_date: dayjs(start).format('YYYY-MM-DD'),
 				end_date: dayjs(end).format('YYYY-MM-DD'),
 			}
-			const id = notifications.showNotification({
+			showNotification({
+				id: 'admission-period-notification',
 				loading: true,
 				color: 'green',
 				icon: <Check size={18} />,
@@ -199,8 +199,8 @@ function AdmissionPeriod() {
 					setPreviousDates([start, end])
 					setSetBy(response.admissionPeriod.set_by)
 					setUpdatedDateValue(response.admissionPeriod.updated_date)
-					notifications.updateNotification(id, {
-						id,
+					updateNotification({
+						id: 'admission-period-notification',
 						loading: false,
 						color: 'green',
 						icon: <Check size={18} />,
@@ -220,8 +220,8 @@ function AdmissionPeriod() {
 						title = 'En feil oppstod!'
 						message = 'Kunne ikke oppdatere opptaksperioden'
 					}
-					notifications.updateNotification(id, {
-						id: id,
+					updateNotification({
+						id: 'admission-period-notification',
 						loading: false,
 						color: 'red',
 						icon: <X size={18} />,

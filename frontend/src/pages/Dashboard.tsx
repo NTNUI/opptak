@@ -64,7 +64,7 @@ const useStyles = createStyles((theme) => ({
 	},
 	date: {
 		color: theme.colors.ntnui_blue[9],
-		fontWeight: '600',
+		fontWeight: 600,
 		textAlign: 'center',
 		fontSize: '1.3rem',
 	},
@@ -77,7 +77,7 @@ const useStyles = createStyles((theme) => ({
 		},
 	},
 	header: {
-		fontWeight: '500',
+		fontWeight: 500,
 	},
 	subHeader: {
 		fontWeight: 'lighter',

@@ -1,4 +1,10 @@
-import { createStyles, Group, Input, MultiSelect, Select } from '@mantine/core'
+import {
+	createStyles,
+	Group,
+	MultiSelect,
+	Select,
+	TextInput,
+} from '@mantine/core'
 import debounce from 'lodash.debounce'
 import { useMemo } from 'react'
 import { forwardRef, useEffect, useState } from 'react'
@@ -41,12 +47,6 @@ const useStyles = createStyles((theme) => ({
 		border: '2px solid' + theme.colors.ntnui_yellow[9],
 		backgroundColor: theme.colors.ntnui_background[9],
 		borderRadius: theme.radius.sm,
-	},
-	searchInputField: {
-		color: 'white',
-		'&:focus': {
-			border: '2px solid' + theme.colors.ntnui_yellow[9],
-		},
 	},
 	withIcon: {
 		color: 'white',
@@ -215,11 +215,10 @@ function FilterSearch({ setFilter }: FilterSearchProps) {
 	return (
 		<div className={classes.filterWrapper}>
 			<div className={classes.searchWrapper}>
-				<Input
+				<TextInput
 					classNames={{
 						wrapper: classes.searchInputRoot,
-						defaultVariant: classes.searchInput,
-						input: classes.searchInputField,
+						input: classes.searchInput,
 						withIcon: classes.withIcon,
 					}}
 					value={nameSearch}
