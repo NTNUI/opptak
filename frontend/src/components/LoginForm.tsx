@@ -1,7 +1,7 @@
 import {
 	Button,
 	createStyles,
-	InputWrapper,
+	Input,
 	PasswordInput,
 	Select,
 	TextInput,
@@ -177,7 +177,7 @@ function LoginForm() {
 			onSubmit={form.onSubmit((values) => submitLoginForm(values))}
 			className={classes.form}
 		>
-			<InputWrapper
+			<Input.Wrapper
 				label={
 					<>
 						Telefon
@@ -212,7 +212,7 @@ function LoginForm() {
 					{...form.getInputProps('phone_number')}
 					onBlur={() => form.validateField('phone_number')}
 				/>
-			</InputWrapper>
+			</Input.Wrapper>
 			<PasswordInput
 				required
 				autoComplete='password'

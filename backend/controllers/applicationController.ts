@@ -395,7 +395,7 @@ const postApplication = async (
 		const statusIds = insertedStatuses.map((stat: IStatus) => stat)
 		// Create application
 		const application = new ApplicationModel({ ...req.body, statuses: statusIds })
-		return application
+		return await application
 			.save()
 			.then((newApplication) =>
 				res.status(200).json({ application: newApplication })

@@ -1,7 +1,7 @@
 import { Box, Button, createStyles, TextInput } from '@mantine/core'
 import { Modal } from '@mantine/core'
 import { useForm } from '@mantine/form'
-import { useNotifications } from '@mantine/notifications'
+import { showNotification, updateNotification } from '@mantine/notifications'
 import { Check, Trash, X } from 'tabler-icons-react'
 import { wipeApplicationData } from '../services/Applications'
 
@@ -84,7 +84,6 @@ const useStyles = createStyles((theme) => ({
 
 function WipeModal({ opened, setOpened }: IWipeModal) {
 	const { classes } = useStyles()
-	const notifications = useNotifications()
 
 	// Validate input
 	const form = useForm({
@@ -100,7 +99,7 @@ function WipeModal({ opened, setOpened }: IWipeModal) {
 	const handleWipeApplicationData = async () => {
 		if (form.validate().hasErrors) return
 		// Wipe app data
-		const notificationId = notifications.showNotification({
+		showNotification({
 			id: 'wipe-notification',
 			title: 'Sletter opptaksdata...',
 			message: '',
@@ -109,8 +108,8 @@ function WipeModal({ opened, setOpened }: IWipeModal) {
 		})
 		try {
 			await wipeApplicationData()
-			notifications.updateNotification(notificationId, {
-				id: notificationId,
+			updateNotification({
+				id: 'wipe-notification',
 				loading: false,
 				color: 'green',
 				icon: <Check size={18} />,
@@ -123,8 +122,8 @@ function WipeModal({ opened, setOpened }: IWipeModal) {
 		} catch (error: any) {
 			console.log(error.response.status)
 			if (error.response.status === 403) {
-				notifications.updateNotification(notificationId, {
-					id: notificationId,
+				updateNotification({
+					id: 'wipe-notification',
 					loading: false,
 					color: 'red',
 					icon: <X size={18} />,
@@ -133,8 +132,8 @@ function WipeModal({ opened, setOpened }: IWipeModal) {
 					autoClose: 6000,
 				})
 			} else {
-				notifications.updateNotification(notificationId, {
-					id: notificationId,
+				updateNotification({
+					id: 'wipe-notification',
 					loading: false,
 					color: 'red',
 					icon: <X size={18} />,

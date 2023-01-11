@@ -1,5 +1,5 @@
 import { createStyles, Group, Select } from '@mantine/core'
-import { useNotifications } from '@mantine/notifications'
+import { showNotification } from '@mantine/notifications'
 import axios from 'axios'
 import dayjs from 'dayjs'
 import { forwardRef } from 'react'
@@ -77,7 +77,6 @@ function StatusInput({
 	const [updatedDateValue, setUpdatedDateValue] = useState<Date>(updated_date)
 	const { classes } = useStyles({ statusValue })
 	const [isLoading, setIsLoading] = useState<boolean>(false)
-	const notification = useNotifications()
 
 	const StatusOptions = () => {
 		return Object.values(StatusTypes).map((status: StatusTypes) => {
@@ -103,7 +102,7 @@ function StatusInput({
 				})
 				.catch((err) => {
 					setIsLoading(false)
-					notification.showNotification({
+					showNotification({
 						title: 'Kunne ikke endre status!',
 						message:
 							'En feil oppstod. Ta kontakt med sprint@ntnui.no dersom problemet vedvarer',

@@ -10,7 +10,7 @@ import {
 import { useForm } from '@mantine/form'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
-import { useNotifications } from '@mantine/notifications'
+import { showNotification, updateNotification } from '@mantine/notifications'
 import { Check, ChevronDown, X } from 'tabler-icons-react'
 import { ICommittee } from '../types/types'
 import { REACT_APP_MAIN_BOARD_ID } from '../utils/constants'
@@ -24,15 +24,9 @@ interface ISubmissionApplication {
 	committees: string[]
 }
 
-interface ICommitteeInSelect {
-	value: string
-	label: string
-}
-
 const useStyles = createStyles((theme) => ({
 	labelText: {
 		fontSize: '1rem',
-		fontWeight: 'italic',
 		color: 'white',
 	},
 	form: {
@@ -85,39 +79,24 @@ const useStyles = createStyles((theme) => ({
 	},
 }))
 
-export function Form() {
+interface ICommitteeInSelect {
+	value: string
+	label: string
+	disabled?: boolean
+}
+
+interface IFormProps {
+	committees: ICommittee[] | null
+}
+
+export function Form({ committees }: IFormProps) {
 	const { classes } = useStyles()
-	const [committees, setCommittees] = useState<ICommitteeInSelect[]>([])
-	const [committeesFailed, setCommitteesFailed] = useState<boolean>(false)
 	const [isToMainBoard, setIsToMainBoard] = useState<boolean>(false)
 	const [isLoading, setIsLoading] = useState<boolean>(false)
-	const notifications = useNotifications()
-	const committeeNotification = useNotifications()
-
-	useEffect(() => {
-		if (!committeesFailed) {
-			axios
-				.get('/committees')
-				.then((res) => {
-					setCommittees(mapCommitteeToSelect(res.data))
-				})
-				.catch((err) => {
-					setCommitteesFailed(true)
-					committeeNotification.showNotification({
-						title: 'Kunne ikke laste inn kommitteer!',
-						message:
-							'Last inn siden på nytt og prøv igjen. Ta kontakt med sprint@ntnui.no dersom problemet vedvarer',
-						color: 'red',
-						autoClose: false,
-						icon: <X size={18} />,
-					})
-				})
-		}
-	}, [committeeNotification, committeesFailed])
 
 	const submitForm = (values: ISubmissionApplication) => {
 		setIsLoading(true)
-		const id = notifications.showNotification({
+		showNotification({
 			id: 'form-notification',
 			title: 'Sender søknad',
 			message: '',
@@ -136,8 +115,8 @@ export function Form() {
 			.then((response) => {
 				setIsLoading(false)
 				form.reset()
-				notifications.updateNotification(id, {
-					id,
+				updateNotification({
+					id: 'form-notification',
 					loading: false,
 					color: 'green',
 					icon: <Check size={18} />,
@@ -148,8 +127,8 @@ export function Form() {
 			})
 			.catch((err) => {
 				setIsLoading(false)
-				notifications.updateNotification(id, {
-					id,
+				updateNotification({
+					id: 'form-notification',
 					loading: false,
 					color: 'red',
 					icon: <X size={18} />,
@@ -160,7 +139,9 @@ export function Form() {
 			})
 	}
 
-	const mapCommitteeToSelect = (committees: ICommittee[]) => {
+	const mapCommitteeToSelect = (
+		committees: ICommittee[]
+	): ICommitteeInSelect[] => {
 		return committees
 			.filter((committee: ICommittee) => {
 				return committee.slug !== 'valgkomiteen'
@@ -267,9 +248,9 @@ export function Form() {
 				onBlur={() => form.validateField('phone_number')}
 				{...form.getInputProps('phone_number')}
 			/>
-			{!committeesFailed ? (
+			{committees !== null ? (
 				<MultiSelect
-					data={committees}
+					data={mapCommitteeToSelect(committees)}
 					required
 					searchable
 					rightSection={<ChevronDown size={14} />}
@@ -283,7 +264,7 @@ export function Form() {
 				/>
 			) : (
 				<MultiSelect
-					data={committees}
+					data={[]}
 					required
 					disabled
 					icon={<X size={18} />}
