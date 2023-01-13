@@ -165,6 +165,15 @@ export function Form({ committees }: IFormProps) {
 				}
 				return 0
 			})
+			.sort((a, b) => {
+				if (a.disabled && !b.disabled) {
+					return 1
+				}
+				if (!a.disabled && b.disabled) {
+					return -1
+				}
+				return 0
+			})
 	}
 
 	const form = useForm({
