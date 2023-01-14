@@ -296,6 +296,7 @@ const getApplications = async (
 				applications: {
 					_id: 1,
 					name: 1,
+					email: 1,
 					submitted_date: 1,
 					committees: {
 						_id: 1,
@@ -303,7 +304,9 @@ const getApplications = async (
 						slug: 1,
 					},
 					statuses: {
+						_id: 1,
 						committee: 1,
+						value: 1,
 					},
 				},
 				pagination: {

@@ -400,7 +400,8 @@ function ApplicationDetailPage() {
 									<StatusInput
 										allowedToChange={!!statusRel.isRelevant}
 										key={index}
-										{...statusRel.status}									/>
+										{...statusRel.status}
+									/>
 								))
 							)}
 						</Box>

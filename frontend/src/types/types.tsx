@@ -4,6 +4,14 @@ export interface IStatus {
 	_id: string
 	value: StatusTypes
 	set_by: string | null
+	committee: number
+	updated_date: Date
+}
+
+export interface IPopulatedStatus {
+	_id: string
+	value: StatusTypes
+	set_by: string | null
 	committee: {
 		name: string
 		slug: string

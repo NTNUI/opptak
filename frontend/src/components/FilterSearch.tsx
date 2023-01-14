@@ -120,16 +120,29 @@ function mapStatusTypeToSelectData(): StatusTypesData[] {
 
 export type FilterSearchProps = {
 	setFilter: (filter: string) => void
+	setSort: (sort: string) => void
+	setChosenCommittees: (committees: string[]) => void
+	setNameSearch: (nameSearch: string) => void
+	setStatus: (status: string) => void
+	sort: string
+	nameSearch: string
+	status: string
+	chosenCommittees: string[]
 }
 
-function FilterSearch({ setFilter }: FilterSearchProps) {
+function FilterSearch({
+	setFilter,
+	setSort,
+	setChosenCommittees,
+	setNameSearch,
+	setStatus,
+	sort,
+	nameSearch,
+	status,
+	chosenCommittees,
+}: FilterSearchProps) {
 	const { classes } = useStyles()
 	const [committees, setCommittees] = useState<ICommittee[]>([])
-	const [chosenCommittees, setChosenCommittees] = useState<string[]>([])
-	const [filterCommittees, setFilterCommittees] = useState<string[]>([])
-	const [status, setStatus] = useState<string>('')
-	const [sort, setSort] = useState<string>('date_desc')
-	const [nameSearch, setNameSearch] = useState<string>('')
 
 	useEffect(() => {
 		// Retrieve committees for multiselect
@@ -161,7 +174,7 @@ function FilterSearch({ setFilter }: FilterSearchProps) {
 	// Update filter with nameSearch using debouncer
 	useEffect(() => {
 		let query = constructSearchFilterQuery(
-			filterCommittees,
+			chosenCommittees,
 			sort,
 			status,
 			nameSearch
@@ -172,13 +185,13 @@ function FilterSearch({ setFilter }: FilterSearchProps) {
 	// Update filter with other fields on input-change
 	useEffect(() => {
 		let query = constructSearchFilterQuery(
-			filterCommittees,
+			chosenCommittees,
 			sort,
 			status,
 			nameSearch
 		)
 		setFilter(query.toString())
-	}, [status, filterCommittees, sort, setFilter])
+	}, [status, chosenCommittees, sort, setFilter])
 
 	function mapCommitteesToMultiselectData() {
 		let dataList: { value: string; label: string }[] = []
@@ -279,7 +292,7 @@ function FilterSearch({ setFilter }: FilterSearchProps) {
 					searchable
 					clearable
 					nothingFound='Nothing found'
-					onDropdownClose={() => setFilterCommittees(chosenCommittees)}
+					defaultValue={chosenCommittees}
 					value={chosenCommittees}
 					onChange={setChosenCommittees}
 					rightSectionWidth={40}
