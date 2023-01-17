@@ -9,8 +9,5 @@ COPY tsconfig.json ./
 RUN npm install
 COPY . .
 RUN npm run build
-ENV PORT=8080
-ENV DB_URI=${DB_URI}
-EXPOSE 8080
 
 CMD ["pm2-runtime", "build/app.js"]
