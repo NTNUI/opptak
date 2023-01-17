@@ -1,26 +1,26 @@
 services:
-    # MongoDB
-    opptak-db:
-        container_name: opptak-db
-        image: mongo:latest
-        env_file:
-            - backend/.env
-        ports:
-            - "27017:27017"
-    
-    # Backend server (ts-node)
-    opptak-backend:
-        build:
-            context: ./backend
-            dockerfile: Dockerfile
-        volumes:
-            - ./src:/home/node/app/src
-            - ./nodemon.json:/home/node/app/nodemon.json
-        container_name: opptak-backend
-        expose:
-            - '8082'
-        ports:
-            - '8082:8082'
-        command: npm run app
-        depends_on:
-            - opptak-db
+ # MongoDB
+ opptak-db:
+  container_name: opptak-db
+  image: mongo:latest
+  env_file:
+   - backend/.env
+  ports:
+   - '27017:27017'
+
+ # Backend server (ts-node)
+ opptak-backend:
+  build:
+   context: ./backend
+   dockerfile: Dockerfile
+  volumes:
+   - ./src:/home/node/app/src
+   - ./nodemon.json:/home/node/app/nodemon.json
+  container_name: opptak-backend
+  expose:
+   - '8082'
+  ports:
+   - '8082:8082'
+  command: npm run app
+  depends_on:
+   - opptak-db
