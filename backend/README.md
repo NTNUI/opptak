@@ -9,30 +9,18 @@
 
 ## Developement
 
-Install and run the backend using `npm install`, then `npm run app`, or simply run `npm run backend` from the project root folder.
+Install and run the backend using `docker compose up`  
+If you change the fixtures afterwards you have to run `docker compose up --build` to reload the new fixtures to the image.
 
 ### Environment variables
 
-Add environment variables to an `.env` file in the backend folder.
+Rename `.env.example` to `.env`  
+When using docker you don't need to do any modifications
 
-```sh
-# .env
 
-## MongoDB connection string
-DB_URI = "mongodb://<username>:<password>@<host>:<port>/<database>"
 
-## Optional development variables
-FRONTEND_URI = "http://localhost:3000"
-API_URI = "https://dev.api.ntnui.no"
-MAIN_BOARD_ID = 9
-ELECTION_COMMITTEE_ID = 10
-
-## Optional ntnui-tools development variable
-NTNUI_TOOLS_API_URL = "https://dev.api.ntnui.no"
-
-```
-
-### ☁ Set up MongoDB Atlas
+### ☁ Set up MongoDB Atlas 
+### ( Not necessary when using docker to run project)
 
 Set up a cluster and database on [MongoDB Atlas](https://docs.atlas.mongodb.com/getting-started/) and add the credentials to the `.env` file.
 
