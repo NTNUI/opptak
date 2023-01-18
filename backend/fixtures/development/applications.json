@@ -7,6 +7,7 @@
 		"phone_number": "+6969696969",
 		"email": "bolle@bolle.no",
 		"text": "Jeg forsøker å søke til Triatlon og Turn",
+		"main_board_text": "",
 		"committees": [2, 3],
 		"statuses": [
 			{
@@ -28,6 +29,7 @@
 		"phone_number": "+420420420",
 		"email": "Navn@Navnesen.no",
 		"text": "Jeg forsøker å søke til Ski og Fjellsport",
+		"main_board_text": "",
 		"committees": [4],
 		"statuses": [
 			{
@@ -45,7 +47,8 @@
 		"name": "Cris P Bacon",
 		"phone_number": "+123456789",
 		"email": "Bacon@IsGoodForMe.no",
-		"text": "Jeg forsøker å søke til Hovedstyret",
+		"text": "",
+		"main_board_text": "Søknad til Introstyret",
 		"committees": [9],
 		"statuses": [
 			{
@@ -63,7 +66,8 @@
 		"name": "Olle Bolle",
 		"phone_number": "+987654321",
 		"email": "Olle@Bolle.no",
-		"text": "Jeg forsøker å søke til Hovedstyret og Sprint",
+		"text": "Søknadstekst til Sprint",
+		"main_board_text": "Søknadstekst til Introstyret",
 		"committees": [1, 9],
 		"statuses": [
 			{

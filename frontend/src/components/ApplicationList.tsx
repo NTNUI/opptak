@@ -25,7 +25,7 @@ type ApplicationListProps = {
 	applications: IApplication[]
 }
 
-function ApplicationList(applications: ApplicationListProps) {
+function ApplicationList({ applications }: ApplicationListProps) {
 	let navigate = useNavigate()
 
 	function itemClickHandler(id: string) {
@@ -35,7 +35,7 @@ function ApplicationList(applications: ApplicationListProps) {
 	const { classes } = useStyles()
 	return (
 		<Container className={classes.container}>
-			{applications.applications.map((item: IApplication, idx: number) => (
+			{applications.map((item: IApplication, idx: number) => (
 				<ApplicationItem
 					key={idx}
 					handleClick={itemClickHandler}
