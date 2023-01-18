@@ -15,8 +15,9 @@ Add environment variables to an `.env` file in the frontend folder to connect to
 
 ## Optional environment variables to use in development
 REACT_APP_BACKEND_URI = 'http://localhost:8082'
-# Set main board ID to 9 while using development environment dev.api.ntnui.no
+# Set main board ID to 9 and election committee ID to 10 while using development environment dev.api.ntnui.no
 REACT_APP_MAIN_BOARD_ID = 9
+REACT_APP_ELECTION_COMMITTEE_ID = 10
 ```
 
 ## Scripts

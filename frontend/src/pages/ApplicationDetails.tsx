@@ -13,10 +13,11 @@ import {
 	Gavel,
 } from 'tabler-icons-react'
 import CommitteBanner from '../components/CommitteeBanner'
+import NTNUICopyButton from '../components/NTNUICopyButton'
 import StatusInput from '../components/StatusInput'
 import { getApplication } from '../services/Applications'
 import { getUserCommittees, IRoleInCommittee } from '../services/Committees'
-import { IApplication, IStatus } from '../types/types'
+import { IApplication, IPopulatedStatus } from '../types/types'
 import { REACT_APP_MAIN_BOARD_ID } from '../utils/constants'
 
 interface IStatusesStyleProps {
@@ -135,7 +136,12 @@ const useStyles = createStyles(
 			p: {
 				overflow: 'hidden',
 				textOverflow: 'ellipsis',
+				display: 'flex',
 				color: theme.colors.ntnui_blue[9],
+				button: {
+					display: 'flex',
+					flexDirection: 'column',
+				},
 				a: {
 					color: theme.colors.ntnui_blue[9],
 					textDecoration: 'none',
@@ -270,11 +276,13 @@ function ApplicationDetailPage() {
 	}
 
 	interface IStatusWithRelevancy {
-		status: IStatus
+		status: IPopulatedStatus
 		isRelevant: boolean
 	}
 
-	function statusByRelevancy(statuses: IStatus[]): IStatusWithRelevancy[] {
+	function statusByRelevancy(
+		statuses: IPopulatedStatus[]
+	): IStatusWithRelevancy[] {
 		const isUserInElectionCommittee = userCommittees.some(
 			(roleInCommittee: IRoleInCommittee) => {
 				return roleInCommittee.committee.slug === 'valgkomiteen'
@@ -360,7 +368,10 @@ function ApplicationDetailPage() {
 									{isLoading || !application ? (
 										<YellowDotLoader />
 									) : (
-										<a href={`mailto:${application.email}`}>{application.email}</a>
+										<>
+											<a href={`mailto:${application.email}`}>{application.email}</a>
+											<NTNUICopyButton value={application.email} />
+										</>
 									)}
 								</p>
 							</div>
@@ -383,7 +394,9 @@ function ApplicationDetailPage() {
 							{isLoading || !application ? (
 								<YellowDotLoader />
 							) : (
-								statusByRelevancy(application.statuses).map((statusRel, index) => (
+								statusByRelevancy(
+									application.statuses as unknown as IPopulatedStatus[]
+								).map((statusRel, index) => (
 									<StatusInput
 										allowedToChange={!!statusRel.isRelevant}
 										key={index}
@@ -410,7 +423,7 @@ function ApplicationDetailPage() {
 							{!isLoading && application && isToMainBoard && (
 								<Box className={classes.applicationTextItem}>
 									<h2 className={classes.sectionTitle}>
-										<AlignJustified size={32} /> Søknadstekst til Hovedstyret
+										<AlignJustified size={32} /> Søknadstekst til Introstyret
 									</h2>
 									{!application.main_board_text.length ? (
 										<i>Ingen søknadstekst</i>

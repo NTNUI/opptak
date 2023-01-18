@@ -1,10 +1,13 @@
 import { createStyles, Loader, Pagination } from '@mantine/core'
-import { useEffect, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 import ApplicationList from '../components/ApplicationList'
 import Filter from '../components/FilterSearch'
 import { IApplication } from '../types/types'
 import { getApplications } from '../services/Applications'
 import { useNavigate } from 'react-router-dom'
+import useStickyState from '../utils/sessionstorage'
+import { getUserCommittees, IRoleInCommittee } from '../services/User'
+import { REACT_APP_ELECTION_COMMITTEE_ID } from '../utils/constants'
 
 const useStyles = createStyles((theme) => ({
 	overview: {
@@ -17,9 +20,6 @@ const useStyles = createStyles((theme) => ({
 		'@media (max-width: 500px)': {
 			fontSize: 'small',
 			width: '100%',
-		},
-		'@media (min-width: 500px)': {
-			width: '80%',
 		},
 	},
 	pagination: {
@@ -41,17 +41,59 @@ const useStyles = createStyles((theme) => ({
 		},
 	},
 }))
+export const UserContext = createContext<IUserContext>({
+	userRoleInCommittees: [],
+	isInElectionCommittee: false,
+})
+
+export const FilterContext = createContext<IFilterContext>({
+	chosenCommittees: [],
+})
+
+interface IFilterContext {
+	chosenCommittees: number[]
+}
+interface IUserContext {
+	userRoleInCommittees: IRoleInCommittee[]
+	isInElectionCommittee: boolean
+}
 
 function ApplicationOverview() {
-	const [currentPage, setCurrentPage] = useState(1)
+	const [currentPage, setCurrentPage] = useStickyState(1, 'page')
 	const [numberOfPages, setNumberOfPages] = useState(1)
 	const [isLoading, setIsLoading] = useState(false)
 	const [applications, setApplications] = useState<IApplication[]>([])
-	const [filters, setFilters] = useState<string>('sort=date_desc')
+	const [filters, setFilters] = useStickyState('sort=date_desc', 'filters')
+	const [chosenCommittees, setChosenCommittees] = useStickyState(
+		[],
+		'chosenCommittees'
+	)
+	const [sort, setSort] = useStickyState('date_desc', 'sort')
+	const [status, setStatus] = useStickyState('', 'status')
+	const [nameSearch, setNameSearch] = useStickyState('', 'nameSearch')
+
+	const [userRoleInCommittees, setUserRoleInCommittees] = useState<
+		IRoleInCommittee[]
+	>([])
 
 	let navigate = useNavigate()
 
 	const { classes } = useStyles()
+
+	useEffect(() => {
+		const userCommitteesRes = async () => {
+			try {
+				const userCommitteesRes = await getUserCommittees()
+				setUserRoleInCommittees(userCommitteesRes)
+			} catch (error: any) {
+				setIsLoading(false)
+				if (error.response.status !== 200) {
+					navigate('/login')
+				}
+			}
+		}
+		userCommitteesRes()
+	}, [])
 
 	useEffect(() => {
 		setIsLoading(true)
@@ -75,11 +117,33 @@ function ApplicationOverview() {
 	return (
 		<div className={classes.overview}>
 			<h1>Søknadsoversikt</h1>
-			<Filter setFilter={setFilters} />
-			{applications.length ? (
-				<ApplicationList applications={applications} />
-			) : isLoading ? (
+			<Filter
+				setFilter={setFilters}
+				chosenCommittees={chosenCommittees}
+				setChosenCommittees={setChosenCommittees}
+				sort={sort}
+				setSort={setSort}
+				status={status}
+				setStatus={setStatus}
+				nameSearch={nameSearch}
+				setNameSearch={setNameSearch}
+			/>
+			{isLoading ? (
 				<Loader color='yellow' />
+			) : applications.length ? (
+				<UserContext.Provider
+					value={{
+						userRoleInCommittees,
+						isInElectionCommittee: userRoleInCommittees.some(
+							(roleInCommittee) =>
+								roleInCommittee.committee._id === REACT_APP_ELECTION_COMMITTEE_ID
+						),
+					}}
+				>
+					<FilterContext.Provider value={{ chosenCommittees }}>
+						<ApplicationList applications={applications} />
+					</FilterContext.Provider>
+				</UserContext.Provider>
 			) : (
 				<span>No applications found</span>
 			)}

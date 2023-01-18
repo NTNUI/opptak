@@ -57,7 +57,7 @@
 	},
 	{
 		"_id": 9,
-		"name": "Hovedstyret",
+		"name": "Introstyret",
 		"slug": "hovedstyret",
 		"access_roles": [
 			"deputy_leader",
