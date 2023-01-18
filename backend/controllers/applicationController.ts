@@ -298,6 +298,7 @@ const getApplications = async (
 					name: 1,
 					email: 1,
 					submitted_date: 1,
+					phone_number: 1,
 					committees: {
 						_id: 1,
 						name: 1,

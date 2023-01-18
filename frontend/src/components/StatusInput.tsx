@@ -18,14 +18,14 @@ export interface IStatusInputProps {
 	_id: string
 	value: StatusTypes
 	set_by: string | null
-	committee: {
+	committee?: {
 		name: string
 		_id: number
 	}
 	updated_date: Date
 	allowedToChange: boolean
+	variant?: 'simple'
 }
-
 interface IStatusStyleProps {
 	statusValue: StatusTypes
 }
@@ -37,7 +37,7 @@ const useStyles = createStyles((theme, { statusValue }: IStatusStyleProps) => ({
 	},
 	input: {
 		backgroundColor: getStatusColor(statusValue, theme),
-		border: 0,
+		border: '2px solid transparent',
 		color: isYellow(statusValue) ? 'black' : 'white',
 		':disabled': {
 			opacity: 1,
@@ -71,6 +71,7 @@ function StatusInput({
 	committee,
 	updated_date,
 	allowedToChange,
+	variant,
 }: IStatusInputProps) {
 	const [statusValue, setStatusValue] = useState<StatusTypes>(value)
 	const [setByValue, setSetByValue] = useState<string | null>(set_by)
@@ -136,9 +137,10 @@ function StatusInput({
 	return (
 		<>
 			<Select
-				label={committee.name}
+				label={committee?.name}
 				description={
 					setByValue &&
+					variant !== 'simple' &&
 					`Satt av ${setByValue} ${dayjs(updatedDateValue)
 						.locale('nb')
 						.format('D. MMM HH:mm')}`
