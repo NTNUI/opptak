@@ -17,9 +17,8 @@ If you change the fixtures afterwards you have to run `docker compose up --build
 Rename `.env.example` to `.env`  
 When using docker you don't need to do any modifications
 
+### ☁ Set up MongoDB Atlas
 
-
-### ☁ Set up MongoDB Atlas 
 ### ( Not necessary when using docker to run project)
 
 Set up a cluster and database on [MongoDB Atlas](https://docs.atlas.mongodb.com/getting-started/) and add the credentials to the `.env` file.
