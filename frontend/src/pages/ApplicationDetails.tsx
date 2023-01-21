@@ -18,7 +18,7 @@ import StatusInput from '../components/StatusInput'
 import { getApplication } from '../services/Applications'
 import { getUserCommittees, IRoleInCommittee } from '../services/Committees'
 import { IApplication, IPopulatedStatus } from '../types/types'
-import { REACT_APP_MAIN_BOARD_ID } from '../utils/constants'
+import { MAIN_BOARD_NAME, REACT_APP_MAIN_BOARD_ID } from '../utils/constants'
 
 interface IStatusesStyleProps {
 	amountOfStatuses: number
@@ -423,8 +423,7 @@ function ApplicationDetailPage() {
 							{!isLoading && application && isToMainBoard && (
 								<Box className={classes.applicationTextItem}>
 									<h2 className={classes.sectionTitle}>
-										<AlignJustified size={32} /> Søknadstekst til{' '}
-										{`${new Date().getMonth() < 6 ? 'Hovedstyret' : 'Introstyret'}`}
+										<AlignJustified size={32} /> Søknadstekst til {`${MAIN_BOARD_NAME}`}
 									</h2>
 									{!application.main_board_text.length ? (
 										<i>Ingen søknadstekst</i>
