@@ -6,9 +6,10 @@ import {
 	TextInput,
 } from '@mantine/core'
 import debounce from 'lodash.debounce'
-import { useMemo } from 'react'
+import { useContext, useMemo } from 'react'
 import { forwardRef, useEffect, useState } from 'react'
 import { ChevronDown, Menu2, Search } from 'tabler-icons-react'
+import { UserContext } from '../pages/ApplicationOverview'
 import { getAllCommittees } from '../services/Committees'
 import { ICommittee } from '../types/types'
 import { StatusTypes } from '../utils/enums'
@@ -143,6 +144,7 @@ function FilterSearch({
 }: FilterSearchProps) {
 	const { classes } = useStyles()
 	const [committees, setCommittees] = useState<ICommittee[]>([])
+	const { isInElectionCommittee, isInMainBoard } = useContext(UserContext)
 
 	useEffect(() => {
 		// Retrieve committees for multiselect
@@ -198,6 +200,7 @@ function FilterSearch({
 		committees.forEach((committee: ICommittee) => {
 			dataList.push({ value: `${committee._id}`, label: committee.name })
 		})
+		dataList.sort((a, b) => a.label.localeCompare(b.label))
 		return dataList
 	}
 
@@ -280,23 +283,43 @@ function FilterSearch({
 					rightSection={<ChevronDown size={14} />}
 					rightSectionWidth={40}
 				/>
-				<MultiSelect
-					classNames={{
-						root: classes.multiselectRoot,
-						input: classes.multiselectInput,
-						value: classes.multiselectValue,
-					}}
-					data={mapCommitteesToMultiselectData()}
-					label={<span className={classes.badgeLabel}>Velg utvalg</span>}
-					placeholder='Velg utvalg'
-					searchable
-					clearable
-					nothingFound='Nothing found'
-					defaultValue={chosenCommittees}
-					value={chosenCommittees}
-					onChange={setChosenCommittees}
-					rightSectionWidth={40}
-				/>
+				{isInElectionCommittee || isInMainBoard ? (
+					<MultiSelect
+						classNames={{
+							root: classes.multiselectRoot,
+							input: classes.multiselectInput,
+							value: classes.multiselectValue,
+						}}
+						data={mapCommitteesToMultiselectData()}
+						label={<span className={classes.badgeLabel}>Velg utvalg</span>}
+						placeholder='Velg utvalg'
+						searchable
+						clearable
+						nothingFound='Nothing found'
+						defaultValue={chosenCommittees}
+						value={chosenCommittees}
+						onChange={setChosenCommittees}
+						rightSectionWidth={40}
+					/>
+				) : (
+					<Select
+						classNames={{
+							root: classes.multiselectRoot,
+							label: classes.selectLabel,
+							input: classes.selectInput,
+							rightSection: classes.selectRightSection,
+						}}
+						data={[{ value: '', label: 'Alle' }].concat(
+							mapCommitteesToMultiselectData()
+						)}
+						label={<span className={classes.badgeLabel}>Velg utvalg</span>}
+						defaultValue={chosenCommittees[0]}
+						value={chosenCommittees[0]}
+						onChange={(val) => setChosenCommittees([val as string])}
+						rightSection={<ChevronDown size={14} />}
+						rightSectionWidth={40}
+					/>
+				)}
 			</div>
 		</div>
 	)
