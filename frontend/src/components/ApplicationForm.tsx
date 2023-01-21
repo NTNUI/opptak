@@ -147,6 +147,12 @@ export function Form({ committees }: IFormProps) {
 				return committee.slug !== 'valgkomiteen'
 			})
 			.map((committee: ICommittee) => {
+				if (committee.slug === 'hovedstyret') {
+					committee.name = new Date().getMonth() < 6 ? 'Hovedstyret' : 'Introstyret'
+				}
+				return committee
+			})
+			.map((committee: ICommittee) => {
 				if (!committee.accepts_admissions) {
 					return {
 						value: committee._id.toString(),
@@ -290,7 +296,9 @@ export function Form({ committees }: IFormProps) {
 						error: classes.textareaError,
 					}}
 					description='Nevn gjerne alder, klasse, studieretning, erfaring og motivasjon'
-					label='Søknadstekst for Introstyret'
+					label={`Søknadstekst for ${
+						new Date().getMonth() < 6 ? 'Hovedstyret' : 'Introstyret'
+					}`}
 					autosize
 					maxRows={10}
 					minRows={3}

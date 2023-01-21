@@ -423,7 +423,8 @@ function ApplicationDetailPage() {
 							{!isLoading && application && isToMainBoard && (
 								<Box className={classes.applicationTextItem}>
 									<h2 className={classes.sectionTitle}>
-										<AlignJustified size={32} /> Søknadstekst til Introstyret
+										<AlignJustified size={32} /> Søknadstekst til{' '}
+										{`${new Date().getMonth() < 6 ? 'Hovedstyret' : 'Introstyret'}`}
 									</h2>
 									{!application.main_board_text.length ? (
 										<i>Ingen søknadstekst</i>
