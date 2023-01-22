@@ -1,6 +1,6 @@
 import { createStyles } from '@mantine/core'
 import { useContext, useMemo } from 'react'
-import { ArrowRight, Phone } from 'tabler-icons-react'
+import { ArrowRight } from 'tabler-icons-react'
 import { FilterContext, UserContext } from '../pages/ApplicationOverview'
 import { IApplication, ICommittee } from '../types/types'
 import { REACT_APP_MAIN_BOARD_ID } from '../utils/constants'
@@ -77,40 +77,17 @@ const useStyles = createStyles(
 				display: 'none',
 			},
 		},
-		phoneNumberDiv: {
-			display: 'flex',
-			alignItems: 'center',
-			color: theme.colors.ntnui_yellow[9],
-			a: {
-				color: theme.colors.ntnui_yellow[9],
-				textDecoration: 'none',
-				marginLeft: '0.2rem',
-				overflow: 'hidden',
-				textOverflow: 'ellipsis',
-			},
-			'@media (min-width: 900px)': {
-				display: 'none',
-			},
-		},
 		committeeDiv: {
 			borderLeft: '1px solid #F8F082',
 			paddingLeft: '1rem',
 			overflow: 'hidden',
 			textOverflow: 'ellipsis',
-			'@media (max-width: 900px)': {
-				display: 'none',
-			},
 		},
 		badgeDiv: {
 			display: 'flex',
 			userSelect: 'none',
 			alignContent: 'center',
 			color: theme.colors.ntnui_yellow[9],
-			'@media (max-width: 900px)': {
-				display: 'none',
-			},
-		},
-		statusDiv: {
 			'@media (max-width: 900px)': {
 				display: 'none',
 			},
@@ -184,14 +161,10 @@ function ApplicationItem({
 				<span>{email}</span>
 				<NTNUICopyButton value={email} />
 			</div>
-			<div className={classes.phoneNumberDiv}>
-				<Phone size={16} />
-				<a href={`tel:${phone_number}`}>{phone_number}</a>
-			</div>
-			<div className={classes.statusDiv}>
-				{chosenCommittees.length === 1 &&
-				chosenCommittees[0].toString().length > 0 ? (
-					statuses
+			{chosenCommittees.length === 1 &&
+			chosenCommittees[0].toString().length > 0 ? (
+				<div>
+					{statuses
 						.filter((status) => status.committee === Number(chosenCommittees[0]))
 						.map((status) => (
 							<StatusInput
@@ -210,13 +183,13 @@ function ApplicationItem({
 								})}
 								_id={status._id}
 							/>
-						))
-				) : (
-					<div id='committee' className={classes.committeeDiv}>
-						{stringifiedCommittees}
-					</div>
-				)}
-			</div>
+						))}
+				</div>
+			) : (
+				<div id='committee' className={classes.committeeDiv}>
+					{stringifiedCommittees}
+				</div>
+			)}
 		</div>
 	)
 }
