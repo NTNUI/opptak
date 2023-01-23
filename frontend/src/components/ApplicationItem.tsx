@@ -189,7 +189,8 @@ function ApplicationItem({
 				<a href={`tel:${phone_number}`}>{phone_number}</a>
 			</div>
 			<div className={classes.statusDiv}>
-				{chosenCommittees.length === 1 ? (
+				{chosenCommittees.length === 1 &&
+				chosenCommittees[0].toString().length > 0 ? (
 					statuses
 						.filter((status) => status.committee === Number(chosenCommittees[0]))
 						.map((status) => (
