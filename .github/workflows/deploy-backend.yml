@@ -12,15 +12,11 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment:
-        name: "Production"
-        url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Node.js version
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: "16.14.0"
 
