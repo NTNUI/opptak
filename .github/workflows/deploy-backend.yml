@@ -10,8 +10,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
+    environment:
+        name: "Production"
+        url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
       - uses: actions/checkout@v3
@@ -27,27 +30,6 @@ jobs:
           npm install
           npm run build
 
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v3
-        with:
-          name: opptak-backend
-          path: |
-            backend/
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    environment:
-      name: "Production"
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v3
-        with:
-          name: opptak-backend
-          path: .
-
       - name: "Deploy to Azure Web App"
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
@@ -55,4 +37,4 @@ jobs:
           app-name: "ntnui-opptak-backend"
           slot-name: "production"
           publish-profile: ${{ secrets.AZURE_BACKEND_PUBLISH_PROFILE }}
-          package: .
+          package: ./backend
