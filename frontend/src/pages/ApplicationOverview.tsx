@@ -7,7 +7,10 @@ import { getApplications } from '../services/Applications'
 import { useNavigate } from 'react-router-dom'
 import useStickyState from '../utils/sessionstorage'
 import { getUserCommittees, IRoleInCommittee } from '../services/User'
-import { REACT_APP_ELECTION_COMMITTEE_ID } from '../utils/constants'
+import {
+	REACT_APP_ELECTION_COMMITTEE_ID,
+	REACT_APP_MAIN_BOARD_ID,
+} from '../utils/constants'
 
 const useStyles = createStyles((theme) => ({
 	overview: {
@@ -44,6 +47,7 @@ const useStyles = createStyles((theme) => ({
 export const UserContext = createContext<IUserContext>({
 	userRoleInCommittees: [],
 	isInElectionCommittee: false,
+	isInMainBoard: false,
 })
 
 export const FilterContext = createContext<IFilterContext>({
@@ -56,6 +60,7 @@ interface IFilterContext {
 interface IUserContext {
 	userRoleInCommittees: IRoleInCommittee[]
 	isInElectionCommittee: boolean
+	isInMainBoard: boolean
 }
 
 function ApplicationOverview() {
@@ -65,7 +70,7 @@ function ApplicationOverview() {
 	const [applications, setApplications] = useState<IApplication[]>([])
 	const [filters, setFilters] = useStickyState('sort=date_desc', 'filters')
 	const [chosenCommittees, setChosenCommittees] = useStickyState(
-		[],
+		[''],
 		'chosenCommittees'
 	)
 	const [sort, setSort] = useStickyState('date_desc', 'sort')
@@ -85,6 +90,27 @@ function ApplicationOverview() {
 			try {
 				const userCommitteesRes = await getUserCommittees()
 				setUserRoleInCommittees(userCommitteesRes)
+				// Pre-select committee in filter if user is only in one committee
+				const isUserInElectionCommitteeOrMainBoard = userCommitteesRes.some(
+					(roleInCommittee) =>
+						roleInCommittee.committee._id === REACT_APP_ELECTION_COMMITTEE_ID ||
+						roleInCommittee.committee._id === REACT_APP_MAIN_BOARD_ID
+				)
+				const isUserInOneCommittee = userCommitteesRes.length === 1
+				const isCommitteeCached =
+					chosenCommittees.length === 1 &&
+					chosenCommittees[0].toString().length !== 0
+				if (
+					!isUserInElectionCommitteeOrMainBoard &&
+					isUserInOneCommittee &&
+					!isCommitteeCached
+				) {
+					setChosenCommittees(
+						userCommitteesRes.map((roleInCommittee) =>
+							roleInCommittee.committee._id.toString()
+						)
+					)
+				}
 			} catch (error: any) {
 				setIsLoading(false)
 				if (error.response.status !== 200) {
@@ -117,37 +143,40 @@ function ApplicationOverview() {
 	return (
 		<div className={classes.overview}>
 			<h1>Søknadsoversikt</h1>
-			<Filter
-				setFilter={setFilters}
-				chosenCommittees={chosenCommittees}
-				setChosenCommittees={setChosenCommittees}
-				sort={sort}
-				setSort={setSort}
-				status={status}
-				setStatus={setStatus}
-				nameSearch={nameSearch}
-				setNameSearch={setNameSearch}
-			/>
-			{isLoading ? (
-				<Loader color='yellow' />
-			) : applications.length ? (
-				<UserContext.Provider
-					value={{
-						userRoleInCommittees,
-						isInElectionCommittee: userRoleInCommittees.some(
-							(roleInCommittee) =>
-								roleInCommittee.committee._id === REACT_APP_ELECTION_COMMITTEE_ID
-						),
-					}}
-				>
+			<UserContext.Provider
+				value={{
+					userRoleInCommittees,
+					isInElectionCommittee: userRoleInCommittees.some(
+						(roleInCommittee) =>
+							roleInCommittee.committee._id === REACT_APP_ELECTION_COMMITTEE_ID
+					),
+					isInMainBoard: userRoleInCommittees.some(
+						(roleInCommittee) =>
+							roleInCommittee.committee._id === REACT_APP_MAIN_BOARD_ID
+					),
+				}}
+			>
+				<Filter
+					setFilter={setFilters}
+					chosenCommittees={chosenCommittees}
+					setChosenCommittees={setChosenCommittees}
+					sort={sort}
+					setSort={setSort}
+					status={status}
+					setStatus={setStatus}
+					nameSearch={nameSearch}
+					setNameSearch={setNameSearch}
+				/>
+				{isLoading ? (
+					<Loader color='yellow' />
+				) : applications.length ? (
 					<FilterContext.Provider value={{ chosenCommittees }}>
 						<ApplicationList applications={applications} />
 					</FilterContext.Provider>
-				</UserContext.Provider>
-			) : (
-				<span>No applications found</span>
-			)}
-
+				) : (
+					<span>No applications found</span>
+				)}
+			</UserContext.Provider>
 			<Pagination
 				className={classes.pagination}
 				classNames={{

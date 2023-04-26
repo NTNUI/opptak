@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react'
 import { showNotification, updateNotification } from '@mantine/notifications'
 import { Check, ChevronDown, X } from 'tabler-icons-react'
 import { ICommittee } from '../types/types'
-import { REACT_APP_MAIN_BOARD_ID } from '../utils/constants'
+import { MAIN_BOARD_NAME, REACT_APP_MAIN_BOARD_ID } from '../utils/constants'
 
 interface ISubmissionApplication {
 	email: string
@@ -145,6 +145,12 @@ export function Form({ committees }: IFormProps) {
 		return committees
 			.filter((committee: ICommittee) => {
 				return committee.slug !== 'valgkomiteen'
+			})
+			.map((committee: ICommittee) => {
+				if (committee.slug === 'hovedstyret') {
+					committee.name = MAIN_BOARD_NAME
+				}
+				return committee
 			})
 			.map((committee: ICommittee) => {
 				if (!committee.accepts_admissions) {
@@ -290,7 +296,7 @@ export function Form({ committees }: IFormProps) {
 						error: classes.textareaError,
 					}}
 					description='Nevn gjerne alder, klasse, studieretning, erfaring og motivasjon'
-					label='Søknadstekst for Introstyret'
+					label={`Søknadstekst for ${MAIN_BOARD_NAME}`}
 					autosize
 					maxRows={10}
 					minRows={3}
