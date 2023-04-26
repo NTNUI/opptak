@@ -17,8 +17,7 @@
 	"scripts": {
 		"prefrontend": "cd frontend && npm install",
 		"frontend": "cd frontend && npm run start",
-		"prebackend": "cd backend && npm install",
-		"backend": "cd backend && npx nodemon --exec npx ts-node app.ts",
+		"backend": "cd backend && docker compose up --build",
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"prettier": "npm install && prettier --check .",
 		"eslint": "npm install && eslint . --ext ts --ext tsx",
