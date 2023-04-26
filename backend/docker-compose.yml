@@ -19,8 +19,6 @@ services:
     - DATABASE_URI=$DB_URI
     - USERNAME=$MONGO_INITDB_ROOT_USERNAME
     - PASSWORD=$MONGO_INITDB_ROOT_PASSWORD
-  depends_on:
-   - opptak-db
 
  # Backend server (ts-node)
  opptak-backend:
@@ -35,5 +33,3 @@ services:
   ports:
    - '8082:8082'
   command: npm run app
-  depends_on:
-   - opptak-db
