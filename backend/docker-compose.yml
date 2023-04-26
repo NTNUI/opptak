@@ -1,0 +1,35 @@
+services:
+ # MongoDB
+ opptak-db:
+  container_name: opptak-db
+  image: mongo:latest
+  env_file:
+   - .env
+  ports:
+   - '27017:27017'
+
+ # Auto imports fixtures, will auto exit when done
+ import-fixtures:
+  env_file:
+   - .env
+  build:
+   context: fixtures/development
+   dockerfile: Dockerfile
+   args:
+    - DATABASE_URI=$DB_URI
+    - USERNAME=$MONGO_INITDB_ROOT_USERNAME
+    - PASSWORD=$MONGO_INITDB_ROOT_PASSWORD
+
+ # Backend server (ts-node)
+ opptak-backend:
+  build:
+   dockerfile: Dockerfile
+  volumes:
+   - ./src:/home/node/app/src
+   - ./nodemon.json:/home/node/app/nodemon.json
+  container_name: opptak-backend
+  expose:
+   - '8082'
+  ports:
+   - '8082:8082'
+  command: npm run dev
