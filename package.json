@@ -16,6 +16,7 @@
 	"homepage": "https://github.com/NTNUI/opptak#readme",
 	"scripts": {
 		"prefrontend": "cd frontend && npm install",
+		"prebackend": "cd backend && npm install",
 		"frontend": "cd frontend && npm run start",
 		"backend": "cd backend && docker compose up --build",
 		"test": "echo \"Error: no test specified\" && exit 1",
