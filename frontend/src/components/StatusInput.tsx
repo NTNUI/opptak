@@ -59,6 +59,7 @@ function isYellow(value: StatusTypes): boolean {
 	return (
 		value === StatusTypes.PLANNED_INTERVIEW ||
 		value === StatusTypes.INVITED_TO_INTERVIEW ||
+		value === StatusTypes.PLANNED_ACCEPTANCE ||
 		value === StatusTypes.OFFER_GIVEN ||
 		value === StatusTypes.INTERVIEW_COMPLETED
 	)
