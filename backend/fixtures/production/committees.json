@@ -88,9 +88,7 @@
 		"_id": 103,
 		"name": "Materialutvalget",
 		"slug": "materialutvalget",
-		"access_roles": [
-			"deputy_leader"
-		],
+		"access_roles": ["deputy_leader"],
 		"accepts_admissions": false
 	}
 ]
