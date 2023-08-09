@@ -10,6 +10,7 @@ services:
 
  # Auto imports fixtures, will auto exit when done
  import-fixtures:
+  profiles: ['fresh']
   env_file:
    - .env
   build:

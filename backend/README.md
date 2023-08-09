@@ -7,12 +7,29 @@
 - [cors for Express.js](https://github.com/expressjs/cors) - middleware
 - [nodemon](https://github.com/remy/nodemon) - development dependency
 
-## Developement
-
-Install and run the backend using `docker compose up`  
-If you change the fixtures afterwards you have to run `docker compose up --build` to reload the new fixtures to the image.
+## Development
 
 ### Environment variables
 
 Make a copy of `.env.example` and name it `.env`  
 When using docker you don't need to do any modifications for developing locally.
+
+### Start the backend and a database
+
+(Requires docker installed and the environment variables from the step above)
+
+Start the backend and a local database:  
+`make start`
+
+Start the backend and a local database with clean dummy data:  
+`make fresh`
+
+Stop and remove backend and local database:  
+`make down`
+
+---
+
+#### Commands if not using makefile:
+
+Install and run the backend using `docker compose up --build`  
+If you want to populate your local database with dummy data from the fixtures use `docker compose --profile fresh up --build` instead.
