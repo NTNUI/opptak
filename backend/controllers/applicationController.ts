@@ -267,7 +267,7 @@ const getApplications = async (
 
 		// Sort
 		const sort = {
-			$sort: sortparam ? (sortValue as 1 | -1) : {},
+			$sort: sortparam ? (sortValue as number as 1 | -1) : {},
 		}
 		if (sortparam) aggregationPipeline.push(sort)
 

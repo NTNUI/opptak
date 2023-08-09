@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: "16.14.0"
 
-      - name: npm install, build, and test
+      - name: npm install and build
         run: |
           cd backend
           npm install
