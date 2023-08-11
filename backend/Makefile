@@ -7,5 +7,5 @@ fresh: ##@Docker (start) with fresh fixtures
 	docker compose --profile fresh down
 	docker compose --profile fresh up --build
 
-down: ##@Docker (stop) Stops and removes all containers
-	docker compose --profile fresh down
+clean: ##@Docker (stop) Stops and removes all containers and volumes
+	docker compose --profile fresh down -v

@@ -25,7 +25,7 @@ Start the backend and a local database with clean dummy data:
 `make fresh`
 
 Stop and remove backend and local database:  
-`make down`
+`make clean`
 
 ---
 
