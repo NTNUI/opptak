@@ -90,12 +90,5 @@
 		"slug": "materialutvalget",
 		"access_roles": ["deputy_leader"],
 		"accepts_admissions": false
-	},
-	{
-		"_id": 104,
-		"name": "Introstyret",
-		"slug": "introstyret",
-		"access_roles": [],
-		"accepts_admissions": false
 	}
 ]
