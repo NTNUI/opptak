@@ -298,6 +298,7 @@ export function Form({ committees }: IFormProps) {
 					description='Nevn gjerne alder, klasse, studieretning, erfaring og motivasjon'
 					label={`Søknadstekst for ${MAIN_BOARD_NAME}`}
 					autosize
+					required
 					maxRows={10}
 					minRows={3}
 					onBlur={() => form.validateField('main_board_text')}
@@ -329,6 +330,7 @@ export function Form({ committees }: IFormProps) {
 						: 'Søknadstekst'
 				}
 				autosize
+				required
 				maxRows={10}
 				minRows={3}
 				onBlur={() =>
