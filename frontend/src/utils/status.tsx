@@ -3,6 +3,7 @@ import { StatusTypes } from './enums'
 import {
 	Check,
 	ClipboardText,
+	Clock,
 	File,
 	PhoneCheck,
 	PhoneIncoming,
@@ -26,6 +27,8 @@ export function getStatusTranslation(status: StatusTypes) {
 			return 'Intervju avslått'
 		case StatusTypes.INTERVIEW_COMPLETED:
 			return 'Intervju fullført'
+		case StatusTypes.UNCERTAIN:
+			return 'Under vurdering'
 		case StatusTypes.PLANNED_ACCEPTANCE:
 			return 'Planlagt tilbud'
 		case StatusTypes.PLANNED_REJECTION:
@@ -55,6 +58,8 @@ export function getStatus(status: string) {
 			return StatusTypes.INTERVIEW_DECLINED
 		case 'Interview completed':
 			return StatusTypes.INTERVIEW_COMPLETED
+		case 'Uncertain':
+			return StatusTypes.UNCERTAIN
 		case 'Planned acceptance':
 			return StatusTypes.PLANNED_ACCEPTANCE
 		case 'Planned rejection':
@@ -83,6 +88,8 @@ export function getStatusColor(status: StatusTypes, theme: MantineTheme) {
 		case StatusTypes.INTERVIEW_DECLINED:
 			return theme.colors.ntnui_red[9]
 		case StatusTypes.INTERVIEW_COMPLETED:
+			return theme.colors.ntnui_yellow[9]
+		case StatusTypes.UNCERTAIN:
 			return theme.colors.ntnui_yellow[9]
 		case StatusTypes.PLANNED_ACCEPTANCE:
 			return theme.colors.ntnui_yellow[9]
@@ -113,6 +120,8 @@ export function getIconForStatus(status: string) {
 			return <PhoneOff size={20} />
 		case StatusTypes.INTERVIEW_COMPLETED:
 			return <PhoneCheck size={20} />
+		case StatusTypes.UNCERTAIN:
+			return <Clock size={20} />
 		case StatusTypes.PLANNED_ACCEPTANCE:
 			return <PhonePause size={20} />
 		case StatusTypes.PLANNED_REJECTION:

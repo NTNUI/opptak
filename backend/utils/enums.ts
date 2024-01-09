@@ -20,6 +20,7 @@ enum StatusTypes {
 	INVITED_TO_INTERVIEW = 'Invited to interview',
 	INTERVIEW_DECLINED = 'Interview declined',
 	INTERVIEW_COMPLETED = 'Interview completed',
+	UNCERTAIN = 'Uncertain',
 	PLANNED_ACCEPTANCE = 'Planned acceptance',
 	PLANNED_REJECTION = 'Planned rejection',
 	OFFER_GIVEN = 'Offer given',
