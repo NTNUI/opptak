@@ -3,10 +3,12 @@ import { StatusTypes } from './enums'
 import {
 	Check,
 	ClipboardText,
+	Clock,
 	File,
 	PhoneCheck,
 	PhoneIncoming,
 	PhoneOff,
+	PhonePause,
 	QuestionMark,
 	UserOff,
 	UserPlus,
@@ -25,6 +27,12 @@ export function getStatusTranslation(status: StatusTypes) {
 			return 'Intervju avslått'
 		case StatusTypes.INTERVIEW_COMPLETED:
 			return 'Intervju fullført'
+		case StatusTypes.UNCERTAIN:
+			return 'Under vurdering'
+		case StatusTypes.PLANNED_ACCEPTANCE:
+			return 'Planlagt tilbud'
+		case StatusTypes.PLANNED_REJECTION:
+			return 'Planlagt avslag'
 		case StatusTypes.OFFER_GIVEN:
 			return 'Tilbud gitt'
 		case StatusTypes.OFFER_DECLINED:
@@ -50,6 +58,12 @@ export function getStatus(status: string) {
 			return StatusTypes.INTERVIEW_DECLINED
 		case 'Interview completed':
 			return StatusTypes.INTERVIEW_COMPLETED
+		case 'Uncertain':
+			return StatusTypes.UNCERTAIN
+		case 'Planned acceptance':
+			return StatusTypes.PLANNED_ACCEPTANCE
+		case 'Planned rejection':
+			return StatusTypes.PLANNED_REJECTION
 		case 'Offer given':
 			return StatusTypes.OFFER_GIVEN
 		case 'Offer declined':
@@ -75,6 +89,12 @@ export function getStatusColor(status: StatusTypes, theme: MantineTheme) {
 			return theme.colors.ntnui_red[9]
 		case StatusTypes.INTERVIEW_COMPLETED:
 			return theme.colors.ntnui_yellow[9]
+		case StatusTypes.UNCERTAIN:
+			return theme.colors.ntnui_yellow[9]
+		case StatusTypes.PLANNED_ACCEPTANCE:
+			return theme.colors.ntnui_yellow[9]
+		case StatusTypes.PLANNED_REJECTION:
+			return theme.colors.ntnui_red[9]
 		case StatusTypes.OFFER_GIVEN:
 			return theme.colors.ntnui_yellow[9]
 		case StatusTypes.OFFER_DECLINED:
@@ -100,6 +120,12 @@ export function getIconForStatus(status: string) {
 			return <PhoneOff size={20} />
 		case StatusTypes.INTERVIEW_COMPLETED:
 			return <PhoneCheck size={20} />
+		case StatusTypes.UNCERTAIN:
+			return <Clock size={20} />
+		case StatusTypes.PLANNED_ACCEPTANCE:
+			return <PhonePause size={20} />
+		case StatusTypes.PLANNED_REJECTION:
+			return <PhonePause size={20} />
 		case StatusTypes.OFFER_GIVEN:
 			return <UserPlus size={20} />
 		case StatusTypes.OFFER_DECLINED:
