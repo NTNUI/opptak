@@ -102,9 +102,7 @@
 	  "_id": 79,
 	  "name": "Baneutvalget",
 	  "slug": "baneutvalget",
-	  "access_roles": [
-	    "deputy_leader"
-	  ],
+	  "access_roles": ["deputy_leader"],
 	  "accepts_admissions": true
 	}
 ]
