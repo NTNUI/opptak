@@ -97,5 +97,12 @@
 		"slug": "bumerang",
 		"access_roles": ["deputy_leader"],
 		"accepts_admissions": false
+	},
+	{
+		"_id": 79,
+		"name": "Baneutvalget",
+		"slug": "baneutvalget",
+		"access_roles": ["deputy_leader"],
+		"accepts_admissions": true
 	}
 ]
