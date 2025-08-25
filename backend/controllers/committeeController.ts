@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import { CustomError, UnauthorizedUserError } from 'ntnui-tools/customError'
 import { CommitteeModel } from '../models/Committee'
-import { ELECTION_COMMITTEE_ID, MAIN_BOARD_ID } from '../utils/constants'
+import { ELECTION_COMMITTEE_ID, MAIN_BOARD_ID, LAW_COMMITTEE_ID } from '../utils/constants'
 import { RequestWithNtnuiNo } from '../utils/request'
 import { getUserRoleInCommitteeByUserId } from '../utils/userCommittee'
 
@@ -32,9 +32,11 @@ async function acceptAdmissions(
 				// If user is organizer, allow toggle of all except main board
 				(userCommittee.committee === MAIN_BOARD_ID &&
 					committee._id !== MAIN_BOARD_ID) ||
-				// If user part of election committee, allow toggle of own and main board
+				// If user part of election committee, allow toggle of own, main board and the law committee
 				(userCommittee.committee === ELECTION_COMMITTEE_ID &&
-					committee._id === MAIN_BOARD_ID) ||
+					committee._id === userCommittee.committee ||
+					committee._id === MAIN_BOARD_ID ||
+					committee._id === LAW_COMMITTEE_ID) || 
 				// If user is board member of the committee and is not in the main board
 				(userCommittee.committee === committee._id &&
 					committee._id !== MAIN_BOARD_ID)
