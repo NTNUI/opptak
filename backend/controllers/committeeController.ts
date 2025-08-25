@@ -1,7 +1,11 @@
 import { NextFunction, Request, Response } from 'express'
 import { CustomError, UnauthorizedUserError } from 'ntnui-tools/customError'
 import { CommitteeModel } from '../models/Committee'
-import { ELECTION_COMMITTEE_ID, MAIN_BOARD_ID, LAW_COMMITTEE_ID } from '../utils/constants'
+import {
+	ELECTION_COMMITTEE_ID,
+	MAIN_BOARD_ID,
+	LAW_COMMITTEE_ID,
+} from '../utils/constants'
 import { RequestWithNtnuiNo } from '../utils/request'
 import { getUserRoleInCommitteeByUserId } from '../utils/userCommittee'
 
@@ -14,7 +18,7 @@ const getCommittees = (_req: Request, res: Response) => {
 async function acceptAdmissions(
 	req: RequestWithNtnuiNo,
 	res: Response,
-	next: NextFunction
+	next: NextFunction,
 ) {
 	try {
 		const { ntnuiNo } = req
@@ -34,12 +38,12 @@ async function acceptAdmissions(
 					committee._id !== MAIN_BOARD_ID) ||
 				// If user part of election committee, allow toggle of own, main board and the law committee
 				(userCommittee.committee === ELECTION_COMMITTEE_ID &&
-					committee._id === userCommittee.committee ||
-					committee._id === MAIN_BOARD_ID ||
-					committee._id === LAW_COMMITTEE_ID) || 
+					committee._id === userCommittee.committee) ||
+				committee._id === MAIN_BOARD_ID ||
+				committee._id === LAW_COMMITTEE_ID ||
 				// If user is board member of the committee and is not in the main board
 				(userCommittee.committee === committee._id &&
-					committee._id !== MAIN_BOARD_ID)
+					committee._id !== MAIN_BOARD_ID),
 		)
 		if (isAuthorized) {
 			// Toggle accepts_admissions for a committee
@@ -50,13 +54,13 @@ async function acceptAdmissions(
 				.then(() =>
 					res.status(200).json({
 						accepts_admissions: committee.accepts_admissions,
-					})
+					}),
 				)
 				.catch((err) => res.status(500).json({ message: err.message }))
 		}
 		throw new CustomError(
 			'You are not authorized to change the admission status of this committee',
-			403
+			403,
 		)
 	} catch (error) {
 		return next(error)
