@@ -37,13 +37,16 @@ async function acceptAdmissions(
 				(userCommittee.committee === MAIN_BOARD_ID &&
 					committee._id !== MAIN_BOARD_ID) ||
 				// If user part of election committee, allow toggle of own, main board and the law committee
-				(userCommittee.committee === ELECTION_COMMITTEE_ID &&
-					committee._id === userCommittee.committee) ||
-				committee._id === MAIN_BOARD_ID ||
-				committee._id === LAW_COMMITTEE_ID ||
-				// If user is board member of the committee and is not in the main board
-				(userCommittee.committee === committee._id &&
-					committee._id !== MAIN_BOARD_ID),
+				(
+					userCommittee.committee === ELECTION_COMMITTEE_ID &&
+					(committee._id === userCommittee.committee ||
+						committee._id === MAIN_BOARD_ID ||
+						committee._id === LAW_COMMITTEE_ID)
+				)(
+					// If user is board member of the committee and is not in the main board
+					userCommittee.committee === committee._id &&
+						committee._id !== MAIN_BOARD_ID,
+				),
 		)
 		if (isAuthorized) {
 			// Toggle accepts_admissions for a committee
