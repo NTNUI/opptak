@@ -146,7 +146,9 @@ function AdmissionStatus() {
 				} else if (locationState.isElectionCommittee) {
 					allCommittees = await getAllCommittees()
 					allCommittees = allCommittees.filter((committee: ICommittee) => {
-						return committee.slug === 'hovedstyret' || committee.slug === 'lovutvalget'
+						return (
+							committee.slug === 'hovedstyret' || committee.slug === 'lovutvalget'
+						)
 					})
 					// Include the users other committees
 					const committeesRes = await getUserCommittees()
