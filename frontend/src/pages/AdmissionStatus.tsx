@@ -142,11 +142,13 @@ function AdmissionStatus() {
 							committee.slug !== 'valgkomiteen' && committee.slug !== 'hovedstyret'
 						)
 					})
-					// Election committee can see main board
+					// Election committee can see main board and the law committee
 				} else if (locationState.isElectionCommittee) {
 					allCommittees = await getAllCommittees()
 					allCommittees = allCommittees.filter((committee: ICommittee) => {
-						return committee.slug === 'hovedstyret'
+						return (
+							committee.slug === 'hovedstyret' || committee.slug === 'lovutvalget'
+						)
 					})
 					// Include the users other committees
 					const committeesRes = await getUserCommittees()

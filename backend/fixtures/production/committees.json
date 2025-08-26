@@ -104,5 +104,12 @@
 		"slug": "baneutvalget",
 		"access_roles": ["deputy_leader"],
 		"accepts_admissions": true
+	},
+	{
+		"_id": 72,
+		"name": "Lovutvalget",
+		"slug": "lovutvalget",
+		"access_roles": ["deputy_leader"],
+		"accepts_admissions": true
 	}
 ]

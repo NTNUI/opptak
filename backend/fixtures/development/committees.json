@@ -78,5 +78,17 @@
 			"deputy_board_member"
 		],
 		"accepts_admissions": false
+	},
+	{
+		"_id": 11,
+		"name": "Lovutvalget",
+		"slug": "lovutvalget",
+		"access_roles": [
+			"deputy_leader",
+			"cashier",
+			"board_member",
+			"deputy_board_member"
+		],
+		"accepts_admissions": true
 	}
 ]
