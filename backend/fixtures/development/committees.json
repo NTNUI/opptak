@@ -90,5 +90,17 @@
 			"deputy_board_member"
 		],
 		"accepts_admissions": true
+	},
+	{
+		"_id": 12,
+		"name": "Studentlekene",
+		"slug": "studentlekene",
+		"access_roles": [
+			"deputy_leader",
+			"cashier",
+			"board_member",
+			"deputy_board_member"
+		],
+		"accepts_admissions": true
 	}
 ]

@@ -12,8 +12,12 @@ const getApplications = async (
 	return response.data
 }
 
-const getAdmissionPeriod = async () => {
-	const response = await axios.get(`/applications/period/`)
+const getAdmissionPeriod = async (sl: boolean = false) => {
+	const response = await axios.get(`/applications/period/`, {
+		params: {
+			sl,
+		},
+	})
 	return response.data
 }
 

@@ -10,9 +10,13 @@ import AdmissionPeriod from './pages/AdmissionPeriod'
 import ApplicationDetailPage from './pages/ApplicationDetails'
 import Dashboard from './pages/Dashboard'
 import FormPage from './pages/FormPage'
+import SLFormPage from './pages/SL/SLFormPage'
+import SLAdmissionPeriod from './pages/SL/SLAdmissionPeriod'
 import Login from './pages/Login'
 import colors from './utils/theme'
 import RequireAuth from './utils/authRouter'
+import SLDashboard from './pages/SL/SLDashboard'
+import SLlogin from './pages/SL/SLLogin'
 
 function App() {
 	axios.defaults.baseURL =
@@ -99,6 +103,30 @@ function App() {
 											</>
 										</RequireAuth>
 									}
+								/>
+								<Route path='/studentlekene' element={<SLFormPage />} />
+								<Route path='/studentlekene/login' element={<SLlogin />} />
+								<Route 
+									path='/studentlekene/dashboard' 
+									element={
+										<RequireAuth>
+											<>
+												<Navbar />
+												<SLDashboard />
+											</>
+										</RequireAuth>
+									} 
+								/>
+								<Route 
+									path='/studentlekene/admission-period' 
+									element={
+										<RequireAuth>
+											<>
+												<Navbar />
+												<SLAdmissionPeriod />
+											</>
+										</RequireAuth>
+									} 
 								/>
 							</Routes>
 						</BrowserRouter>

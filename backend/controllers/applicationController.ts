@@ -370,7 +370,7 @@ const postApplication = async (
 	next: NextFunction
 ) => {
 	try {
-		if (!((await getAdmissionPeriodStatus()) === AdmissionPeriodStatus.open)) {
+		if (!((await getAdmissionPeriodStatus(req.body.isSL)) === AdmissionPeriodStatus.open)) {
 			throw new CustomError('Admission period is not active', 403)
 		}
 		// Check that all applied committees accepts admissions

@@ -55,6 +55,7 @@ interface ICommittee {
 interface IAdmissionPeriod {
 	start_date: string
 	end_date: string
+	sl?: boolean
 }
 
 interface ICommitteeResponse {

@@ -22,6 +22,7 @@ interface ISubmissionApplication {
 	text: string
 	main_board_text: string
 	committees: string[]
+	isSL: boolean
 }
 
 const useStyles = createStyles((theme) => ({
@@ -87,9 +88,10 @@ interface ICommitteeInSelect {
 
 interface IFormProps {
 	committees: ICommittee[] | null
+	sl?: boolean
 }
 
-export function Form({ committees }: IFormProps) {
+export function Form({ committees, sl = false }: IFormProps) {
 	const { classes } = useStyles()
 	const [isToMainBoard, setIsToMainBoard] = useState<boolean>(false)
 	const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -102,6 +104,7 @@ export function Form({ committees }: IFormProps) {
 			message: '',
 			loading: true,
 		})
+		values.isSL = sl
 		// Wipe main board text if it is not sent to main board
 		if (!isToMainBoard) {
 			values.main_board_text = ''
@@ -190,6 +193,7 @@ export function Form({ committees }: IFormProps) {
 			text: '',
 			main_board_text: '',
 			committees: [],
+			isSL: false,
 		},
 
 		validate: {
