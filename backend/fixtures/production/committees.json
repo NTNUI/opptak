@@ -4,21 +4,24 @@
 		"name": "aktivCampus",
 		"slug": "aktivcampus",
 		"access_roles": ["deputy_leader"],
-		"accepts_admissions": false
+		"accepts_admissions": false,
+		"sl": false
 	},
 	{
 		"_id": 44,
 		"name": "Blits",
 		"slug": "blits",
 		"access_roles": ["deputy_leader"],
-		"accepts_admissions": true
+		"accepts_admissions": true,
+		"sl": false
 	},
 	{
 		"_id": 74,
 		"name": "Event",
 		"slug": "event",
 		"access_roles": ["deputy_leader"],
-		"accepts_admissions": true
+		"accepts_admissions": true,
+		"sl": false
 	},
 	{
 		"_id": 52,
@@ -30,35 +33,40 @@
 			"board_member",
 			"deputy_board_member"
 		],
-		"accepts_admissions": true
+		"accepts_admissions": true,
+		"sl": false
 	},
 	{
 		"_id": 93,
 		"name": "Politikk",
 		"slug": "moment",
 		"access_roles": [],
-		"accepts_admissions": false
+		"accepts_admissions": false,
+		"sl": false
 	},
 	{
 		"_id": 76,
 		"name": "Økonomiutvalget",
 		"slug": "okonomiutvalget",
 		"access_roles": ["deputy_leader"],
-		"accepts_admissions": true
+		"accepts_admissions": true,
+		"sl": false
 	},
 	{
 		"_id": 75,
 		"name": "Paraidrett",
 		"slug": "paraidrett",
 		"access_roles": ["deputy_leader"],
-		"accepts_admissions": true
+		"accepts_admissions": true,
+		"sl": false
 	},
 	{
 		"_id": 6,
 		"name": "Sprint",
 		"slug": "sprint",
 		"access_roles": ["deputy_leader", "cashier"],
-		"accepts_admissions": true
+		"accepts_admissions": true,
+		"sl": false
 	},
 	{
 		"_id": 80,
@@ -70,7 +78,8 @@
 			"board_member",
 			"deputy_board_member"
 		],
-		"accepts_admissions": false
+		"accepts_admissions": false,
+		"sl": false
 	},
 	{
 		"_id": 71,
@@ -82,34 +91,39 @@
 			"board_member",
 			"deputy_board_member"
 		],
-		"accepts_admissions": false
+		"accepts_admissions": false,
+		"sl": false
 	},
 	{
 		"_id": 103,
 		"name": "Materialutvalget",
 		"slug": "materialutvalget",
 		"access_roles": ["deputy_leader"],
-		"accepts_admissions": false
+		"accepts_admissions": false,
+		"sl": false
 	},
 	{
 		"_id": 67,
 		"name": "Bumerang",
 		"slug": "bumerang",
 		"access_roles": ["deputy_leader"],
-		"accepts_admissions": false
+		"accepts_admissions": false,
+		"sl": false
 	},
 	{
 		"_id": 79,
 		"name": "Baneutvalget",
 		"slug": "baneutvalget",
 		"access_roles": ["deputy_leader"],
-		"accepts_admissions": true
+		"accepts_admissions": true,
+		"sl": false
 	},
 	{
 		"_id": 72,
 		"name": "Lovutvalget",
 		"slug": "lovutvalget",
 		"access_roles": ["deputy_leader"],
-		"accepts_admissions": true
+		"accepts_admissions": true,
+		"sl": false
 	}
 ]

@@ -187,7 +187,7 @@ function FormBox() {
 					setEndDate(parsedEndDate)
 					// Retrieve committees
 					await axios
-						.get('/committees')
+						.get('/committees?sl=true')
 						.then((res) => {
 							setCommittees(res.data)
 						})
@@ -246,7 +246,7 @@ function FormBox() {
 					{endDate && (
 						<p className={classes.endOfSearchPeriodText}>Søknadsfrist: {endDate}</p>
 					)}
-					<Form committees={committees} />
+					<Form committees={committees} sl={true}/>
 				</Box>
 			) : periodStatus === AdmissionPeriodStatus.upcoming ? (
 				<Box className={classes.closedPeriod}>

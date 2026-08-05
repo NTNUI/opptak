@@ -125,9 +125,7 @@ function SLDashboard() {
 				setTheOrganizer(locationState.isOrganizer)
 
 				const userCommittees = await getUserCommittees()
-				userCommittees.forEach((roleInCommittee: IRoleInCommittee) => {
-					console.log(roleInCommittee)
-					
+				userCommittees.forEach((roleInCommittee: IRoleInCommittee) => {					
 					if (roleInCommittee.committee.slug === "studentlekene"){
 						setTheOrganizer(true)
 					} 

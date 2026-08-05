@@ -6,8 +6,8 @@ export interface IRoleInCommittee {
 	role: string
 }
 
-export const getAllCommittees = async (): Promise<ICommittee[]> => {
-	const response = await axios.get('/committees')
+export const getAllCommittees = async (sl?: boolean): Promise<ICommittee[]> => {
+	const response = await axios.get(`/committees?sl=${sl}`)
 	return response.data
 }
 

@@ -1,6 +1,6 @@
 import { Button, createStyles, Loader } from '@mantine/core'
 import { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useForm } from '@mantine/form'
 import { DateRangePicker } from '@mantine/dates'
 import 'dayjs/locale/nb'
@@ -12,6 +12,7 @@ import {
 import { IAdmissionPeriod } from '../../types/types'
 import dayjs from 'dayjs'
 import { showNotification, updateNotification } from '@mantine/notifications'
+import { getUserCommittees, IRoleInCommittee } from '../../services/Committees'
 
 const useStyles = createStyles((theme) => ({
 	pageWrapper: {
@@ -100,14 +101,9 @@ const useStyles = createStyles((theme) => ({
 	},
 }))
 
-interface stateType {
-	isOrganizer: boolean
-}
-
 function SLAdmissionPeriod() {
 	const { classes } = useStyles()
 	const navigate = useNavigate()
-	const location = useLocation()
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	// Has period been set in the db before
 	const [isPeriodSet, setIsPeriodSet] = useState<boolean>(false)
@@ -138,12 +134,20 @@ function SLAdmissionPeriod() {
 		setIsLoading(true)
 		const getAdmissionPeriodAsync = async () => {
 			try {
-				// If not organizer, redirect to dashboard
-				const locationState = location.state as stateType
-				if (!locationState.isOrganizer) {
+				let isOrganizer: boolean = false
+
+				const userCommittees = await getUserCommittees()
+				userCommittees.forEach((roleInCommittee: IRoleInCommittee) => {					
+					if (roleInCommittee.committee.slug === "studentlekene"){
+						isOrganizer = true
+					} 
+				})	
+
+				if (!isOrganizer) {
 					navigate('/dashboard')
 					return
 				}
+
 				const response = await getAdmissionPeriod(true)
 				const retrievedPeriod = [
 					new Date(response.admissionPeriod.start_date),

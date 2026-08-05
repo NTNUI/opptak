@@ -22,7 +22,7 @@ interface ISubmissionApplication {
 	text: string
 	main_board_text: string
 	committees: string[]
-	isSL: boolean
+	sl: boolean
 }
 
 const useStyles = createStyles((theme) => ({
@@ -104,7 +104,7 @@ export function Form({ committees, sl = false }: IFormProps) {
 			message: '',
 			loading: true,
 		})
-		values.isSL = sl
+		values.sl = sl
 		// Wipe main board text if it is not sent to main board
 		if (!isToMainBoard) {
 			values.main_board_text = ''
@@ -148,6 +148,9 @@ export function Form({ committees, sl = false }: IFormProps) {
 		return committees
 			.filter((committee: ICommittee) => {
 				return committee.slug !== 'valgkomiteen'
+			})
+			.filter((committee: ICommittee) => {
+				return committee.sl === sl
 			})
 			.map((committee: ICommittee) => {
 				if (committee.slug === 'hovedstyret') {
@@ -193,7 +196,7 @@ export function Form({ committees, sl = false }: IFormProps) {
 			text: '',
 			main_board_text: '',
 			committees: [],
-			isSL: false,
+			sl: false,
 		},
 
 		validate: {

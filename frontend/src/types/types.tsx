@@ -50,6 +50,7 @@ interface ICommittee {
 	slug: string
 	accepts_admissions: boolean
 	access_roles: string[]
+	sl: boolean
 }
 
 interface IAdmissionPeriod {

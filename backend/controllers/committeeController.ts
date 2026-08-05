@@ -9,8 +9,9 @@ import {
 import { RequestWithNtnuiNo } from '../utils/request'
 import { getUserRoleInCommitteeByUserId } from '../utils/userCommittee'
 
-const getCommittees = (_req: Request, res: Response) => {
-	CommitteeModel.find()
+const getCommittees = (req: Request, res: Response) => {
+	const isSL = req.query.sl === "true"
+	CommitteeModel.find({ sl: isSL })
 		.then((committees) => res.json(committees))
 		.catch((err) => res.status(404).json({ message: err.message }))
 }

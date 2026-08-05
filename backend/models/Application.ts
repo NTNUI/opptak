@@ -9,6 +9,7 @@ interface IApplication {
 	submitted_date: Date
 	committees: number[]
 	statuses: ObjectId[]
+	sl: boolean
 }
 
 const ApplicationModel = mongoose.model<IApplication>(
@@ -60,6 +61,10 @@ const ApplicationModel = mongoose.model<IApplication>(
 						required: true,
 					},
 				],
+			},
+			sl: {
+				type: Boolean,
+				required: true,
 			},
 		},
 		{ timestamps: { createdAt: 'submitted_date', updatedAt: false } }

@@ -9,7 +9,7 @@ import debounce from 'lodash.debounce'
 import { useContext, useMemo } from 'react'
 import { forwardRef, useEffect, useState } from 'react'
 import { ChevronDown, Menu2, Search } from 'tabler-icons-react'
-import { UserContext } from '../pages/ApplicationOverview'
+import { UserContext } from '../pages/SL/SLApplicationOverview'
 import { getAllCommittees } from '../services/Committees'
 import { ICommittee } from '../types/types'
 import { StatusTypes } from '../utils/enums'
@@ -129,6 +129,7 @@ export type FilterSearchProps = {
 	nameSearch: string
 	status: string
 	chosenCommittees: string[]
+	isSL?: boolean
 }
 
 function FilterSearch({
@@ -141,6 +142,7 @@ function FilterSearch({
 	nameSearch,
 	status,
 	chosenCommittees,
+	isSL = false,
 }: FilterSearchProps) {
 	const { classes } = useStyles()
 	const [committees, setCommittees] = useState<ICommittee[]>([])
@@ -151,7 +153,12 @@ function FilterSearch({
 		async function getCommittees() {
 			try {
 				let allCommittees: ICommittee[] = []
-				allCommittees = await getAllCommittees()
+				allCommittees = await getAllCommittees(isSL)
+
+				if (isSL) {
+					allCommittees = allCommittees.filter((committee: ICommittee) => committee.sl === true)
+				}
+
 				setCommittees(allCommittees)
 			} catch (error: any) {}
 		}

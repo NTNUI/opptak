@@ -17,6 +17,7 @@ import colors from './utils/theme'
 import RequireAuth from './utils/authRouter'
 import SLDashboard from './pages/SL/SLDashboard'
 import SLlogin from './pages/SL/SLLogin'
+import SLApplicationOverview from './pages/SL/SLApplicationOverview'
 
 function App() {
 	axios.defaults.baseURL =
@@ -127,6 +128,17 @@ function App() {
 											</>
 										</RequireAuth>
 									} 
+								/>
+								<Route
+									path='/studentlekene/applications'
+									element={
+										<RequireAuth>
+											<>
+												<Navbar />
+												<SLApplicationOverview />
+											</>
+										</RequireAuth>
+									}
 								/>
 							</Routes>
 						</BrowserRouter>
