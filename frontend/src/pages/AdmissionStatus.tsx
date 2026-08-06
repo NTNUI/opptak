@@ -5,10 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { AlertTriangle, X } from 'tabler-icons-react'
 import CommitteeSwitch from '../components/CommitteeSwitch'
 import { getAdmissionPeriod } from '../services/Applications'
-import {
-	getAllCommittees,
-	getUserCommittees,
-} from '../services/Committees'
+import { getAllCommittees, getUserCommittees } from '../services/Committees'
 
 import { ICommittee } from '../types/types'
 import { REACT_APP_STUDENTLEKENE_ID } from '../utils/constants'
@@ -145,12 +142,10 @@ function AdmissionStatus({ isSL = false }: AdmissionStatusProps) {
 				let allCommittees: ICommittee[] = []
 
 				if (isSL) {
-					const isUserInStudentlekeneBoard =
-						userCommittees.some(
-							(roleInCommittee) =>
-								roleInCommittee.committee._id ===
-								REACT_APP_STUDENTLEKENE_ID
-						)
+					const isUserInStudentlekeneBoard = userCommittees.some(
+						(roleInCommittee) =>
+							roleInCommittee.committee._id === REACT_APP_STUDENTLEKENE_ID
+					)
 
 					if (!isUserInStudentlekeneBoard) {
 						navigate('/dashboard')
@@ -159,51 +154,33 @@ function AdmissionStatus({ isSL = false }: AdmissionStatusProps) {
 
 					allCommittees = await getAllCommittees(true)
 
-					allCommittees = allCommittees.filter(
-						(committee) => committee.sl === true
-					)
+					allCommittees = allCommittees.filter((committee) => committee.sl === true)
 				} else {
-					const locationState =
-						location.state as StateType | null
+					const locationState = location.state as StateType | null
 
 					if (locationState?.isOrganizer) {
 						allCommittees = await getAllCommittees()
 
 						allCommittees = allCommittees.filter(
 							(committee) =>
-								committee.slug !== 'valgkomiteen' &&
-								committee.slug !== 'hovedstyret'
+								committee.slug !== 'valgkomiteen' && committee.slug !== 'hovedstyret'
 						)
-					} else if (
-						locationState?.isElectionCommittee
-					) {
+					} else if (locationState?.isElectionCommittee) {
 						allCommittees = await getAllCommittees()
 
 						allCommittees = allCommittees.filter(
 							(committee) =>
-								committee.slug === 'hovedstyret' ||
-								committee.slug === 'lovutvalget'
+								committee.slug === 'hovedstyret' || committee.slug === 'lovutvalget'
 						)
 
-						const otherUserCommittees =
-							userCommittees
-								.map(
-									(roleInCommittee) =>
-										roleInCommittee.committee
-								)
-								.filter(
-									(committee) =>
-										committee.slug !==
-										'valgkomiteen'
-								)
+						const otherUserCommittees = userCommittees
+							.map((roleInCommittee) => roleInCommittee.committee)
+							.filter((committee) => committee.slug !== 'valgkomiteen')
 
-						allCommittees.push(
-							...otherUserCommittees
-						)
+						allCommittees.push(...otherUserCommittees)
 					} else {
 						allCommittees = userCommittees.map(
-							(roleInCommittee) =>
-								roleInCommittee.committee
+							(roleInCommittee) => roleInCommittee.committee
 						)
 					}
 				}
@@ -211,65 +188,42 @@ function AdmissionStatus({ isSL = false }: AdmissionStatusProps) {
 				// Remove duplicate committees
 				const uniqueCommittees = Array.from(
 					new Map<number, ICommittee>(
-						allCommittees.map((committee) => [
-							committee._id,
-							committee,
-						])
+						allCommittees.map((committee) => [committee._id, committee])
 					).values()
 				)
 
 				setCommittees(uniqueCommittees)
 
 				try {
-					const admissionPeriodData =
-						await getAdmissionPeriod(isSL)
+					const admissionPeriodData = await getAdmissionPeriod(isSL)
 
-					setFromPeriod(
-						admissionPeriodData.admissionPeriod
-							.start_date
-					)
+					setFromPeriod(admissionPeriodData.admissionPeriod.start_date)
 
-					setToPeriod(
-						admissionPeriodData.admissionPeriod
-							.end_date
-					)
+					setToPeriod(admissionPeriodData.admissionPeriod.end_date)
 				} catch (error: any) {
 					const status = error.response?.status
 
 					if (status === 404) {
 						setPeriodIsMissing(true)
 					} else if (status === 401) {
-						navigate(
-							isSL
-								? '/studentlekene/login'
-								: '/login'
-						)
+						navigate(isSL ? '/studentlekene/login' : '/login')
 					} else if (status === 500) {
 						setIsError(true)
-						setErrorMessage(
-							'Det skjedde en feil på serveren'
-						)
+						setErrorMessage('Det skjedde en feil på serveren')
 					} else {
 						setIsError(true)
-						setErrorMessage(
-							'Klarte ikke å hente opptaksstatus'
-						)
+						setErrorMessage('Klarte ikke å hente opptaksstatus')
 					}
 				}
 			} catch (error: any) {
 				const status = error.response?.status
 
 				if (status === 401) {
-					navigate(
-						isSL
-							? '/studentlekene/login'
-							: '/login'
-					)
+					navigate(isSL ? '/studentlekene/login' : '/login')
 				} else {
 					showNotification({
 						title: 'Det skjedde en feil!',
-						message:
-							'Det skjedde en uforutsett feil.',
+						message: 'Det skjedde en uforutsett feil.',
 						color: 'red',
 						autoClose: false,
 						icon: <X size={18} />,
@@ -292,51 +246,30 @@ function AdmissionStatus({ isSL = false }: AdmissionStatusProps) {
 
 	return (
 		<Container className={classes.container}>
-			<h1>
-				{isSL
-					? 'Opptaksstatus for Studentlekene'
-					: 'Opptaksstatus'}
-			</h1>
+			<h1>{isSL ? 'Opptaksstatus for Studentlekene' : 'Opptaksstatus'}</h1>
 
 			{!periodIsMissing ? (
 				<div className={classes.text}>
-					Opptaksstatus avgjør om det skal være mulig
-					for studenter å søke i den gitte
-					opptaksperioden{' '}
+					Opptaksstatus avgjør om det skal være mulig for studenter å søke i den
+					gitte opptaksperioden{' '}
 					{isLoading ? (
-						<Loader
-							color='white'
-							variant='dots'
-						/>
+						<Loader color='white' variant='dots' />
 					) : (
-						<span className={classes.date}>
-							{formatDate(fromPeriod)}
-						</span>
+						<span className={classes.date}>{formatDate(fromPeriod)}</span>
 					)}{' '}
 					til{' '}
 					{isLoading ? (
-						<Loader
-							color='white'
-							variant='dots'
-						/>
+						<Loader color='white' variant='dots' />
 					) : (
-						<span className={classes.date}>
-							{formatDate(toPeriod)}
-						</span>
+						<span className={classes.date}>{formatDate(toPeriod)}</span>
 					)}
 				</div>
 			) : (
 				<div className={classes.text}>
-					<AlertTriangle
-						size={35}
-						className={
-							classes.warningAlertIcon
-						}
-					/>
+					<AlertTriangle size={35} className={classes.warningAlertIcon} />
 					<br />
-					Opptaksperioden er ikke satt. Når den er
-					satt vil søknader kunne sendes til ditt
-					utvalg dersom det er åpent.
+					Opptaksperioden er ikke satt. Når den er satt vil søknader kunne sendes til
+					ditt utvalg dersom det er åpent.
 				</div>
 			)}
 
@@ -347,19 +280,11 @@ function AdmissionStatus({ isSL = false }: AdmissionStatusProps) {
 						<h1>{errorMessage}</h1>
 					</div>
 				) : isLoading ? (
-					<Loader
-						className={classes.loader}
-						color='yellow'
-						size='xl'
-					/>
+					<Loader className={classes.loader} color='yellow' size='xl' />
 				) : committees.length > 0 ? (
 					<Container className={classes.container}>
 						{committees.map((committee) => (
-							<CommitteeSwitch
-								key={committee._id}
-								{...committee}
-								sl={isSL}
-							/>
+							<CommitteeSwitch key={committee._id} {...committee} sl={isSL} />
 						))}
 					</Container>
 				) : (

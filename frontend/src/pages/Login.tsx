@@ -50,14 +50,12 @@ interface LoginProps {
 	isSL?: boolean
 }
 
-function Login({isSL = false}: LoginProps) {
+function Login({ isSL = false }: LoginProps) {
 	const { classes } = useStyles()
 	const navigate = useNavigate()
 
 	const applicationPage = isSL ? '/studentlekene' : '/'
-	const dashboardPage = isSL
-		? '/studentlekene/dashboard'
-		: '/dashboard'
+	const dashboardPage = isSL ? '/studentlekene/dashboard' : '/dashboard'
 
 	useEffect(() => {
 		const verifyTokenAsync = async () => {
@@ -93,11 +91,7 @@ function Login({isSL = false}: LoginProps) {
 					/>
 				) : (
 					<>
-						<img
-							className={classes.logo}
-							alt='NTNUI logo'
-							src='/images/ntnui.svg'
-						/>
+						<img className={classes.logo} alt='NTNUI logo' src='/images/ntnui.svg' />
 						<h3>OPPTAK</h3>
 					</>
 				)}

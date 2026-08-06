@@ -136,9 +136,7 @@ function AdmissionPeriod({ isSL = false }: AdmissionPeriodProps) {
 		},
 		validate: {
 			dateRangeInput: (value) =>
-				!value[0] || !value[1]
-					? 'Du må velge to datoer'
-					: null,
+				!value[0] || !value[1] ? 'Du må velge to datoer' : null,
 		},
 	})
 
@@ -168,8 +166,7 @@ function AdmissionPeriod({ isSL = false }: AdmissionPeriodProps) {
 					 * Keep the existing organizer check for the normal
 					 * admission period.
 					 */
-					const locationState =
-						location.state as LocationState | null
+					const locationState = location.state as LocationState | null
 
 					if (!locationState?.isOrganizer) {
 						navigate('/dashboard')
@@ -185,9 +182,7 @@ function AdmissionPeriod({ isSL = false }: AdmissionPeriodProps) {
 				]
 
 				setSetBy(response.admissionPeriod.set_by)
-				setUpdatedDateValue(
-					response.admissionPeriod.updated_date
-				)
+				setUpdatedDateValue(response.admissionPeriod.updated_date)
 				form.setValues({
 					dateRangeInput: retrievedPeriod,
 				})
@@ -198,19 +193,14 @@ function AdmissionPeriod({ isSL = false }: AdmissionPeriodProps) {
 				const status = error.response?.status
 
 				if (status === 401) {
-					navigate(
-						isSL
-							? '/studentlekene/login'
-							: '/login'
-					)
+					navigate(isSL ? '/studentlekene/login' : '/login')
 				} else if (status !== 404) {
 					showNotification({
 						loading: false,
 						color: 'red',
 						icon: <X size={18} />,
 						title: 'En feil oppstod',
-						message:
-							'Kunne ikke hente opptaksperioden',
+						message: 'Kunne ikke hente opptaksperioden',
 						autoClose: false,
 					})
 				}
@@ -252,26 +242,20 @@ function AdmissionPeriod({ isSL = false }: AdmissionPeriodProps) {
 		})
 
 		try {
-			const response = await putAdmissionPeriod(
-				admissionPeriod
-			)
+			const response = await putAdmissionPeriod(admissionPeriod)
 
 			setChanged(false)
 			setIsPeriodSet(true)
 			setPreviousDates([start, end])
 			setSetBy(response.admissionPeriod.set_by)
-			setUpdatedDateValue(
-				response.admissionPeriod.updated_date
-			)
+			setUpdatedDateValue(response.admissionPeriod.updated_date)
 
 			updateNotification({
 				id: 'admission-period-notification',
 				loading: false,
 				color: 'green',
 				icon: <Check size={18} />,
-				title: `Opptaksperiode ${
-					isPeriodSet ? 'oppdatert' : 'satt'
-				}!`,
+				title: `Opptaksperiode ${isPeriodSet ? 'oppdatert' : 'satt'}!`,
 				message: '',
 				autoClose: 7000,
 			})
@@ -298,10 +282,7 @@ function AdmissionPeriod({ isSL = false }: AdmissionPeriodProps) {
 
 	const undoChanges = () => {
 		form.setValues({
-			dateRangeInput: [
-				previousDates[0],
-				previousDates[1],
-			],
+			dateRangeInput: [previousDates[0], previousDates[1]],
 		})
 	}
 
@@ -311,12 +292,8 @@ function AdmissionPeriod({ isSL = false }: AdmissionPeriodProps) {
 
 	useEffect(() => {
 		const datesAreUnchanged =
-			dayjs(form.values.dateRangeInput[0]).isSame(
-				previousDates[0]
-			) &&
-			dayjs(form.values.dateRangeInput[1]).isSame(
-				previousDates[1]
-			)
+			dayjs(form.values.dateRangeInput[0]).isSame(previousDates[0]) &&
+			dayjs(form.values.dateRangeInput[1]).isSame(previousDates[1])
 
 		setChanged(!datesAreUnchanged)
 		setHasError(form.validate().hasErrors)
@@ -346,15 +323,11 @@ function AdmissionPeriod({ isSL = false }: AdmissionPeriodProps) {
 	return (
 		<div className={classes.pageWrapper}>
 			<div className={classes.header}>
-				<h1>
-					{isSL
-						? 'Opptaksperiode for Studentlekene'
-						: 'Opptaksperiode'}
-				</h1>
+				<h1>{isSL ? 'Opptaksperiode for Studentlekene' : 'Opptaksperiode'}</h1>
 
 				<p>
-					Opptaksperioden bestemmer når studenter har
-					mulighet til å sende inn søknad.
+					Opptaksperioden bestemmer når studenter har mulighet til å sende inn
+					søknad.
 				</p>
 
 				<h3 className={classes.admissionPeriodStatusText}>
@@ -377,40 +350,29 @@ function AdmissionPeriod({ isSL = false }: AdmissionPeriodProps) {
 						label: classes.dateRangeLabel,
 						icon: classes.dateRangeIcon,
 						error: classes.dateRangeError,
-						rightSection:
-							classes.dateRangeRightSection,
+						rightSection: classes.dateRangeRightSection,
 					}}
 					label='Opptaksperiode'
 					placeholder='Velg en tidsperiode'
 					description={
 						setBy &&
 						updatedDateValue &&
-						`Satt av ${setBy} ${dayjs(
-							updatedDateValue
-						)
+						`Satt av ${setBy} ${dayjs(updatedDateValue)
 							.locale('nb')
 							.format('D. MMM HH:mm')}`
 					}
 					{...form.getInputProps('dateRangeInput')}
-					onBlur={() =>
-						form.validateField('dateRangeInput')
-					}
+					onBlur={() => form.validateField('dateRangeInput')}
 				/>
 			)}
 
-			{isPeriodSet &&
-				!differentFromDb &&
-				initialChange && (
-					<i className={classes.unchangedText}>
-						Endre opptaksperioden for å lagre
-					</i>
-				)}
+			{isPeriodSet && !differentFromDb && initialChange && (
+				<i className={classes.unchangedText}>Endre opptaksperioden for å lagre</i>
+			)}
 
 			<div className={classes.buttonWrapper}>
 				<Button
-					disabled={
-						isPeriodSet && !differentFromDb
-					}
+					disabled={isPeriodSet && !differentFromDb}
 					className={classes.cancelButton}
 					leftIcon={<History />}
 					onClick={undoChanges}
@@ -420,10 +382,7 @@ function AdmissionPeriod({ isSL = false }: AdmissionPeriodProps) {
 
 				<Button
 					className={classes.confirmButton}
-					disabled={
-						(isPeriodSet && !differentFromDb) ||
-						hasError
-					}
+					disabled={(isPeriodSet && !differentFromDb) || hasError}
 					leftIcon={<Check />}
 					onClick={saveAdmissionPeriod}
 				>

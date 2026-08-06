@@ -5,10 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import ApplicationList from '../components/ApplicationList'
 import Filter from '../components/FilterSearch'
 import { getApplications } from '../services/Applications'
-import {
-	getUserCommittees,
-	IRoleInCommittee,
-} from '../services/User'
+import { getUserCommittees, IRoleInCommittee } from '../services/User'
 import { IApplication } from '../types/types'
 import {
 	REACT_APP_ELECTION_COMMITTEE_ID,
@@ -78,7 +75,7 @@ export const FilterContext = createContext<IFilterContext>({
 	chosenCommittees: [],
 })
 
-function ApplicationOverview({isSL = false}: ApplicationOverviewProps) {
+function ApplicationOverview({ isSL = false }: ApplicationOverviewProps) {
 	const navigate = useNavigate()
 	const { classes } = useStyles()
 
@@ -111,15 +108,9 @@ function ApplicationOverview({isSL = false}: ApplicationOverviewProps) {
 		isSL ? 'slChosenCommittees' : 'chosenCommittees'
 	)
 
-	const [sort, setSort] = useStickyState(
-		'date_desc',
-		isSL ? 'slSort' : 'sort'
-	)
+	const [sort, setSort] = useStickyState('date_desc', isSL ? 'slSort' : 'sort')
 
-	const [status, setStatus] = useStickyState(
-		'',
-		isSL ? 'slStatus' : 'status'
-	)
+	const [status, setStatus] = useStickyState('', isSL ? 'slStatus' : 'status')
 
 	const [nameSearch, setNameSearch] = useStickyState(
 		'',
@@ -128,20 +119,16 @@ function ApplicationOverview({isSL = false}: ApplicationOverviewProps) {
 
 	const isInElectionCommittee = userRoleInCommittees.some(
 		(roleInCommittee) =>
-			roleInCommittee.committee._id ===
-			REACT_APP_ELECTION_COMMITTEE_ID
+			roleInCommittee.committee._id === REACT_APP_ELECTION_COMMITTEE_ID
 	)
 
 	const isInMainBoard = userRoleInCommittees.some(
-		(roleInCommittee) =>
-			roleInCommittee.committee._id ===
-			REACT_APP_MAIN_BOARD_ID
+		(roleInCommittee) => roleInCommittee.committee._id === REACT_APP_MAIN_BOARD_ID
 	)
 
 	const isInSLBoard = userRoleInCommittees.some(
 		(roleInCommittee) =>
-			roleInCommittee.committee._id ===
-			REACT_APP_STUDENTLEKENE_ID
+			roleInCommittee.committee._id === REACT_APP_STUDENTLEKENE_ID
 	)
 
 	useEffect(() => {
@@ -151,23 +138,19 @@ function ApplicationOverview({isSL = false}: ApplicationOverviewProps) {
 
 				setUserRoleInCommittees(response)
 
-				const userIsInElectionCommittee =
-					response.some(
-						(roleInCommittee) =>
-							roleInCommittee.committee._id ===
-							REACT_APP_ELECTION_COMMITTEE_ID
-					)
+				const userIsInElectionCommittee = response.some(
+					(roleInCommittee) =>
+						roleInCommittee.committee._id === REACT_APP_ELECTION_COMMITTEE_ID
+				)
 
 				const userIsInMainBoard = response.some(
 					(roleInCommittee) =>
-						roleInCommittee.committee._id ===
-						REACT_APP_MAIN_BOARD_ID
+						roleInCommittee.committee._id === REACT_APP_MAIN_BOARD_ID
 				)
 
 				const userIsInSLBoard = response.some(
 					(roleInCommittee) =>
-						roleInCommittee.committee._id ===
-						REACT_APP_STUDENTLEKENE_ID
+						roleInCommittee.committee._id === REACT_APP_STUDENTLEKENE_ID
 				)
 
 				/*
@@ -176,38 +159,26 @@ function ApplicationOverview({isSL = false}: ApplicationOverviewProps) {
 				 */
 				const relevantUserCommittees = isSL
 					? response.filter(
-							(roleInCommittee) =>
-								roleInCommittee.committee.sl === true
+							(roleInCommittee) => roleInCommittee.committee.sl === true
 					  )
 					: response
 
 				const hasBroadAccess =
-					userIsInElectionCommittee ||
-					userIsInMainBoard ||
-					(isSL && userIsInSLBoard)
+					userIsInElectionCommittee || userIsInMainBoard || (isSL && userIsInSLBoard)
 
 				const hasCachedCommittee =
-					chosenCommittees.length === 1 &&
-					chosenCommittees[0].length > 0
+					chosenCommittees.length === 1 && chosenCommittees[0].length > 0
 
 				if (
 					!hasBroadAccess &&
 					relevantUserCommittees.length === 1 &&
 					!hasCachedCommittee
 				) {
-					setChosenCommittees([
-						relevantUserCommittees[
-							0
-						].committee._id.toString(),
-					])
+					setChosenCommittees([relevantUserCommittees[0].committee._id.toString()])
 				}
 			} catch (error: any) {
 				if (error.response?.status === 401) {
-					navigate(
-						isSL
-							? '/studentlekene/login'
-							: '/login'
-					)
+					navigate(isSL ? '/studentlekene/login' : '/login')
 					return
 				}
 
@@ -226,16 +197,9 @@ function ApplicationOverview({isSL = false}: ApplicationOverviewProps) {
 			setIsLoading(true)
 
 			try {
-				const safePage = Math.max(
-					1,
-					Number(currentPage) || 1
-				)
+				const safePage = Math.max(1, Number(currentPage) || 1)
 
-				const query = [
-					isSL ? 'sl=true' : '',
-					`page=${safePage}`,
-					filters,
-				]
+				const query = [isSL ? 'sl=true' : '', `page=${safePage}`, filters]
 					.filter(Boolean)
 					.join('&')
 
@@ -243,30 +207,17 @@ function ApplicationOverview({isSL = false}: ApplicationOverviewProps) {
 
 				setApplications(response.applications)
 
-				setCurrentPage(
-					response.pagination.currentPage || 1
-				)
+				setCurrentPage(response.pagination.currentPage || 1)
 
-				setNumberOfPages(
-					Math.max(
-						1,
-						response.pagination.numberOfPages
-					)
-				)
+				setNumberOfPages(Math.max(1, response.pagination.numberOfPages))
 			} catch (error: any) {
 				if (error.response?.status === 401) {
-					navigate(
-						isSL
-							? '/studentlekene/login'
-							: '/login'
-					)
+					navigate(isSL ? '/studentlekene/login' : '/login')
 					return
 				}
 
 				console.error(
-					`Could not retrieve ${
-						isSL ? 'SL ' : ''
-					}applications:`,
+					`Could not retrieve ${isSL ? 'SL ' : ''}applications:`,
 					error.response?.data ?? error
 				)
 			} finally {
@@ -275,21 +226,11 @@ function ApplicationOverview({isSL = false}: ApplicationOverviewProps) {
 		}
 
 		loadApplications()
-	}, [
-		currentPage,
-		filters,
-		isSL,
-		navigate,
-		setCurrentPage,
-	])
+	}, [currentPage, filters, isSL, navigate, setCurrentPage])
 
 	return (
 		<div className={classes.overview}>
-			<h1>
-				{isSL
-					? 'Søknadsoversikt for Studentlekene'
-					: 'Søknadsoversikt'}
-			</h1>
+			<h1>{isSL ? 'Søknadsoversikt for Studentlekene' : 'Søknadsoversikt'}</h1>
 
 			<UserContext.Provider
 				value={{
@@ -302,9 +243,7 @@ function ApplicationOverview({isSL = false}: ApplicationOverviewProps) {
 				<Filter
 					setFilter={setFilters}
 					chosenCommittees={chosenCommittees}
-					setChosenCommittees={
-						setChosenCommittees
-					}
+					setChosenCommittees={setChosenCommittees}
 					sort={sort}
 					setSort={setSort}
 					status={status}
@@ -317,12 +256,8 @@ function ApplicationOverview({isSL = false}: ApplicationOverviewProps) {
 				{isLoading ? (
 					<Loader color='yellow' />
 				) : applications.length > 0 ? (
-					<FilterContext.Provider
-						value={{ chosenCommittees }}
-					>
-						<ApplicationList
-							applications={applications}
-						/>
+					<FilterContext.Provider value={{ chosenCommittees }}>
+						<ApplicationList applications={applications} />
 					</FilterContext.Provider>
 				) : (
 					<span>Ingen søknader funnet</span>

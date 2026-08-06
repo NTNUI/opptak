@@ -159,14 +159,13 @@ interface FormBoxProps {
 	isSL?: boolean
 }
 
-function FormBox({isSL = false}: FormBoxProps) {
+function FormBox({ isSL = false }: FormBoxProps) {
 	const { classes } = useStyles()
 	const navigate = useNavigate()
 
-	const [periodStatus, setPeriodStatus] =
-		useState<AdmissionPeriodStatus>(
-			AdmissionPeriodStatus.open
-		)
+	const [periodStatus, setPeriodStatus] = useState<AdmissionPeriodStatus>(
+		AdmissionPeriodStatus.open
+	)
 
 	const [isLoading, setIsLoading] = useState(false)
 	const [startDate, setStartDate] = useState('')
@@ -188,9 +187,7 @@ function FormBox({isSL = false}: FormBoxProps) {
 				setPeriodStatus(status)
 
 				if (status === AdmissionPeriodStatus.open) {
-					const parsedEndDate = new Date(
-						admissionPeriod.end_date
-					)
+					const parsedEndDate = new Date(admissionPeriod.end_date)
 						.toLocaleDateString('no-NO', {
 							month: 'long',
 							day: 'numeric',
@@ -201,14 +198,11 @@ function FormBox({isSL = false}: FormBoxProps) {
 					setEndDate(parsedEndDate)
 
 					try {
-						const committeeResponse = await axios.get(
-							'/committees',
-							{
-								params: {
-									sl: isSL,
-								},
-							}
-						)
+						const committeeResponse = await axios.get('/committees', {
+							params: {
+								sl: isSL,
+							},
+						})
 
 						setCommittees(committeeResponse.data)
 					} catch (error) {
@@ -222,14 +216,9 @@ function FormBox({isSL = false}: FormBoxProps) {
 							icon: <X size={18} />,
 						})
 
-						console.error(
-							'Could not retrieve committees:',
-							error
-						)
+						console.error('Could not retrieve committees:', error)
 					}
-				} else if (
-					status === AdmissionPeriodStatus.upcoming
-				) {
+				} else if (status === AdmissionPeriodStatus.upcoming) {
 					const parsedStartDate = new Date(
 						admissionPeriod.start_date
 					).toLocaleDateString('no-NO', {
@@ -241,10 +230,7 @@ function FormBox({isSL = false}: FormBoxProps) {
 					setStartDate(parsedStartDate)
 				}
 			} catch (error) {
-				console.error(
-					'Could not retrieve admission period:',
-					error
-				)
+				console.error('Could not retrieve admission period:', error)
 			} finally {
 				setIsLoading(false)
 			}
@@ -253,9 +239,7 @@ function FormBox({isSL = false}: FormBoxProps) {
 		getApplicationPeriodActiveAsync()
 	}, [isSL])
 
-	const loginPath = isSL
-		? '/studentlekene/login'
-		: '/login'
+	const loginPath = isSL ? '/studentlekene/login' : '/login'
 
 	const applicationTitle = isSL
 		? 'Søknad til Studentlekene'
@@ -274,16 +258,10 @@ function FormBox({isSL = false}: FormBoxProps) {
 			<Box className={classes.header}>
 				<Box className={classes.logo}>
 					{isSL ? (
-						<img
-							alt='Studentlekene logo'
-							src='/images/sl.png'
-						/>
+						<img alt='Studentlekene logo' src='/images/sl.png' />
 					) : (
 						<>
-							<img
-								alt='NTNUI logo'
-								src='/images/ntnui.svg'
-							/>
+							<img alt='NTNUI logo' src='/images/ntnui.svg' />
 							<h1>OPPTAK</h1>
 						</>
 					)}
@@ -300,11 +278,7 @@ function FormBox({isSL = false}: FormBoxProps) {
 			</Box>
 
 			{isLoading ? (
-				<Loader
-					size='xl'
-					color='yellow'
-					className={classes.loading}
-				/>
+				<Loader size='xl' color='yellow' className={classes.loading} />
 			) : periodStatus === AdmissionPeriodStatus.open ? (
 				<Box className={classes.formTitleAndBodyWrapper}>
 					<h1 className={classes.formTitle}>
@@ -313,61 +287,36 @@ function FormBox({isSL = false}: FormBoxProps) {
 					</h1>
 
 					{endDate && (
-						<p className={classes.endOfSearchPeriodText}>
-							Søknadsfrist: {endDate}
-						</p>
+						<p className={classes.endOfSearchPeriodText}>Søknadsfrist: {endDate}</p>
 					)}
 
-					<Form
-						committees={committees}
-						sl={isSL}
-					/>
+					<Form committees={committees} sl={isSL} />
 				</Box>
-			) : periodStatus ===
-			  AdmissionPeriodStatus.upcoming ? (
+			) : periodStatus === AdmissionPeriodStatus.upcoming ? (
 				<Box className={classes.closedPeriod}>
-					<h1 className={classes.formTitle}>
-						{upcomingTitle}
-					</h1>
+					<h1 className={classes.formTitle}>{upcomingTitle}</h1>
 
 					<div className={classes.closedText}>
-						Les mer om våre utvalg på{' '}
-						<a href='https://ntnui.no/opptak/'>
-							ntnui.no
-						</a>
-						!
+						Les mer om våre utvalg på <a href='https://ntnui.no/opptak/'>ntnui.no</a>!
 					</div>
 				</Box>
 			) : (
 				<Box className={classes.closedPeriod}>
-					<h1 className={classes.formTitle}>
-						{closedTitle}
-					</h1>
+					<h1 className={classes.formTitle}>{closedTitle}</h1>
 
 					<p className={classes.closedText}>
 						{isSL ? (
 							<>
 								Mer informasjon om SL finner du{' '}
-								<a href='https://www.sltrondheim.no/'>
-									her
-								</a>
-								. Leter du etter opptak til en
-								NTNUI-gruppe eller Admin? Finn gruppens
-								egen nettside på{' '}
-								<a href='https://medlem.ntnui.no/groups'>
-									medlem.ntnui.no
-								</a>
-								!
+								<a href='https://www.sltrondheim.no/'>her</a>. Leter du etter opptak til
+								en NTNUI-gruppe eller Admin? Finn gruppens egen nettside på{' '}
+								<a href='https://medlem.ntnui.no/groups'>medlem.ntnui.no</a>!
 							</>
 						) : (
 							<>
-								Leter du etter opptak til en
-								NTNUI-gruppe eller et lag? Finn gruppens
+								Leter du etter opptak til en NTNUI-gruppe eller et lag? Finn gruppens
 								egen nettside på{' '}
-								<a href='https://medlem.ntnui.no/groups'>
-									medlem.ntnui.no
-								</a>
-								!
+								<a href='https://medlem.ntnui.no/groups'>medlem.ntnui.no</a>!
 							</>
 						)}
 					</p>

@@ -108,15 +108,14 @@ interface DashboardProps {
 	isSL?: boolean
 }
 
-function Dashboard({isSL = false}: DashboardProps) {
+function Dashboard({ isSL = false }: DashboardProps) {
 	const { classes } = useStyles()
 	const navigate = useNavigate()
 	const location = useLocation()
-	
-	const [periodStatus, setPeriodStatus] =
-		useState<AdmissionPeriodStatus>(
-			AdmissionPeriodStatus.open
-		)
+
+	const [periodStatus, setPeriodStatus] = useState<AdmissionPeriodStatus>(
+		AdmissionPeriodStatus.open
+	)
 
 	const [startDate, setStartDate] = useState('')
 	const [endDate, setEndDate] = useState('')
@@ -134,49 +133,31 @@ function Dashboard({isSL = false}: DashboardProps) {
 				setUserName(user)
 
 				if (isSL) {
-					const userCommittees =
-						await getUserCommittees()
+					const userCommittees = await getUserCommittees()
 
-					const isInStudentlekeneBoard =
-						userCommittees.some(
-							(
-								roleInCommittee: IRoleInCommittee
-							) =>
-								roleInCommittee.committee._id ===
-								REACT_APP_STUDENTLEKENE_ID
-						)
-
-					setTheOrganizer(
-						isInStudentlekeneBoard
+					const isInStudentlekeneBoard = userCommittees.some(
+						(roleInCommittee: IRoleInCommittee) =>
+							roleInCommittee.committee._id === REACT_APP_STUDENTLEKENE_ID
 					)
+
+					setTheOrganizer(isInStudentlekeneBoard)
 				} else {
-					const locationState =
-						location.state as StateType | null
+					const locationState = location.state as StateType | null
 
-					setTheOrganizer(
-						locationState?.isOrganizer ?? false
-					)
+					setTheOrganizer(locationState?.isOrganizer ?? false)
 				}
 
-				const response =
-					await getAdmissionPeriod(isSL)
+				const response = await getAdmissionPeriod(isSL)
 
-				const admissionPeriod =
-					response.admissionPeriod
+				const admissionPeriod = response.admissionPeriod
 
-				setPeriodStatus(
-					response.admissionStatus
-				)
+				setPeriodStatus(response.admissionStatus)
 
-				const parsedStartDate = dayjs(
-					admissionPeriod.start_date
-				)
+				const parsedStartDate = dayjs(admissionPeriod.start_date)
 					.locale('nb')
 					.format('D. MMMM YYYY')
 
-				const parsedEndDate = dayjs(
-					admissionPeriod.end_date
-				)
+				const parsedEndDate = dayjs(admissionPeriod.end_date)
 					.locale('nb')
 					.format('D. MMMM YYYY')
 
@@ -184,11 +165,7 @@ function Dashboard({isSL = false}: DashboardProps) {
 				setEndDate(parsedEndDate)
 			} catch (error: any) {
 				if (error.response?.status === 401) {
-					navigate(
-						isSL
-							? '/studentlekene/login'
-							: '/login'
-					)
+					navigate(isSL ? '/studentlekene/login' : '/login')
 					return
 				}
 
@@ -204,18 +181,11 @@ function Dashboard({isSL = false}: DashboardProps) {
 		getDashboardDataAsync()
 	}, [isSL, location.state, navigate])
 
-	const routePrefix = isSL
-		? '/studentlekene'
-		: ''
+	const routePrefix = isSL ? '/studentlekene' : ''
 
 	return (
 		<>
-			{!isSL && (
-				<WipeModal
-					opened={wipeModalOpen}
-					setOpened={setWipeModalOpen}
-				/>
-			)}
+			{!isSL && <WipeModal opened={wipeModalOpen} setOpened={setWipeModalOpen} />}
 
 			{isLoading && (
 				<Group position='center'>
@@ -233,178 +203,72 @@ function Dashboard({isSL = false}: DashboardProps) {
 					>
 						{(styles) => (
 							<>
-								<h1
-									style={styles}
-									className={classes.text}
-								>
-									<span
-										className={
-											classes.header
-										}
-									>
-										<span
-											className={
-												classes.subHeader
-											}
-										>
-											Hei,{' '}
-										</span>
-
-										{userName?.first_name}{' '}
-										{userName?.last_name}
+								<h1 style={styles} className={classes.text}>
+									<span className={classes.header}>
+										<span className={classes.subHeader}>Hei, </span>
+										{userName?.first_name} {userName?.last_name}
 									</span>
 								</h1>
 
-								<p
-									style={styles}
-									className={classes.text}
-								>
-									{periodStatus ===
-										AdmissionPeriodStatus.open &&
+								<p style={styles} className={classes.text}>
+									{periodStatus === AdmissionPeriodStatus.open &&
 									startDate &&
 									endDate ? (
 										<>
-											<CalendarEvent
-												size={24}
-												strokeWidth={
-													1.5
-												}
-											/>{' '}
-											Opptaksperioden
-											er satt fra{' '}
-											<span
-												className={
-													classes.date
-												}
-											>
-												{
-													startDate
-												}
-											</span>{' '}
-											til{' '}
-											<span
-												className={
-													classes.date
-												}
-											>
-												{endDate}
-											</span>
+											<CalendarEvent size={24} strokeWidth={1.5} /> Opptaksperioden er satt
+											fra <span className={classes.date}>{startDate}</span> til{' '}
+											<span className={classes.date}>{endDate}</span>
 										</>
-									) : periodStatus ===
-									  AdmissionPeriodStatus.finished ? (
+									) : periodStatus === AdmissionPeriodStatus.finished ? (
 										<>
-											Opptaksperioden
-											avsluttet{' '}
-											<span
-												className={
-													classes.date
-												}
-											>
-												{endDate}
-											</span>
+											Opptaksperioden avsluttet{' '}
+											<span className={classes.date}>{endDate}</span>
 										</>
 									) : (
 										<>
-											Opptaksperioden
-											begynner{' '}
-											<span
-												className={
-													classes.date
-												}
-											>
-												{
-													startDate
-												}
-											</span>
+											Opptaksperioden begynner{' '}
+											<span className={classes.date}>{startDate}</span>
 										</>
 									)}
 								</p>
 
-								<div
-									style={styles}
-									className={
-										classes.metroBoxWrapper
-									}
-								>
+								<div style={styles} className={classes.metroBoxWrapper}>
 									<Box
-										className={
-											classes.metroBoxes
-										}
-										onClick={() =>
-											navigate(
-												`${routePrefix}/applications`
-											)
-										}
+										className={classes.metroBoxes}
+										onClick={() => navigate(`${routePrefix}/applications`)}
 									>
-										<FileText
-											size={150}
-											strokeWidth={0.9}
-										/>
+										<FileText size={150} strokeWidth={0.9} />
 										Søknader
 									</Box>
 
 									<Box
-										className={
-											classes.metroBoxes
-										}
-										onClick={() =>
-											navigate(
-												`${routePrefix}/admission-status`
-											)
-										}
+										className={classes.metroBoxes}
+										onClick={() => navigate(`${routePrefix}/admission-status`)}
 									>
-										<Users
-											size={150}
-											strokeWidth={0.9}
-										/>
+										<Users size={150} strokeWidth={0.9} />
 										Opptaksstatus
 									</Box>
 
 									{isTheOrganizer && (
 										<Box
-											className={
-												classes.metroBoxes
-											}
-											onClick={() =>
-												navigate(
-													`${routePrefix}/admission-period`
-												)
-											}
+											className={classes.metroBoxes}
+											onClick={() => navigate(`${routePrefix}/admission-period`)}
 										>
-											<CalendarEvent
-												size={150}
-												strokeWidth={
-													0.9
-												}
-											/>
+											<CalendarEvent size={150} strokeWidth={0.9} />
 											Opptaksperiode
 										</Box>
 									)}
 								</div>
 
-								{!isSL &&
-									isTheOrganizer && (
-										<Button
-											onClick={() =>
-												setWipeModalOpen(
-													true
-												)
-											}
-											className={
-												classes.wipeDataButton
-											}
-											leftIcon={
-												<Trash
-													size={
-														18
-													}
-												/>
-											}
-										>
-											Slett
-											opptaksdata
-										</Button>
-									)}
+								{!isSL && isTheOrganizer && (
+									<Button
+										onClick={() => setWipeModalOpen(true)}
+										className={classes.wipeDataButton}
+										leftIcon={<Trash size={18} />}
+									>
+										Slett opptaksdata
+									</Button>
+								)}
 							</>
 						)}
 					</Transition>
