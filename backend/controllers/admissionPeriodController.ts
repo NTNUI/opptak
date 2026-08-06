@@ -31,12 +31,10 @@ const getAdmissionPeriod = async (req: Request, res: Response) => {
 			.status(404)
 			.json({ message: 'There is no admission period in the db' })
 	}
-	return res
-		.status(200)
-		.json({
-			admissionPeriod,
-			admissionStatus: await getAdmissionPeriodStatus(isSL),
-		})
+	return res.status(200).json({
+		admissionPeriod,
+		admissionStatus: await getAdmissionPeriodStatus(isSL),
+	})
 }
 
 const putAdmissionPeriod = async (req: RequestWithNtnuiNo, res: Response) => {

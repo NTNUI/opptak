@@ -72,8 +72,7 @@ function SLlogin() {
 				Tilbake til søknadssiden
 			</Button>
 			<div className={classes.opptakHeader}>
-				<img className={classes.logo} alt='ntnui logo' src='/images/ntnui.svg' />
-				<h3>OPPTAK</h3>
+				<img className={classes.logo} alt='ntnui logo' src='/images/sl.png' />
 				<p>Internt system for styremedlemmer</p>
 			</div>
 			<LoginForm isSL={true} />

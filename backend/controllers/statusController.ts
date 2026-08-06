@@ -35,8 +35,6 @@ const putStatus = async (
 			})
 		if (!status) throw new CustomError('Could not find status', 404)
 
-		console.log('ISSL: ', req.query.sl)
-
 		const isSL = req.query.sl === 'true'
 
 		const isUserInStudentlekeneBoard = user.committees
@@ -53,8 +51,6 @@ const putStatus = async (
 			.includes(ELECTION_COMMITTEE_ID)
 		// Check if status is for main board
 		const isStatusForMainBoard = status.committee === MAIN_BOARD_ID
-
-		console.log(`Print: ${  isSL}`, isUserInStudentlekeneBoard)
 
 		if (
 			isUserInCommittee ||
