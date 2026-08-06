@@ -1,6 +1,6 @@
 import { Box, Button, createStyles, Loader } from '@mantine/core'
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import {
 	AlertTriangle,
 	AlignJustified,
@@ -219,6 +219,7 @@ function YellowDotLoader() {
 
 function ApplicationDetailPage() {
 	const navigate = useNavigate()
+	const location = useLocation()
 	const [application, setApplication] = useState<IApplication | null>(null)
 	const [amountOfStatuses, setAmountOfStatuses] = useState<number>(0)
 	const [isToMainBoard, setIsToMainBoard] = useState<boolean>(false)
@@ -229,13 +230,15 @@ function ApplicationDetailPage() {
 	const [isError, setIsError] = useState<boolean>(false)
 	const [errorMessage, setErrorMessage] = useState('')
 	const { id } = useParams()
+	const isSL: boolean = location.pathname.includes("studentlekene")
+
 
 	useEffect(() => {
 		setIsLoading(true)
 		if (id) {
 			const getApplicationAsync = async () => {
 				try {
-					const response = await getApplication(id)
+					const response = await getApplication(id, isSL)
 					setApplication(response.application)
 					const userCommitteesRes = await getUserCommittees()
 					setUserCommitteeIds(
@@ -288,6 +291,11 @@ function ApplicationDetailPage() {
 				return roleInCommittee.committee.slug === 'valgkomiteen'
 			}
 		)
+		const isUserInStudentlekeneBoard = userCommittees.some(
+			(roleInCommittee: IRoleInCommittee) => {
+				return roleInCommittee.committee.slug === 'studentlekene'
+			}
+		)
 		const statByRel = statuses
 			.map((status) => {
 				// If the status can be edited by the user, it should be shown on the top
@@ -298,6 +306,11 @@ function ApplicationDetailPage() {
 				) {
 					return { status, isRelevant: true }
 				}
+
+				if (status.committee.sl && isUserInStudentlekeneBoard){
+					return { status, isRelevant: true }
+				}
+
 				return { status, isRelevant: false }
 			})
 			.sort((a, b) => {
@@ -318,7 +331,7 @@ function ApplicationDetailPage() {
 				<>
 					<div className={classes.pageHeader}>
 						<Button
-							onClick={() => navigate('/applications')}
+							onClick={() => navigate(`${location.pathname.includes("studentlekene") ? '/studentlekene/applications' : '/applications'}`)}
 							size='md'
 							variant='subtle'
 							className={classes.backButton}
@@ -398,6 +411,7 @@ function ApplicationDetailPage() {
 									application.statuses as unknown as IPopulatedStatus[]
 								).map((statusRel, index) => (
 									<StatusInput
+										isSL={isSL}
 										allowedToChange={!!statusRel.isRelevant}
 										key={index}
 										{...statusRel.status}

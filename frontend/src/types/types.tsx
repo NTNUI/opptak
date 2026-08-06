@@ -16,6 +16,7 @@ export interface IPopulatedStatus {
 		name: string
 		slug: string
 		_id: number
+		sl: boolean
 	}
 	updated_date: Date
 }

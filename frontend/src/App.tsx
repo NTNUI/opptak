@@ -18,6 +18,7 @@ import RequireAuth from './utils/authRouter'
 import SLDashboard from './pages/SL/SLDashboard'
 import SLlogin from './pages/SL/SLLogin'
 import SLApplicationOverview from './pages/SL/SLApplicationOverview'
+import SLAdmissionStatus from './pages/SL/SLAdmissionStatus'
 
 function App() {
 	axios.defaults.baseURL =
@@ -118,6 +119,17 @@ function App() {
 										</RequireAuth>
 									} 
 								/>
+								<Route
+									path='/studentlekene/admission-status'
+									element={
+										<RequireAuth>
+											<>
+												<Navbar />
+												<SLAdmissionStatus />
+											</>
+										</RequireAuth>
+									}
+								/>
 								<Route 
 									path='/studentlekene/admission-period' 
 									element={
@@ -136,6 +148,17 @@ function App() {
 											<>
 												<Navbar />
 												<SLApplicationOverview />
+											</>
+										</RequireAuth>
+									}
+								/>
+								<Route
+									path='/studentlekene/applications/:id'
+									element={
+										<RequireAuth>
+											<>
+												<Navbar />
+												<ApplicationDetailPage />
 											</>
 										</RequireAuth>
 									}

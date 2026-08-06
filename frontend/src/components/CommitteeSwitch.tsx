@@ -29,7 +29,7 @@ const useStyles = createStyles((theme) => ({
 	},
 }))
 
-function CommitteeSwitch({ name, accepts_admissions, slug }: ICommittee) {
+function CommitteeSwitch({ name, accepts_admissions, slug, sl }: ICommittee) {
 	const { classes } = useStyles()
 	let navigate = useNavigate()
 	const [checked, setChecked] = useState<boolean>(accepts_admissions)
@@ -46,7 +46,7 @@ function CommitteeSwitch({ name, accepts_admissions, slug }: ICommittee) {
 		setSwitchStatus(true)
 
 		try {
-			const status = await toggleAcceptsAdmissions(slug)
+			const status = await toggleAcceptsAdmissions(slug, sl)
 			setChecked(status)
 			setSwitchStatus(false)
 		} catch (error: any) {
