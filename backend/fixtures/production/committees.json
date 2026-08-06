@@ -125,5 +125,61 @@
 		"access_roles": ["deputy_leader"],
 		"accepts_admissions": true,
 		"sl": false
+	},
+	{
+		"_id": 1000,
+		"name": "Logistikk",
+		"slug": "logistikk",
+		"access_roles": [],
+		"accepts_admissions": true,
+		"sl": true
+	},
+	{
+		"_id": 1001,
+		"name": "Økonomi",
+		"slug": "okonomi",
+		"access_roles": [],
+		"accepts_admissions": true,
+		"sl": true
+	},
+	{
+		"_id": 1002,
+		"name": "Marked",
+		"slug": "marked",
+		"access_roles": [],
+		"accepts_admissions": true,
+		"sl": true
+	},
+	{
+		"_id": 1003,
+		"name": "Frivillig",
+		"slug": "frivillig",
+		"access_roles": [],
+		"accepts_admissions": true,
+		"sl": true
+	},
+	{
+		"_id": 1004,
+		"name": "Sport",
+		"slug": "sport",
+		"access_roles": [],
+		"accepts_admissions": true,
+		"sl": true
+	},
+	{
+		"_id": 1005,
+		"name": "Informasjon",
+		"slug": "informasjon",
+		"access_roles": [],
+		"accepts_admissions": true,
+		"sl": true
+	},
+	{
+		"_id": 1006,
+		"name": "Arrangement",
+		"slug": "arrangement",
+		"access_roles": [],
+		"accepts_admissions": true,
+		"sl": true
 	}
 ]

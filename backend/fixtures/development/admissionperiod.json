@@ -3,5 +3,10 @@
 		"start_date": "2025-08-12",
 		"end_date": "2030-09-03",
 		"sl": false
+	},
+	{
+		"start_date": "2026-08-01",
+		"end_date": "2030-09-03",
+		"sl": true
 	}
 ]

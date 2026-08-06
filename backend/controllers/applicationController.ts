@@ -53,12 +53,14 @@ const getApplicationById = async (
 				.json({ message: 'The user is not member of any committee' })
 		}
 
+		const isSL = req.query.sl === "true"
+
 		// Retrieve application and committees the application is sent to
 		const application = await ApplicationModel.findById(req.params.application_id)
-			.populate<IPopulatedApplicationCommittees>('committees', 'name slug')
+			.populate<IPopulatedApplicationCommittees>('committees', 'name slug sl')
 			.populate({
 				path: 'statuses',
-				populate: { path: 'committee', model: 'Committee', select: 'name slug' },
+				populate: { path: 'committee', model: 'Committee', select: 'name slug sl' },
 				select: '-__v',
 			})
 			.then((applicationRes) => applicationRes)
@@ -94,6 +96,9 @@ const getApplicationById = async (
 		// Check if user is member of any committee that application is sent to
 		let isAuthorized = false
 		for (let id = 0; id < applicationCommittees.length; id += 1) {
+			if (isSL && applicationCommittees[id].sl) {
+				isAuthorized = true
+			}
 			const appCommitteeId = applicationCommittees[id]._id
 			if (userCommitteeIds.includes(appCommitteeId)) {
 				isAuthorized = true

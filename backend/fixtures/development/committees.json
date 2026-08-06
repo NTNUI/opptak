@@ -119,12 +119,7 @@
 		"_id": 13,
 		"name": "Informasjon",
 		"slug": "informasjon",
-		"access_roles": [
-			"deputy_leader",
-			"cashier",
-			"board_member",
-			"deputy_board_member"
-		],
+		"access_roles": [],
 		"accepts_admissions": true,
 		"sl": true
 	},
@@ -132,12 +127,7 @@
 		"_id": 14,
 		"name": "Frivillig",
 		"slug": "Frivillig",
-		"access_roles": [
-			"deputy_leader",
-			"cashier",
-			"board_member",
-			"deputy_board_member"
-		],
+		"access_roles": [],
 		"accepts_admissions": true,
 		"sl": true
 	}
