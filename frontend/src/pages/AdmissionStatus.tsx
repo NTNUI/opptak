@@ -8,10 +8,10 @@ import { getAdmissionPeriod } from '../services/Applications'
 import {
 	getAllCommittees,
 	getUserCommittees,
-	IRoleInCommittee,
 } from '../services/Committees'
 
 import { ICommittee } from '../types/types'
+import { REACT_APP_STUDENTLEKENE_ID } from '../utils/constants'
 
 const useStyles = createStyles((theme) => ({
 	container: {
@@ -98,163 +98,282 @@ const useStyles = createStyles((theme) => ({
 	},
 }))
 
-interface stateType {
-	isOrganizer: boolean
-	isElectionCommittee: boolean
+interface AdmissionStatusProps {
+	isSL?: boolean
 }
 
-function AdmissionStatus() {
+interface StateType {
+	isOrganizer?: boolean
+	isElectionCommittee?: boolean
+}
+
+function AdmissionStatus({ isSL = false }: AdmissionStatusProps) {
 	const { classes } = useStyles()
-	let navigate = useNavigate()
+	const navigate = useNavigate()
 	const location = useLocation()
+
 	const [committees, setCommittees] = useState<ICommittee[]>([])
-	const [isLoading, setIsLoading] = useState<boolean>(false)
-	const [fromPeriod, setFromPeriod] = useState<string>('DD/MM/YYYY')
-	const [toPeriod, setToPeriod] = useState<string>('DD/MM/YYYY')
-	const [periodIsMissing, setPeriodIsMissing] = useState<boolean>(false)
-	const [isError, setIsError] = useState<boolean>(false)
+	const [isLoading, setIsLoading] = useState(false)
+	const [fromPeriod, setFromPeriod] = useState('DD/MM/YYYY')
+	const [toPeriod, setToPeriod] = useState('DD/MM/YYYY')
+	const [periodIsMissing, setPeriodIsMissing] = useState(false)
+	const [isError, setIsError] = useState(false)
 	const [errorMessage, setErrorMessage] = useState('')
 
 	function formatDate(dateString: string) {
-		const date = new Date(dateString)
 		if (dateString === 'DD/MM/YYYY') {
 			return 'DD/MM/YYYY'
 		}
-		const formattedDate = date.toLocaleDateString('en-GB', {
+
+		return new Date(dateString).toLocaleDateString('en-GB', {
 			year: 'numeric',
 			month: 'numeric',
 			day: 'numeric',
 		})
-		return formattedDate
 	}
 
 	useEffect(() => {
-		setIsLoading(true)
-		async function getCommittees() {
+		async function loadAdmissionStatus() {
+			setIsLoading(true)
+			setIsError(false)
+			setErrorMessage('')
+			setPeriodIsMissing(false)
+
 			try {
+				const userCommittees = await getUserCommittees()
+
 				let allCommittees: ICommittee[] = []
-				const locationState = location.state as stateType
-				// Organizers see all committee-statuses except main board
-				if (locationState.isOrganizer) {
-					allCommittees = await getAllCommittees()
-					allCommittees = allCommittees.filter((committee: ICommittee) => {
-						return (
-							committee.slug !== 'valgkomiteen' && committee.slug !== 'hovedstyret'
+
+				if (isSL) {
+					const isUserInStudentlekeneBoard =
+						userCommittees.some(
+							(roleInCommittee) =>
+								roleInCommittee.committee._id ===
+								REACT_APP_STUDENTLEKENE_ID
 						)
-					})
-					// Election committee can see main board and the law committee
-				} else if (locationState.isElectionCommittee) {
-					allCommittees = await getAllCommittees()
-					allCommittees = allCommittees.filter((committee: ICommittee) => {
-						return (
-							committee.slug === 'hovedstyret' || committee.slug === 'lovutvalget'
-						)
-					})
-					// Include the users other committees
-					const committeesRes = await getUserCommittees()
-					committeesRes.forEach((item: IRoleInCommittee) => {
-						if (item.committee.slug !== 'valgkomiteen') {
-							allCommittees.push(item.committee)
-						}
-					})
+
+					if (!isUserInStudentlekeneBoard) {
+						navigate('/dashboard')
+						return
+					}
+
+					allCommittees = await getAllCommittees(true)
+
+					allCommittees = allCommittees.filter(
+						(committee) => committee.sl === true
+					)
 				} else {
-					const committeesRes = await getUserCommittees()
-					committeesRes.forEach((item: IRoleInCommittee) => {
-						allCommittees.push(item.committee)
-					})
+					const locationState =
+						location.state as StateType | null
+
+					if (locationState?.isOrganizer) {
+						allCommittees = await getAllCommittees()
+
+						allCommittees = allCommittees.filter(
+							(committee) =>
+								committee.slug !== 'valgkomiteen' &&
+								committee.slug !== 'hovedstyret'
+						)
+					} else if (
+						locationState?.isElectionCommittee
+					) {
+						allCommittees = await getAllCommittees()
+
+						allCommittees = allCommittees.filter(
+							(committee) =>
+								committee.slug === 'hovedstyret' ||
+								committee.slug === 'lovutvalget'
+						)
+
+						const otherUserCommittees =
+							userCommittees
+								.map(
+									(roleInCommittee) =>
+										roleInCommittee.committee
+								)
+								.filter(
+									(committee) =>
+										committee.slug !==
+										'valgkomiteen'
+								)
+
+						allCommittees.push(
+							...otherUserCommittees
+						)
+					} else {
+						allCommittees = userCommittees.map(
+							(roleInCommittee) =>
+								roleInCommittee.committee
+						)
+					}
 				}
-				setCommittees(allCommittees)
-				setIsLoading(false)
+
+				// Remove duplicate committees
+				const uniqueCommittees = Array.from(
+					new Map<number, ICommittee>(
+						allCommittees.map((committee) => [
+							committee._id,
+							committee,
+						])
+					).values()
+				)
+
+				setCommittees(uniqueCommittees)
+
+				try {
+					const admissionPeriodData =
+						await getAdmissionPeriod(isSL)
+
+					setFromPeriod(
+						admissionPeriodData.admissionPeriod
+							.start_date
+					)
+
+					setToPeriod(
+						admissionPeriodData.admissionPeriod
+							.end_date
+					)
+				} catch (error: any) {
+					const status = error.response?.status
+
+					if (status === 404) {
+						setPeriodIsMissing(true)
+					} else if (status === 401) {
+						navigate(
+							isSL
+								? '/studentlekene/login'
+								: '/login'
+						)
+					} else if (status === 500) {
+						setIsError(true)
+						setErrorMessage(
+							'Det skjedde en feil på serveren'
+						)
+					} else {
+						setIsError(true)
+						setErrorMessage(
+							'Klarte ikke å hente opptaksstatus'
+						)
+					}
+				}
 			} catch (error: any) {
-				if (error.response.status === 401) {
-					navigate('/login')
+				const status = error.response?.status
+
+				if (status === 401) {
+					navigate(
+						isSL
+							? '/studentlekene/login'
+							: '/login'
+					)
 				} else {
 					showNotification({
 						title: 'Det skjedde en feil!',
-						message: 'Det skjedde en uforutsett feil.',
+						message:
+							'Det skjedde en uforutsett feil.',
 						color: 'red',
 						autoClose: false,
 						icon: <X size={18} />,
 					})
-					setErrorMessage('Det finnes ingen komiteer å vise')
-				}
-				setIsLoading(false)
-			}
-		}
-		getCommittees()
-	}, [])
 
-	useEffect(() => {
-		async function getAdmissionPeriodData() {
-			try {
-				const admissionPeriodData = await getAdmissionPeriod()
-				setFromPeriod(admissionPeriodData.admissionPeriod.start_date)
-				setToPeriod(admissionPeriodData.admissionPeriod.end_date)
-			} catch (error: any) {
-				if (error.response.status === 404) {
-					setPeriodIsMissing(true)
-				} else if (error.response.status === 500) {
 					setIsError(true)
-					setErrorMessage('Det skjedde en feil på serveren')
-				} else {
-					setIsError(true)
-					setErrorMessage('Klarte ikke å hente opptaksstatus')
+					setErrorMessage(
+						isSL
+							? 'Det finnes ingen SL-komiteer å vise'
+							: 'Det finnes ingen komiteer å vise'
+					)
 				}
+			} finally {
 				setIsLoading(false)
 			}
 		}
 
-		getAdmissionPeriodData()
-	}, [navigate])
+		loadAdmissionStatus()
+	}, [isSL, location.state, navigate])
 
 	return (
-		<>
-			<Container className={classes.container}>
-				<>
-					<h1>Opptaksstatus</h1>
-					{!periodIsMissing ? (
-						<div className={classes.text}>
-							Opptaksstatus avgjør om det skal være mulig for studenter å søke i den
-							gitte opptaksperioden{' '}
-							{isLoading ? (
-								<Loader color='white' variant='dots' />
-							) : (
-								<span className={classes.date}>{formatDate(fromPeriod)}</span>
-							)}{' '}
-							til{' '}
-							{isLoading ? (
-								<Loader color='white' variant='dots' />
-							) : (
-								<span className={classes.date}>{formatDate(toPeriod)}</span>
-							)}
-						</div>
-					) : (
-						<div className={classes.text}>
-							<AlertTriangle size={35} className={classes.warningAlertIcon} /> <br />
-							Opptaksperioden er ikke satt. Når den er satt vil søknader kunne sendes
-							til ditt utvalg dersom det er åpent.
-						</div>
-					)}
+		<Container className={classes.container}>
+			<h1>
+				{isSL
+					? 'Opptaksstatus for Studentlekene'
+					: 'Opptaksstatus'}
+			</h1>
 
-					<div className={classes.committeesWrapper}>
-						{isError ? (
-							<div className={classes.errorMessage}>
-								<AlertTriangle size={35} />
-								<h1>{errorMessage}</h1>
-							</div>
-						) : committees.length ? (
-							<Container className={classes.container}>
-								{committees.map((item: ICommittee, idx: number) => (
-									<CommitteeSwitch key={idx} {...item} />
-								))}
-							</Container>
-						) : (
-							<Loader className={classes.loader} color='yellow' size='xl' />
-						)}
+			{!periodIsMissing ? (
+				<div className={classes.text}>
+					Opptaksstatus avgjør om det skal være mulig
+					for studenter å søke i den gitte
+					opptaksperioden{' '}
+					{isLoading ? (
+						<Loader
+							color='white'
+							variant='dots'
+						/>
+					) : (
+						<span className={classes.date}>
+							{formatDate(fromPeriod)}
+						</span>
+					)}{' '}
+					til{' '}
+					{isLoading ? (
+						<Loader
+							color='white'
+							variant='dots'
+						/>
+					) : (
+						<span className={classes.date}>
+							{formatDate(toPeriod)}
+						</span>
+					)}
+				</div>
+			) : (
+				<div className={classes.text}>
+					<AlertTriangle
+						size={35}
+						className={
+							classes.warningAlertIcon
+						}
+					/>
+					<br />
+					Opptaksperioden er ikke satt. Når den er
+					satt vil søknader kunne sendes til ditt
+					utvalg dersom det er åpent.
+				</div>
+			)}
+
+			<div className={classes.committeesWrapper}>
+				{isError ? (
+					<div className={classes.errorMessage}>
+						<AlertTriangle size={35} />
+						<h1>{errorMessage}</h1>
 					</div>
-				</>
-			</Container>
-		</>
+				) : isLoading ? (
+					<Loader
+						className={classes.loader}
+						color='yellow'
+						size='xl'
+					/>
+				) : committees.length > 0 ? (
+					<Container className={classes.container}>
+						{committees.map((committee) => (
+							<CommitteeSwitch
+								key={committee._id}
+								{...committee}
+								sl={isSL}
+							/>
+						))}
+					</Container>
+				) : (
+					<div className={classes.errorMessage}>
+						<AlertTriangle size={35} />
+						<h1>
+							{isSL
+								? 'Det finnes ingen SL-komiteer å vise'
+								: 'Det finnes ingen komiteer å vise'}
+						</h1>
+					</div>
+				)}
+			</div>
+		</Container>
 	)
 }
 

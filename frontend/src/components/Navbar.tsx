@@ -106,12 +106,12 @@ function Navbar() {
 		await axios
 			.post('/auth/logout')
 			.then(() => {
-				navigate('/login')
+				navigate(location.pathname.includes("studentlekene") ? "/studentlekene/login" : "/login")
 			})
 			.catch((err) => {
 				console.log('Something went wrong while logging out')
 				console.log(err)
-				navigate('/login')
+				navigate(location.pathname.includes("studentlekene") ? "/studentlekene/login" : "/login")
 			})
 	}
 

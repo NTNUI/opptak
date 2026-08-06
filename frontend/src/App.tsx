@@ -10,15 +10,9 @@ import AdmissionPeriod from './pages/AdmissionPeriod'
 import ApplicationDetailPage from './pages/ApplicationDetails'
 import Dashboard from './pages/Dashboard'
 import FormPage from './pages/FormPage'
-import SLFormPage from './pages/SL/SLFormPage'
-import SLAdmissionPeriod from './pages/SL/SLAdmissionPeriod'
 import Login from './pages/Login'
 import colors from './utils/theme'
 import RequireAuth from './utils/authRouter'
-import SLDashboard from './pages/SL/SLDashboard'
-import SLlogin from './pages/SL/SLLogin'
-import SLApplicationOverview from './pages/SL/SLApplicationOverview'
-import SLAdmissionStatus from './pages/SL/SLAdmissionStatus'
 
 function App() {
 	axios.defaults.baseURL =
@@ -106,15 +100,15 @@ function App() {
 										</RequireAuth>
 									}
 								/>
-								<Route path='/studentlekene' element={<SLFormPage />} />
-								<Route path='/studentlekene/login' element={<SLlogin />} />
+								<Route path='/studentlekene' element={<FormPage isSL={true} />} />
+								<Route path='/studentlekene/login' element={<Login isSL={true} />} />
 								<Route
 									path='/studentlekene/dashboard'
 									element={
 										<RequireAuth>
 											<>
 												<Navbar />
-												<SLDashboard />
+												<Dashboard isSL={true} />
 											</>
 										</RequireAuth>
 									}
@@ -125,7 +119,7 @@ function App() {
 										<RequireAuth>
 											<>
 												<Navbar />
-												<SLAdmissionStatus />
+												<AdmissionStatus isSL={true} />
 											</>
 										</RequireAuth>
 									}
@@ -136,7 +130,7 @@ function App() {
 										<RequireAuth>
 											<>
 												<Navbar />
-												<SLAdmissionPeriod />
+												<AdmissionPeriod isSL={true} />
 											</>
 										</RequireAuth>
 									}
@@ -147,7 +141,7 @@ function App() {
 										<RequireAuth>
 											<>
 												<Navbar />
-												<SLApplicationOverview />
+												<ApplicationOverview isSL={true} />
 											</>
 										</RequireAuth>
 									}
