@@ -156,7 +156,9 @@ function FilterSearch({
 				allCommittees = await getAllCommittees(isSL)
 
 				if (isSL) {
-					allCommittees = allCommittees.filter((committee: ICommittee) => committee.sl === true)
+					allCommittees = allCommittees.filter(
+						(committee: ICommittee) => committee.sl === true
+					)
 				}
 
 				setCommittees(allCommittees)

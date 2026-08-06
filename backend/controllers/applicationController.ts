@@ -9,7 +9,11 @@ import { AdmissionPeriodStatus, SortTypes, StatusTypes } from '../utils/enums'
 import { IStatus, StatusModel } from '../models/Status'
 import { AdmissionPeriodModel } from '../models/AdmissionPeriod'
 import { getSortTypeValue } from '../utils/applicationQueryMiddleware'
-import { ELECTION_COMMITTEE_ID, MAIN_BOARD_ID, STUDENTLEKENE_ID } from '../utils/constants'
+import {
+	ELECTION_COMMITTEE_ID,
+	MAIN_BOARD_ID,
+	STUDENTLEKENE_ID,
+} from '../utils/constants'
 import getAdmissionPeriodStatus from '../utils/getAdmissionPeriodStatus'
 
 async function getUserCommitteeIdsByUserId(userId: number | string) {
@@ -53,7 +57,7 @@ const getApplicationById = async (
 				.json({ message: 'The user is not member of any committee' })
 		}
 
-		const isSL = req.query.sl === "true"
+		const isSL = req.query.sl === 'true'
 
 		// Retrieve application and committees the application is sent to
 		const application = await ApplicationModel.findById(req.params.application_id)
@@ -151,7 +155,7 @@ const getApplications = async (
 		const status: string = req.query.status as string
 		const sortparam: SortTypes = req.query.sort as SortTypes
 		const sortValue = getSortTypeValue(sortparam) // Parse sort value
-		const isSL: boolean = req.query.sl as string === "true"
+		const isSL: boolean = (req.query.sl as string) === 'true'
 
 		// Aggregation
 		const aggregationPipeline = []
@@ -384,7 +388,11 @@ const postApplication = async (
 	next: NextFunction
 ) => {
 	try {
-		if (!((await getAdmissionPeriodStatus(req.body.sl)) === AdmissionPeriodStatus.open)) {
+		if (
+			!(
+				(await getAdmissionPeriodStatus(req.body.sl)) === AdmissionPeriodStatus.open
+			)
+		) {
 			throw new CustomError('Admission period is not active', 403)
 		}
 		// Check that all applied committees accepts admissions

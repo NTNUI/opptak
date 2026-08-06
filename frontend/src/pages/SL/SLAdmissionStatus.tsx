@@ -135,11 +135,15 @@ function SLAdmissionStatus() {
 			try {
 				let allCommittees: ICommittee[] = []
 				const userCommittees = await getUserCommittees()
-				const isUserInStudentlekeneBoard = userCommittees.some((committees) => committees.committee._id === REACT_APP_STUDENTLEKENE_ID)
+				const isUserInStudentlekeneBoard = userCommittees.some(
+					(committees) => committees.committee._id === REACT_APP_STUDENTLEKENE_ID
+				)
 				if (isUserInStudentlekeneBoard) {
 					allCommittees = await getAllCommittees(true)
-					allCommittees = allCommittees.filter((committee: ICommittee) => committee.sl === true)
-				} 
+					allCommittees = allCommittees.filter(
+						(committee: ICommittee) => committee.sl === true
+					)
+				}
 				setCommittees(allCommittees)
 				setIsLoading(false)
 			} catch (error: any) {

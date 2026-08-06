@@ -230,8 +230,7 @@ function ApplicationDetailPage() {
 	const [isError, setIsError] = useState<boolean>(false)
 	const [errorMessage, setErrorMessage] = useState('')
 	const { id } = useParams()
-	const isSL: boolean = location.pathname.includes("studentlekene")
-
+	const isSL: boolean = location.pathname.includes('studentlekene')
 
 	useEffect(() => {
 		setIsLoading(true)
@@ -307,7 +306,7 @@ function ApplicationDetailPage() {
 					return { status, isRelevant: true }
 				}
 
-				if (status.committee.sl && isUserInStudentlekeneBoard){
+				if (status.committee.sl && isUserInStudentlekeneBoard) {
 					return { status, isRelevant: true }
 				}
 
@@ -331,7 +330,15 @@ function ApplicationDetailPage() {
 				<>
 					<div className={classes.pageHeader}>
 						<Button
-							onClick={() => navigate(`${location.pathname.includes("studentlekene") ? '/studentlekene/applications' : '/applications'}`)}
+							onClick={() =>
+								navigate(
+									`${
+										location.pathname.includes('studentlekene')
+											? '/studentlekene/applications'
+											: '/applications'
+									}`
+								)
+							}
 							size='md'
 							variant='subtle'
 							className={classes.backButton}

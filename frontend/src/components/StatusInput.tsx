@@ -97,11 +97,15 @@ function StatusInput({
 		if (newValue !== statusValue) {
 			setIsLoading(true)
 			await axios
-				.put(`/statuses/${_id}`, {
-					value: newValue,
-				}, {
-					params: {sl: isSL}
-				})
+				.put(
+					`/statuses/${_id}`,
+					{
+						value: newValue,
+					},
+					{
+						params: { sl: isSL },
+					}
+				)
 				.then((res) => {
 					setIsLoading(false)
 					const newStatus = res.data.status

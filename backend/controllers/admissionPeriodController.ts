@@ -19,11 +19,11 @@ function validateAndFormatDateString(value: string): string {
 }
 
 const getAdmissionPeriod = async (req: Request, res: Response) => {
-	const isSL = req.query.sl === "true"
+	const isSL = req.query.sl === 'true'
 
 	// Only one admission period of each type in the db at any time, so findOne() returns only the one object
 	const admissionPeriod = await AdmissionPeriodModel.findOne({
-		sl: isSL
+		sl: isSL,
 	})
 
 	if (!admissionPeriod) {
@@ -33,7 +33,10 @@ const getAdmissionPeriod = async (req: Request, res: Response) => {
 	}
 	return res
 		.status(200)
-		.json({ admissionPeriod, admissionStatus: await getAdmissionPeriodStatus(isSL) })
+		.json({
+			admissionPeriod,
+			admissionStatus: await getAdmissionPeriodStatus(isSL),
+		})
 }
 
 const putAdmissionPeriod = async (req: RequestWithNtnuiNo, res: Response) => {
@@ -44,7 +47,9 @@ const putAdmissionPeriod = async (req: RequestWithNtnuiNo, res: Response) => {
 	if (!user) throw UnauthorizedUserError
 	if (
 		user.committees.some(
-			(roleInCommittee) => roleInCommittee.committee === MAIN_BOARD_ID || (roleInCommittee.committee === STUDENTLEKENE_ID && isSL)
+			(roleInCommittee) =>
+				roleInCommittee.committee === MAIN_BOARD_ID ||
+				(roleInCommittee.committee === STUDENTLEKENE_ID && isSL)
 		)
 	) {
 		let update
@@ -67,12 +72,16 @@ const putAdmissionPeriod = async (req: RequestWithNtnuiNo, res: Response) => {
 		}
 
 		// Update the existing admission period or create a new one if it doesn't exist
-		return AdmissionPeriodModel.findOneAndUpdate({
-			sl: isSL
-		}, update, {
-			new: true,
-			upsert: true,
-		})
+		return AdmissionPeriodModel.findOneAndUpdate(
+			{
+				sl: isSL,
+			},
+			update,
+			{
+				new: true,
+				upsert: true,
+			}
+		)
 			.then((updatedAdmission) =>
 				res.status(200).json({ admissionPeriod: updatedAdmission })
 			)

@@ -4,7 +4,7 @@ import { AdmissionPeriodModel } from '../models/AdmissionPeriod'
 import { AdmissionPeriodStatus } from './enums'
 
 const getAdmissionPeriodStatus = async (isSL: boolean) => {
-	const admissionPeriod = await AdmissionPeriodModel.findOne({sl: isSL})
+	const admissionPeriod = await AdmissionPeriodModel.findOne({ sl: isSL })
 	if (!admissionPeriod) {
 		throw new CustomError('No admission period exists', 404)
 	}

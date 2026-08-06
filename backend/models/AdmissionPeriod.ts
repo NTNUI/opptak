@@ -18,7 +18,7 @@ const AdmissionPeriodModel = mongoose.model<IAdmissionPeriod>(
 			start_date: { type: String, required: true },
 			end_date: { type: String, required: true },
 			set_by: { type: String, default: null },
-			sl: {type: Boolean, default: false},
+			sl: { type: Boolean, default: false },
 		},
 		{
 			collection: 'admissionperiod',

@@ -124,7 +124,7 @@ type CountryCodePair = {
 	kode: string
 }
 
-function LoginForm({isSL}: {isSL?: boolean}) {
+function LoginForm({ isSL }: { isSL?: boolean }) {
 	const { classes } = useStyles()
 	let navigate = useNavigate()
 	const [isLoading, setIsLoading] = useState(false)

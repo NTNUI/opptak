@@ -71,10 +71,7 @@ function SLApplicationOverview() {
 	const [isLoading, setIsLoading] = useState(false)
 	const [applications, setApplications] = useState<IApplication[]>([])
 	const [currentPage, setCurrentPage] = useStickyState(1, 'slPage')
-	const [filters, setFilters] = useStickyState(
-		'sort=date_desc',
-		'slFilters'
-	)
+	const [filters, setFilters] = useStickyState('sort=date_desc', 'slFilters')
 	const [chosenCommittees, setChosenCommittees] = useStickyState(
 		[''],
 		'slChosenCommittees'
@@ -131,7 +128,9 @@ function SLApplicationOverview() {
 		setIsLoading(true)
 		const getApplicationsAsync = async () => {
 			try {
-				const response = await getApplications(`sl=true&page=${currentPage}&${filters}`)
+				const response = await getApplications(
+					`sl=true&page=${currentPage}&${filters}`
+				)
 				setApplications(response.applications)
 				setCurrentPage(response.pagination.currentPage)
 				setNumberOfPages(response.pagination.numberOfPages)
@@ -161,9 +160,9 @@ function SLApplicationOverview() {
 							roleInCommittee.committee._id === REACT_APP_MAIN_BOARD_ID
 					),
 					isInSLBoard: userRoleInCommittees.some(
-						(roleInCommittee) => 
+						(roleInCommittee) =>
 							roleInCommittee.committee._id === REACT_APP_STUDENTLEKENE_ID
-					)
+					),
 				}}
 			>
 				<Filter

@@ -137,11 +137,11 @@ function SLAdmissionPeriod() {
 				let isOrganizer: boolean = false
 
 				const userCommittees = await getUserCommittees()
-				userCommittees.forEach((roleInCommittee: IRoleInCommittee) => {					
-					if (roleInCommittee.committee.slug === "studentlekene"){
+				userCommittees.forEach((roleInCommittee: IRoleInCommittee) => {
+					if (roleInCommittee.committee.slug === 'studentlekene') {
 						isOrganizer = true
-					} 
-				})	
+					}
+				})
 
 				if (!isOrganizer) {
 					navigate('/dashboard')
@@ -186,7 +186,7 @@ function SLAdmissionPeriod() {
 			const admissionPeriod: IAdmissionPeriod = {
 				start_date: dayjs(start).format('YYYY-MM-DD'),
 				end_date: dayjs(end).format('YYYY-MM-DD'),
-				sl: true
+				sl: true,
 			}
 			showNotification({
 				id: 'admission-period-notification',

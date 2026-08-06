@@ -11,7 +11,7 @@ import { RequestWithNtnuiNo } from '../utils/request'
 import { getUserRoleInCommitteeByUserId } from '../utils/userCommittee'
 
 const getCommittees = (req: Request, res: Response) => {
-	const isSL = req.query.sl === "true"
+	const isSL = req.query.sl === 'true'
 	CommitteeModel.find({ sl: isSL })
 		.then((committees) => res.json(committees))
 		.catch((err) => res.status(404).json({ message: err.message }))
@@ -32,8 +32,6 @@ async function acceptAdmissions(
 			return res.status(404).json({ message: 'Committee not found' })
 		}
 
-		const isSL = req.query.sl === "true"
-
 		// Control access
 		const rolesInCommittees = await getUserRoleInCommitteeByUserId(ntnuiNo)
 		const isAuthorized = rolesInCommittees.some(
@@ -50,8 +48,7 @@ async function acceptAdmissions(
 				(userCommittee.committee === committee._id &&
 					committee._id !== MAIN_BOARD_ID) ||
 				// If user is in Studentlekene board and it is a studentlekene committee
-				(committee.sl === true && 
-					userCommittee.committee === STUDENTLEKENE_ID)
+				(committee.sl === true && userCommittee.committee === STUDENTLEKENE_ID)
 		)
 		if (isAuthorized) {
 			// Toggle accepts_admissions for a committee

@@ -246,7 +246,7 @@ function FormBox() {
 					{endDate && (
 						<p className={classes.endOfSearchPeriodText}>Søknadsfrist: {endDate}</p>
 					)}
-					<Form committees={committees} sl={true}/>
+					<Form committees={committees} sl={true} />
 				</Box>
 			) : periodStatus === AdmissionPeriodStatus.upcoming ? (
 				<Box className={classes.closedPeriod}>
@@ -266,8 +266,10 @@ function FormBox() {
 						Studentlekene har for tiden ingen opptak
 					</h1>
 					<p className={classes.closedText}>
-						Mer informasjon om SL finner du <a href='https://www.sltrondheim.no/'>her</a>. Leter du etter opptak til en NTNUI gruppe eller Admin? Finn gruppens egen
-						nettside på <a href='https://medlem.ntnui.no/groups'>medlem.ntnui.no</a>!
+						Mer informasjon om SL finner du{' '}
+						<a href='https://www.sltrondheim.no/'>her</a>. Leter du etter opptak til
+						en NTNUI gruppe eller Admin? Finn gruppens egen nettside på{' '}
+						<a href='https://medlem.ntnui.no/groups'>medlem.ntnui.no</a>!
 					</p>
 				</Box>
 			)}

@@ -108,8 +108,8 @@ function App() {
 								/>
 								<Route path='/studentlekene' element={<SLFormPage />} />
 								<Route path='/studentlekene/login' element={<SLlogin />} />
-								<Route 
-									path='/studentlekene/dashboard' 
+								<Route
+									path='/studentlekene/dashboard'
 									element={
 										<RequireAuth>
 											<>
@@ -117,7 +117,7 @@ function App() {
 												<SLDashboard />
 											</>
 										</RequireAuth>
-									} 
+									}
 								/>
 								<Route
 									path='/studentlekene/admission-status'
@@ -130,8 +130,8 @@ function App() {
 										</RequireAuth>
 									}
 								/>
-								<Route 
-									path='/studentlekene/admission-period' 
+								<Route
+									path='/studentlekene/admission-period'
 									element={
 										<RequireAuth>
 											<>
@@ -139,7 +139,7 @@ function App() {
 												<SLAdmissionPeriod />
 											</>
 										</RequireAuth>
-									} 
+									}
 								/>
 								<Route
 									path='/studentlekene/applications'

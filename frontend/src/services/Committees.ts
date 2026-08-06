@@ -19,7 +19,7 @@ export const getUserCommittees = async (): Promise<IRoleInCommittee[]> => {
 export const toggleAcceptsAdmissions = async (slug: string, sl?: boolean) => {
 	const response = axios
 		.put(`/committees/${slug}/accept-admissions`, {
-			params: {sl: sl}
+			params: { sl: sl },
 		})
 		.then((response) => {
 			return response.data.accepts_admissions

@@ -1,10 +1,4 @@
-import {
-	Box,
-	createStyles,
-	Group,
-	Loader,
-	Transition,
-} from '@mantine/core'
+import { Box, createStyles, Group, Loader, Transition } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { CalendarEvent, FileText, Users } from 'tabler-icons-react'
@@ -125,10 +119,10 @@ function SLDashboard() {
 				setTheOrganizer(locationState.isOrganizer)
 
 				const userCommittees = await getUserCommittees()
-				userCommittees.forEach((roleInCommittee: IRoleInCommittee) => {					
-					if (roleInCommittee.committee.slug === "studentlekene"){
+				userCommittees.forEach((roleInCommittee: IRoleInCommittee) => {
+					if (roleInCommittee.committee.slug === 'studentlekene') {
 						setTheOrganizer(true)
-					} 
+					}
 				})
 
 				const response = await getAdmissionPeriod(true)
