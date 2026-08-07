@@ -95,6 +95,13 @@
 		"sl": false
 	},
 	{
+		"_id": 342,
+		"name": "Markedsføring",
+		"slug": "markedsfoering",
+		"access_roles": ["deputy_leader"],
+		"accepts_admissions": true
+	},
+	{
 		"_id": 103,
 		"name": "Materialutvalget",
 		"slug": "materialutvalget",
