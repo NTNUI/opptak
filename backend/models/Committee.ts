@@ -7,6 +7,7 @@ interface ICommittee {
 	slug: string
 	accepts_admissions: boolean
 	access_roles: string[]
+	sl: boolean
 }
 
 const CommitteeModel = mongoose.model<ICommittee>(
@@ -17,6 +18,7 @@ const CommitteeModel = mongoose.model<ICommittee>(
 		slug: { type: String, required: true },
 		accepts_admissions: { type: Boolean, required: true },
 		access_roles: [{ type: String, enum: MembershipType, required: true }],
+		sl: { type: Boolean, required: true },
 	})
 )
 

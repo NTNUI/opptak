@@ -16,6 +16,7 @@ export interface IPopulatedStatus {
 		name: string
 		slug: string
 		_id: number
+		sl: boolean
 	}
 	updated_date: Date
 }
@@ -50,11 +51,13 @@ interface ICommittee {
 	slug: string
 	accepts_admissions: boolean
 	access_roles: string[]
+	sl: boolean
 }
 
 interface IAdmissionPeriod {
 	start_date: string
 	end_date: string
+	sl?: boolean
 }
 
 interface ICommitteeResponse {

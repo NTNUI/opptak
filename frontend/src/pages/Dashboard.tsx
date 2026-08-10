@@ -14,6 +14,8 @@ import { IUserProfile, getUserProfile } from '../services/User'
 import dayjs from 'dayjs'
 import WipeModal from '../components/WipeAdmissionDataModal'
 import { AdmissionPeriodStatus } from '../utils/enums'
+import { getUserCommittees, IRoleInCommittee } from '../services/Committees'
+import { REACT_APP_STUDENTLEKENE_ID } from '../utils/constants'
 require('dayjs/locale/nb')
 
 const useStyles = createStyles((theme) => ({
@@ -98,61 +100,99 @@ const useStyles = createStyles((theme) => ({
 	},
 }))
 
-interface stateType {
-	isOrganizer: boolean
+interface StateType {
+	isOrganizer?: boolean
 }
 
-function Dashboard() {
+interface DashboardProps {
+	isSL?: boolean
+}
+
+function Dashboard({ isSL = false }: DashboardProps) {
 	const { classes } = useStyles()
 	const navigate = useNavigate()
 	const location = useLocation()
+
 	const [periodStatus, setPeriodStatus] = useState<AdmissionPeriodStatus>(
 		AdmissionPeriodStatus.open
 	)
-	const [startDate, setStartDate] = useState<string>('')
-	const [endDate, setEndDate] = useState<string>('')
-	const [isTheOrganizer, setTheOrganizer] = useState<boolean>(false)
-	const [isLoading, setIsLoading] = useState<boolean>(true)
+
+	const [startDate, setStartDate] = useState('')
+	const [endDate, setEndDate] = useState('')
+	const [isTheOrganizer, setTheOrganizer] = useState(false)
+	const [isLoading, setIsLoading] = useState(true)
 	const [userName, setUserName] = useState<IUserProfile>()
-	const [wipeModalOpen, setWipeModalOpen] = useState<boolean>(false)
+	const [wipeModalOpen, setWipeModalOpen] = useState(false)
 
 	useEffect(() => {
 		const getDashboardDataAsync = async () => {
 			setIsLoading(true)
+
 			try {
 				const user = await getUserProfile()
 				setUserName(user)
 
-				const locationState = location.state as stateType
-				setTheOrganizer(locationState.isOrganizer)
+				if (isSL) {
+					const userCommittees = await getUserCommittees()
 
-				const response = await getAdmissionPeriod()
+					const isInStudentlekeneBoard = userCommittees.some(
+						(roleInCommittee: IRoleInCommittee) =>
+							roleInCommittee.committee._id === REACT_APP_STUDENTLEKENE_ID
+					)
+
+					setTheOrganizer(isInStudentlekeneBoard)
+				} else {
+					const locationState = location.state as StateType | null
+
+					setTheOrganizer(locationState?.isOrganizer ?? false)
+				}
+
+				const response = await getAdmissionPeriod(isSL)
+
 				const admissionPeriod = response.admissionPeriod
+
 				setPeriodStatus(response.admissionStatus)
 
 				const parsedStartDate = dayjs(admissionPeriod.start_date)
 					.locale('nb')
 					.format('D. MMMM YYYY')
+
 				const parsedEndDate = dayjs(admissionPeriod.end_date)
 					.locale('nb')
 					.format('D. MMMM YYYY')
+
 				setStartDate(parsedStartDate)
 				setEndDate(parsedEndDate)
+			} catch (error: any) {
+				if (error.response?.status === 401) {
+					navigate(isSL ? '/studentlekene/login' : '/login')
+					return
+				}
+
+				console.error(
+					'Could not retrieve dashboard data:',
+					error.response?.data ?? error
+				)
 			} finally {
 				setIsLoading(false)
 			}
 		}
+
 		getDashboardDataAsync()
-	}, [])
+	}, [isSL, location.state, navigate])
+
+	const routePrefix = isSL ? '/studentlekene' : ''
 
 	return (
 		<>
-			<WipeModal opened={wipeModalOpen} setOpened={setWipeModalOpen} />
+			{!isSL && <WipeModal opened={wipeModalOpen} setOpened={setWipeModalOpen} />}
+
 			{isLoading && (
 				<Group position='center'>
 					<Loader size='xl' color='yellow' />
 				</Group>
 			)}
+
 			<Box className={classes.dashboardWrapper}>
 				{!isLoading && (
 					<Transition
@@ -169,6 +209,7 @@ function Dashboard() {
 										{userName?.first_name} {userName?.last_name}
 									</span>
 								</h1>
+
 								<p style={styles} className={classes.text}>
 									{periodStatus === AdmissionPeriodStatus.open &&
 									startDate &&
@@ -190,29 +231,36 @@ function Dashboard() {
 										</>
 									)}
 								</p>
+
 								<div style={styles} className={classes.metroBoxWrapper}>
 									<Box
 										className={classes.metroBoxes}
-										onClick={() => navigate('/applications')}
+										onClick={() => navigate(`${routePrefix}/applications`)}
 									>
-										<FileText size={150} strokeWidth={0.9} /> Søknader
+										<FileText size={150} strokeWidth={0.9} />
+										Søknader
 									</Box>
+
 									<Box
 										className={classes.metroBoxes}
-										onClick={() => navigate('/admission-status')}
+										onClick={() => navigate(`${routePrefix}/admission-status`)}
 									>
-										<Users size={150} strokeWidth={0.9} /> Opptaksstatus
+										<Users size={150} strokeWidth={0.9} />
+										Opptaksstatus
 									</Box>
+
 									{isTheOrganizer && (
 										<Box
 											className={classes.metroBoxes}
-											onClick={() => navigate('/admission-period')}
+											onClick={() => navigate(`${routePrefix}/admission-period`)}
 										>
-											<CalendarEvent size={150} strokeWidth={0.9} /> Opptaksperiode
+											<CalendarEvent size={150} strokeWidth={0.9} />
+											Opptaksperiode
 										</Box>
 									)}
 								</div>
-								{isTheOrganizer && (
+
+								{!isSL && isTheOrganizer && (
 									<Button
 										onClick={() => setWipeModalOpen(true)}
 										className={classes.wipeDataButton}

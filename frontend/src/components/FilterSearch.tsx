@@ -129,6 +129,7 @@ export type FilterSearchProps = {
 	nameSearch: string
 	status: string
 	chosenCommittees: string[]
+	isSL?: boolean
 }
 
 function FilterSearch({
@@ -141,6 +142,7 @@ function FilterSearch({
 	nameSearch,
 	status,
 	chosenCommittees,
+	isSL = false,
 }: FilterSearchProps) {
 	const { classes } = useStyles()
 	const [committees, setCommittees] = useState<ICommittee[]>([])
@@ -151,7 +153,14 @@ function FilterSearch({
 		async function getCommittees() {
 			try {
 				let allCommittees: ICommittee[] = []
-				allCommittees = await getAllCommittees()
+				allCommittees = await getAllCommittees(isSL)
+
+				if (isSL) {
+					allCommittees = allCommittees.filter(
+						(committee: ICommittee) => committee.sl === true
+					)
+				}
+
 				setCommittees(allCommittees)
 			} catch (error: any) {}
 		}

@@ -12,8 +12,12 @@ const getApplications = async (
 	return response.data
 }
 
-const getAdmissionPeriod = async () => {
-	const response = await axios.get(`/applications/period/`)
+const getAdmissionPeriod = async (sl: boolean = false) => {
+	const response = await axios.get(`/applications/period/`, {
+		params: {
+			sl,
+		},
+	})
 	return response.data
 }
 
@@ -24,8 +28,15 @@ const putAdmissionPeriod = async (admissionPeriod: IAdmissionPeriod) => {
 	return response.data
 }
 
-const getApplication = async (id: String): Promise<IApplicationResponse> => {
-	const response = await axios.get(`/applications/${id}`)
+const getApplication = async (
+	id: String,
+	isSL: boolean
+): Promise<IApplicationResponse> => {
+	const response = await axios.get(`/applications/${id}`, {
+		params: {
+			sl: isSL,
+		},
+	})
 	return response.data
 }
 

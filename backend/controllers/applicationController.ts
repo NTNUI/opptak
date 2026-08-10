@@ -9,7 +9,11 @@ import { AdmissionPeriodStatus, SortTypes, StatusTypes } from '../utils/enums'
 import { IStatus, StatusModel } from '../models/Status'
 import { AdmissionPeriodModel } from '../models/AdmissionPeriod'
 import { getSortTypeValue } from '../utils/applicationQueryMiddleware'
-import { ELECTION_COMMITTEE_ID, MAIN_BOARD_ID } from '../utils/constants'
+import {
+	ELECTION_COMMITTEE_ID,
+	MAIN_BOARD_ID,
+	STUDENTLEKENE_ID,
+} from '../utils/constants'
 import getAdmissionPeriodStatus from '../utils/getAdmissionPeriodStatus'
 
 async function getUserCommitteeIdsByUserId(userId: number | string) {
@@ -53,12 +57,14 @@ const getApplicationById = async (
 				.json({ message: 'The user is not member of any committee' })
 		}
 
+		const isSL = req.query.sl === 'true'
+
 		// Retrieve application and committees the application is sent to
 		const application = await ApplicationModel.findById(req.params.application_id)
-			.populate<IPopulatedApplicationCommittees>('committees', 'name slug')
+			.populate<IPopulatedApplicationCommittees>('committees', 'name slug sl')
 			.populate({
 				path: 'statuses',
-				populate: { path: 'committee', model: 'Committee', select: 'name slug' },
+				populate: { path: 'committee', model: 'Committee', select: 'name slug sl' },
 				select: '-__v',
 			})
 			.then((applicationRes) => applicationRes)
@@ -94,6 +100,9 @@ const getApplicationById = async (
 		// Check if user is member of any committee that application is sent to
 		let isAuthorized = false
 		for (let id = 0; id < applicationCommittees.length; id += 1) {
+			if (isSL && applicationCommittees[id].sl) {
+				isAuthorized = true
+			}
 			const appCommitteeId = applicationCommittees[id]._id
 			if (userCommitteeIds.includes(appCommitteeId)) {
 				isAuthorized = true
@@ -146,6 +155,7 @@ const getApplications = async (
 		const status: string = req.query.status as string
 		const sortparam: SortTypes = req.query.sort as SortTypes
 		const sortValue = getSortTypeValue(sortparam) // Parse sort value
+		const isSL: boolean = (req.query.sl as string) === 'true'
 
 		// Aggregation
 		const aggregationPipeline = []
@@ -159,6 +169,13 @@ const getApplications = async (
 					committees: {
 						$ne: [MAIN_BOARD_ID],
 					},
+				},
+			}
+			aggregationPipeline.push(userAuthorizedCommittees)
+		} else if (isSL && userCommitteeIds.includes(STUDENTLEKENE_ID)) {
+			const userAuthorizedCommittees = {
+				$match: {
+					sl: true,
 				},
 			}
 			aggregationPipeline.push(userAuthorizedCommittees)
@@ -309,6 +326,7 @@ const getApplications = async (
 						committee: 1,
 						value: 1,
 					},
+					sl: 1,
 				},
 				pagination: {
 					$mergeObjects: [
@@ -370,7 +388,11 @@ const postApplication = async (
 	next: NextFunction
 ) => {
 	try {
-		if (!((await getAdmissionPeriodStatus()) === AdmissionPeriodStatus.open)) {
+		if (
+			!(
+				(await getAdmissionPeriodStatus(req.body.sl)) === AdmissionPeriodStatus.open
+			)
+		) {
 			throw new CustomError('Admission period is not active', 403)
 		}
 		// Check that all applied committees accepts admissions

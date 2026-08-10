@@ -124,7 +124,7 @@ type CountryCodePair = {
 	kode: string
 }
 
-function LoginForm() {
+function LoginForm({ isSL }: { isSL?: boolean }) {
 	const { classes } = useStyles()
 	let navigate = useNavigate()
 	const [isLoading, setIsLoading] = useState(false)
@@ -153,7 +153,7 @@ function LoginForm() {
 			login(credentials.phone_number, credentials.password)
 				.then(() => {
 					setIsLoading(false)
-					navigate('/dashboard')
+					navigate(isSL ? '/studentlekene/dashboard' : '/dashboard')
 				})
 				.catch(() => {
 					setIsLoading(false)

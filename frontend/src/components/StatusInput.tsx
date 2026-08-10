@@ -21,10 +21,12 @@ export interface IStatusInputProps {
 	committee?: {
 		name: string
 		_id: number
+		sl?: boolean
 	}
 	updated_date: Date
 	allowedToChange: boolean
 	variant?: 'simple'
+	isSL?: boolean
 }
 interface IStatusStyleProps {
 	statusValue: StatusTypes
@@ -74,6 +76,7 @@ function StatusInput({
 	updated_date,
 	allowedToChange,
 	variant,
+	isSL,
 }: IStatusInputProps) {
 	const [statusValue, setStatusValue] = useState<StatusTypes>(value)
 	const [setByValue, setSetByValue] = useState<string | null>(set_by)
@@ -94,9 +97,15 @@ function StatusInput({
 		if (newValue !== statusValue) {
 			setIsLoading(true)
 			await axios
-				.put(`/statuses/${_id}`, {
-					value: newValue,
-				})
+				.put(
+					`/statuses/${_id}`,
+					{
+						value: newValue,
+					},
+					{
+						params: { sl: isSL },
+					}
+				)
 				.then((res) => {
 					setIsLoading(false)
 					const newStatus = res.data.status

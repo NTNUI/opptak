@@ -3,7 +3,11 @@ import { CustomError, UnauthorizedUserError } from 'ntnui-tools/customError'
 import { RequestWithNtnuiNo } from '../utils/request'
 import { IUser, UserModel } from '../models/User'
 import { StatusModel } from '../models/Status'
-import { ELECTION_COMMITTEE_ID, MAIN_BOARD_ID } from '../utils/constants'
+import {
+	ELECTION_COMMITTEE_ID,
+	MAIN_BOARD_ID,
+	STUDENTLEKENE_ID,
+} from '../utils/constants'
 
 const putStatus = async (
 	req: RequestWithNtnuiNo,
@@ -30,6 +34,13 @@ const putStatus = async (
 				)
 			})
 		if (!status) throw new CustomError('Could not find status', 404)
+
+		const isSL = req.query.sl === 'true'
+
+		const isUserInStudentlekeneBoard = user.committees
+			.map((committee) => committee.committee)
+			.includes(STUDENTLEKENE_ID)
+
 		// Check that user is in committee that status is set for
 		const isUserInCommittee = user.committees.find(
 			(committee) => committee.committee === status.committee
@@ -40,9 +51,11 @@ const putStatus = async (
 			.includes(ELECTION_COMMITTEE_ID)
 		// Check if status is for main board
 		const isStatusForMainBoard = status.committee === MAIN_BOARD_ID
+
 		if (
 			isUserInCommittee ||
-			(isStatusForMainBoard && isUserInElectionCommittee)
+			(isStatusForMainBoard && isUserInElectionCommittee) ||
+			(isSL && isUserInStudentlekeneBoard)
 		) {
 			status.value = req.body.value
 			status.set_by = `${user.first_name} ${user.last_name}`

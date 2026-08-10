@@ -12,6 +12,7 @@ import {
 import { IAdmissionPeriod } from '../types/types'
 import dayjs from 'dayjs'
 import { showNotification, updateNotification } from '@mantine/notifications'
+import { getUserCommittees, IRoleInCommittee } from '../services/Committees'
 
 const useStyles = createStyles((theme) => ({
 	pageWrapper: {
@@ -100,28 +101,33 @@ const useStyles = createStyles((theme) => ({
 	},
 }))
 
-interface stateType {
-	isOrganizer: boolean
+interface AdmissionPeriodProps {
+	isSL?: boolean
 }
 
-function AdmissionPeriod() {
+interface LocationState {
+	isOrganizer?: boolean
+}
+
+function AdmissionPeriod({ isSL = false }: AdmissionPeriodProps) {
 	const { classes } = useStyles()
 	const navigate = useNavigate()
 	const location = useLocation()
-	const [isLoading, setIsLoading] = useState<boolean>(false)
-	// Has period been set in the db before
-	const [isPeriodSet, setIsPeriodSet] = useState<boolean>(false)
-	// Save previous dates to allow resetting
-	const today = dayjs(new Date()).startOf('day')
+
+	const [isLoading, setIsLoading] = useState(false)
+	const [isPeriodSet, setIsPeriodSet] = useState(false)
+
+	const today = dayjs().startOf('day')
+
 	const [previousDates, setPreviousDates] = useState<Date[]>([
 		today.toDate(),
 		today.add(7, 'day').toDate(),
 	])
-	// Is period different from what is in db
-	const [differentFromDb, setChanged] = useState<boolean>(false)
-	const [hasError, setHasError] = useState<boolean>(false)
-	const [initialChange, setHasInitialChange] = useState<boolean>(false)
-	const [setBy, setSetBy] = useState<string>('')
+
+	const [differentFromDb, setChanged] = useState(false)
+	const [hasError, setHasError] = useState(false)
+	const [initialChange, setHasInitialChange] = useState(false)
+	const [setBy, setSetBy] = useState('')
 	const [updatedDateValue, setUpdatedDateValue] = useState<Date>()
 
 	const form = useForm({
@@ -135,31 +141,60 @@ function AdmissionPeriod() {
 	})
 
 	useEffect(() => {
-		setIsLoading(true)
-		const getAdmissionPeriodAsync = async () => {
+		async function loadAdmissionPeriod() {
+			setIsLoading(true)
+
 			try {
-				// If not organizer, redirect to dashboard
-				const locationState = location.state as stateType
-				if (!locationState.isOrganizer) {
-					navigate('/dashboard')
-					return
+				if (isSL) {
+					/*
+					 * For Studentlekene, check whether the user belongs
+					 * to the Studentlekene board.
+					 */
+					const userCommittees = await getUserCommittees()
+
+					const isOrganizer = userCommittees.some(
+						(roleInCommittee: IRoleInCommittee) =>
+							roleInCommittee.committee.slug === 'studentlekene'
+					)
+
+					if (!isOrganizer) {
+						navigate('/dashboard')
+						return
+					}
+				} else {
+					/*
+					 * Keep the existing organizer check for the normal
+					 * admission period.
+					 */
+					const locationState = location.state as LocationState | null
+
+					if (!locationState?.isOrganizer) {
+						navigate('/dashboard')
+						return
+					}
 				}
-				const response = await getAdmissionPeriod()
-				const retrievedPeriod = [
+
+				const response = await getAdmissionPeriod(isSL)
+
+				const retrievedPeriod: Date[] = [
 					new Date(response.admissionPeriod.start_date),
 					new Date(response.admissionPeriod.end_date),
 				]
+
 				setSetBy(response.admissionPeriod.set_by)
 				setUpdatedDateValue(response.admissionPeriod.updated_date)
-				form.setValues({ dateRangeInput: retrievedPeriod })
+				form.setValues({
+					dateRangeInput: retrievedPeriod,
+				})
 				setPreviousDates(retrievedPeriod)
 				setIsPeriodSet(true)
-				setIsLoading(false)
 				setHasInitialChange(false)
 			} catch (error: any) {
-				if (error.response.status === 401) {
-					navigate('/login')
-				} else if (error.response.status !== 404) {
+				const status = error.response?.status
+
+				if (status === 401) {
+					navigate(isSL ? '/studentlekene/login' : '/login')
+				} else if (status !== 404) {
 					showNotification({
 						loading: false,
 						color: 'red',
@@ -169,72 +204,86 @@ function AdmissionPeriod() {
 						autoClose: false,
 					})
 				}
+			} finally {
 				setIsLoading(false)
 			}
 		}
-		getAdmissionPeriodAsync()
-	}, [navigate])
 
-	const saveAdmissionPeriod = () => {
-		if (!form.validate().hasErrors) {
-			const start = form.values.dateRangeInput[0]
-			const end = form.values.dateRangeInput[1]
-			const admissionPeriod: IAdmissionPeriod = {
-				start_date: dayjs(start).format('YYYY-MM-DD'),
-				end_date: dayjs(end).format('YYYY-MM-DD'),
-			}
-			showNotification({
+		loadAdmissionPeriod()
+	}, [isSL, location.state, navigate])
+
+	const saveAdmissionPeriod = async () => {
+		if (form.validate().hasErrors) {
+			return
+		}
+
+		const start = form.values.dateRangeInput[0]
+		const end = form.values.dateRangeInput[1]
+
+		const admissionPeriod: IAdmissionPeriod = {
+			start_date: dayjs(start).format('YYYY-MM-DD'),
+			end_date: dayjs(end).format('YYYY-MM-DD'),
+
+			/*
+			 * false creates or updates the normal period.
+			 * true creates or updates the SL period.
+			 */
+			sl: isSL,
+		}
+
+		showNotification({
+			id: 'admission-period-notification',
+			loading: true,
+			color: 'green',
+			icon: <Check size={18} />,
+			title: 'Oppdaterer opptaksperiode',
+			message: '',
+			autoClose: false,
+		})
+
+		try {
+			const response = await putAdmissionPeriod(admissionPeriod)
+
+			setChanged(false)
+			setIsPeriodSet(true)
+			setPreviousDates([start, end])
+			setSetBy(response.admissionPeriod.set_by)
+			setUpdatedDateValue(response.admissionPeriod.updated_date)
+
+			updateNotification({
 				id: 'admission-period-notification',
-				loading: true,
+				loading: false,
 				color: 'green',
 				icon: <Check size={18} />,
-				title: 'Oppdaterer opptaksperiode',
+				title: `Opptaksperiode ${isPeriodSet ? 'oppdatert' : 'satt'}!`,
 				message: '',
+				autoClose: 7000,
+			})
+		} catch (error: any) {
+			const forbidden = error.response?.status === 403
+
+			updateNotification({
+				id: 'admission-period-notification',
+				loading: false,
+				color: 'red',
+				icon: <X size={18} />,
+				title: forbidden
+					? 'Du har ikke tilgang til å endre opptaksperioden!'
+					: 'En feil oppstod!',
+				message: forbidden
+					? isSL
+						? 'Du må være i Studentlekene-styret for å kunne endre opptaksperioden'
+						: 'Du må være i Hovedstyret for å kunne endre opptaksperioden'
+					: 'Kunne ikke oppdatere opptaksperioden',
 				autoClose: false,
 			})
-			putAdmissionPeriod(admissionPeriod)
-				.then((response) => {
-					setChanged(false)
-					setIsPeriodSet(true)
-					setPreviousDates([start, end])
-					setSetBy(response.admissionPeriod.set_by)
-					setUpdatedDateValue(response.admissionPeriod.updated_date)
-					updateNotification({
-						id: 'admission-period-notification',
-						loading: false,
-						color: 'green',
-						icon: <Check size={18} />,
-						title: `Opptaksperiode ${isPeriodSet ? 'oppdatert' : 'satt'}!`,
-						message: '',
-						autoClose: 7000,
-					})
-				})
-				.catch((err) => {
-					let title = ''
-					let message = ''
-					// Set error message content based on error-type
-					if (err.response.status === 403) {
-						title = 'Du har ikke tilgang til å endre opptaksperioden!'
-						message = 'Du må være i Hovedstyret for å kunne endre opptaksperioden'
-					} else {
-						title = 'En feil oppstod!'
-						message = 'Kunne ikke oppdatere opptaksperioden'
-					}
-					updateNotification({
-						id: 'admission-period-notification',
-						loading: false,
-						color: 'red',
-						icon: <X size={18} />,
-						title: title,
-						message: message,
-						autoClose: false,
-					})
-				})
 		}
 	}
 
 	const undoChanges = () => {
-		form.setValues({ dateRangeInput: [previousDates[0], previousDates[1]] })
+		form.setValues({
+			dateRangeInput: [previousDates[0], previousDates[1]],
+		})
 	}
 
 	useEffect(() => {
@@ -242,16 +291,11 @@ function AdmissionPeriod() {
 	}, [form.values.dateRangeInput])
 
 	useEffect(() => {
-		// Check if dates are different than what is saved in db
-		if (
+		const datesAreUnchanged =
 			dayjs(form.values.dateRangeInput[0]).isSame(previousDates[0]) &&
 			dayjs(form.values.dateRangeInput[1]).isSame(previousDates[1])
-		) {
-			if (differentFromDb) setChanged(false)
-		} else {
-			if (!differentFromDb) setChanged(true)
-		}
-		// Check error state
+
+		setChanged(!datesAreUnchanged)
 		setHasError(form.validate().hasErrors)
 	}, [form.values.dateRangeInput, previousDates])
 
@@ -259,13 +303,13 @@ function AdmissionPeriod() {
 		<>
 			Lagret opptaksperiode <br />
 			<b>
-				{previousDates[0]?.toLocaleDateString('no-No', {
+				{previousDates[0]?.toLocaleDateString('no-NO', {
 					month: '2-digit',
 					day: '2-digit',
 					year: '2-digit',
 				})}
-				-
-				{previousDates[1]?.toLocaleDateString('no-No', {
+				{' - '}
+				{previousDates[1]?.toLocaleDateString('no-NO', {
 					month: '2-digit',
 					day: '2-digit',
 					year: '2-digit',
@@ -279,15 +323,18 @@ function AdmissionPeriod() {
 	return (
 		<div className={classes.pageWrapper}>
 			<div className={classes.header}>
-				<h1>Opptaksperiode</h1>
+				<h1>{isSL ? 'Opptaksperiode for Studentlekene' : 'Opptaksperiode'}</h1>
+
 				<p>
 					Opptaksperioden bestemmer når studenter har mulighet til å sende inn
 					søknad.
 				</p>
+
 				<h3 className={classes.admissionPeriodStatusText}>
 					{admissionPeriodStatusText}
 				</h3>
 			</div>
+
 			{isLoading ? (
 				<div className={classes.loaderWrapper}>
 					<Loader color='yellow' variant='dots' />
@@ -318,9 +365,11 @@ function AdmissionPeriod() {
 					onBlur={() => form.validateField('dateRangeInput')}
 				/>
 			)}
+
 			{isPeriodSet && !differentFromDb && initialChange && (
 				<i className={classes.unchangedText}>Endre opptaksperioden for å lagre</i>
 			)}
+
 			<div className={classes.buttonWrapper}>
 				<Button
 					disabled={isPeriodSet && !differentFromDb}
@@ -330,6 +379,7 @@ function AdmissionPeriod() {
 				>
 					Fjern endringer
 				</Button>
+
 				<Button
 					className={classes.confirmButton}
 					disabled={(isPeriodSet && !differentFromDb) || hasError}

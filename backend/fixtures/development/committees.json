@@ -4,56 +4,64 @@
 		"name": "Sprint",
 		"slug": "sprint",
 		"access_roles": ["deputy_leader", "cashier"],
-		"accepts_admissions": true
+		"accepts_admissions": true,
+		"sl": false
 	},
 	{
 		"_id": 2,
 		"name": "Triatlon",
 		"slug": "triatlon",
 		"access_roles": ["deputy_leader"],
-		"accepts_admissions": true
+		"accepts_admissions": true,
+		"sl": false
 	},
 	{
 		"_id": 3,
 		"name": "Turn",
 		"slug": "turn",
 		"access_roles": [],
-		"accepts_admissions": true
+		"accepts_admissions": true,
+		"sl": false
 	},
 	{
 		"_id": 4,
 		"name": "Ski og Fjellsport",
 		"slug": "ski-og-fjellsport",
 		"access_roles": ["deputy_leader"],
-		"accepts_admissions": false
+		"accepts_admissions": false,
+		"sl": false
 	},
 	{
 		"_id": 5,
 		"name": "Hidden-test-group",
 		"slug": "hidden-test-group",
 		"access_roles": [],
-		"accepts_admissions": false
+		"accepts_admissions": false,
+		"sl": false
 	},
 	{
 		"_id": 6,
 		"name": "Tindegruppa",
 		"slug": "tindegruppa",
 		"access_roles": ["deputy_leader"],
-		"accepts_admissions": false
+		"accepts_admissions": false,
+		"sl": false
 	},
 	{
 		"_id": 7,
 		"name": "Koiene",
 		"slug": "koiene",
 		"access_roles": ["deputy_leader"],
-		"accepts_admissions": false
+		"accepts_admissions": false,
+		"sl": false
 	},
 	{
 		"_id": 8,
 		"name": "Aikido",
 		"slug": "aikido",
 		"access_roles": [],
-		"accepts_admissions": false
+		"accepts_admissions": false,
+		"sl": false
 	},
 	{
 		"_id": 9,
@@ -65,7 +73,8 @@
 			"board_member",
 			"deputy_board_member"
 		],
-		"accepts_admissions": true
+		"accepts_admissions": true,
+		"sl": false
 	},
 	{
 		"_id": 10,
@@ -77,7 +86,8 @@
 			"board_member",
 			"deputy_board_member"
 		],
-		"accepts_admissions": false
+		"accepts_admissions": false,
+		"sl": false
 	},
 	{
 		"_id": 11,
@@ -89,6 +99,36 @@
 			"board_member",
 			"deputy_board_member"
 		],
-		"accepts_admissions": true
+		"accepts_admissions": true,
+		"sl": false
+	},
+	{
+		"_id": 19,
+		"name": "Studentlekene",
+		"slug": "studentlekene",
+		"access_roles": [
+			"deputy_leader",
+			"cashier",
+			"board_member",
+			"deputy_board_member"
+		],
+		"accepts_admissions": true,
+		"sl": false
+	},
+	{
+		"_id": 13,
+		"name": "Informasjon",
+		"slug": "informasjon",
+		"access_roles": [],
+		"accepts_admissions": true,
+		"sl": true
+	},
+	{
+		"_id": 14,
+		"name": "Frivillig",
+		"slug": "Frivillig",
+		"access_roles": [],
+		"accepts_admissions": true,
+		"sl": true
 	}
 ]

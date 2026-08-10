@@ -7,6 +7,7 @@ interface IAdmissionPeriod {
 	start_date: string
 	end_date: string
 	set_by: string | null
+	sl: boolean
 	updated_date: string
 }
 
@@ -17,6 +18,7 @@ const AdmissionPeriodModel = mongoose.model<IAdmissionPeriod>(
 			start_date: { type: String, required: true },
 			end_date: { type: String, required: true },
 			set_by: { type: String, default: null },
+			sl: { type: Boolean, default: false },
 		},
 		{
 			collection: 'admissionperiod',

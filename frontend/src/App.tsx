@@ -100,6 +100,63 @@ function App() {
 										</RequireAuth>
 									}
 								/>
+								<Route path='/studentlekene' element={<FormPage isSL={true} />} />
+								<Route path='/studentlekene/login' element={<Login isSL={true} />} />
+								<Route
+									path='/studentlekene/dashboard'
+									element={
+										<RequireAuth>
+											<>
+												<Navbar />
+												<Dashboard isSL={true} />
+											</>
+										</RequireAuth>
+									}
+								/>
+								<Route
+									path='/studentlekene/admission-status'
+									element={
+										<RequireAuth>
+											<>
+												<Navbar />
+												<AdmissionStatus isSL={true} />
+											</>
+										</RequireAuth>
+									}
+								/>
+								<Route
+									path='/studentlekene/admission-period'
+									element={
+										<RequireAuth>
+											<>
+												<Navbar />
+												<AdmissionPeriod isSL={true} />
+											</>
+										</RequireAuth>
+									}
+								/>
+								<Route
+									path='/studentlekene/applications'
+									element={
+										<RequireAuth>
+											<>
+												<Navbar />
+												<ApplicationOverview isSL={true} />
+											</>
+										</RequireAuth>
+									}
+								/>
+								<Route
+									path='/studentlekene/applications/:id'
+									element={
+										<RequireAuth>
+											<>
+												<Navbar />
+												<ApplicationDetailPage />
+											</>
+										</RequireAuth>
+									}
+								/>
 							</Routes>
 						</BrowserRouter>
 					</NotificationsProvider>

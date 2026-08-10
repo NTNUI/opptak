@@ -106,12 +106,20 @@ function Navbar() {
 		await axios
 			.post('/auth/logout')
 			.then(() => {
-				navigate('/login')
+				navigate(
+					location.pathname.includes('studentlekene')
+						? '/studentlekene/login'
+						: '/login'
+				)
 			})
 			.catch((err) => {
 				console.log('Something went wrong while logging out')
 				console.log(err)
-				navigate('/login')
+				navigate(
+					location.pathname.includes('studentlekene')
+						? '/studentlekene/login'
+						: '/login'
+				)
 			})
 	}
 
@@ -122,7 +130,14 @@ function Navbar() {
 	return (
 		<nav className={classes.navbar}>
 			<Box className={classes.logo} onClick={navigateLogo}>
-				<img alt='NTNUI logo' src='/images/ntnui.svg' />
+				<img
+					alt='NTNUI logo'
+					src={
+						location.pathname.includes('/studentlekene')
+							? '/images/sl.png'
+							: '/images/ntnui.svg'
+					}
+				/>
 				<h1>OPPTAK</h1>
 			</Box>
 			<MediaQuery largerThan='xs' styles={{ display: 'none' }}>
@@ -204,11 +219,17 @@ function Navbar() {
 					</Menu.Dropdown>
 				</Menu>
 			</MediaQuery>
-			{location.pathname !== '/dashboard' && (
+			{!location.pathname.includes('/dashboard') && (
 				<MediaQuery smallerThan='xs' styles={{ display: 'none' }}>
 					<Button
 						className={classes.dashboard}
-						onClick={() => navigate('/dashboard')}
+						onClick={() =>
+							navigate(
+								location.pathname.includes('/studentlekene')
+									? '/studentlekene/dashboard'
+									: '/dashboard'
+							)
+						}
 					>
 						<Home size={18} /> Dashbord
 					</Button>

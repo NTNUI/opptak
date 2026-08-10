@@ -1,16 +1,18 @@
 import { createStyles, Loader, Pagination } from '@mantine/core'
 import { createContext, useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+
 import ApplicationList from '../components/ApplicationList'
 import Filter from '../components/FilterSearch'
-import { IApplication } from '../types/types'
 import { getApplications } from '../services/Applications'
-import { useNavigate } from 'react-router-dom'
-import useStickyState from '../utils/sessionstorage'
 import { getUserCommittees, IRoleInCommittee } from '../services/User'
+import { IApplication } from '../types/types'
 import {
 	REACT_APP_ELECTION_COMMITTEE_ID,
 	REACT_APP_MAIN_BOARD_ID,
+	REACT_APP_STUDENTLEKENE_ID,
 } from '../utils/constants'
+import useStickyState from '../utils/sessionstorage'
 
 const useStyles = createStyles((theme) => ({
 	overview: {
@@ -44,116 +46,198 @@ const useStyles = createStyles((theme) => ({
 		},
 	},
 }))
+
+// Behold eksisterende useStyles her
+
+interface IFilterContext {
+	chosenCommittees: string[]
+}
+
+interface IUserContext {
+	userRoleInCommittees: IRoleInCommittee[]
+	isInElectionCommittee: boolean
+	isInMainBoard: boolean
+	isInSLBoard: boolean
+}
+
+interface ApplicationOverviewProps {
+	isSL?: boolean
+}
+
 export const UserContext = createContext<IUserContext>({
 	userRoleInCommittees: [],
 	isInElectionCommittee: false,
 	isInMainBoard: false,
+	isInSLBoard: false,
 })
 
 export const FilterContext = createContext<IFilterContext>({
 	chosenCommittees: [],
 })
 
-interface IFilterContext {
-	chosenCommittees: number[]
-}
-interface IUserContext {
-	userRoleInCommittees: IRoleInCommittee[]
-	isInElectionCommittee: boolean
-	isInMainBoard: boolean
-}
+function ApplicationOverview({ isSL = false }: ApplicationOverviewProps) {
+	const navigate = useNavigate()
+	const { classes } = useStyles()
 
-function ApplicationOverview() {
-	const [currentPage, setCurrentPage] = useStickyState(1, 'page')
+	/*
+	 * Komponenten avgjør selv om dette er SL-siden.
+	 * Du trenger derfor ikke en isSL-prop.
+	 */
 	const [numberOfPages, setNumberOfPages] = useState(1)
 	const [isLoading, setIsLoading] = useState(false)
 	const [applications, setApplications] = useState<IApplication[]>([])
-	const [filters, setFilters] = useStickyState('sort=date_desc', 'filters')
-	const [chosenCommittees, setChosenCommittees] = useStickyState(
-		[''],
-		'chosenCommittees'
-	)
-	const [sort, setSort] = useStickyState('date_desc', 'sort')
-	const [status, setStatus] = useStickyState('', 'status')
-	const [nameSearch, setNameSearch] = useStickyState('', 'nameSearch')
-
 	const [userRoleInCommittees, setUserRoleInCommittees] = useState<
 		IRoleInCommittee[]
 	>([])
 
-	let navigate = useNavigate()
+	/*
+	 * Vanlig opptak og SL-opptak må ha forskjellige sessionStorage-nøkler.
+	 */
+	const [currentPage, setCurrentPage] = useStickyState(
+		1,
+		isSL ? 'slPage' : 'page'
+	)
 
-	const { classes } = useStyles()
+	const [filters, setFilters] = useStickyState(
+		'sort=date_desc',
+		isSL ? 'slFilters' : 'filters'
+	)
+
+	const [chosenCommittees, setChosenCommittees] = useStickyState(
+		[''],
+		isSL ? 'slChosenCommittees' : 'chosenCommittees'
+	)
+
+	const [sort, setSort] = useStickyState('date_desc', isSL ? 'slSort' : 'sort')
+
+	const [status, setStatus] = useStickyState('', isSL ? 'slStatus' : 'status')
+
+	const [nameSearch, setNameSearch] = useStickyState(
+		'',
+		isSL ? 'slNameSearch' : 'nameSearch'
+	)
+
+	const isInElectionCommittee = userRoleInCommittees.some(
+		(roleInCommittee) =>
+			roleInCommittee.committee._id === REACT_APP_ELECTION_COMMITTEE_ID
+	)
+
+	const isInMainBoard = userRoleInCommittees.some(
+		(roleInCommittee) => roleInCommittee.committee._id === REACT_APP_MAIN_BOARD_ID
+	)
+
+	const isInSLBoard = userRoleInCommittees.some(
+		(roleInCommittee) =>
+			roleInCommittee.committee._id === REACT_APP_STUDENTLEKENE_ID
+	)
 
 	useEffect(() => {
-		const userCommitteesRes = async () => {
+		async function loadUserCommittees() {
 			try {
-				const userCommitteesRes = await getUserCommittees()
-				setUserRoleInCommittees(userCommitteesRes)
-				// Pre-select committee in filter if user is only in one committee
-				const isUserInElectionCommitteeOrMainBoard = userCommitteesRes.some(
+				const response = await getUserCommittees()
+
+				setUserRoleInCommittees(response)
+
+				const userIsInElectionCommittee = response.some(
 					(roleInCommittee) =>
-						roleInCommittee.committee._id === REACT_APP_ELECTION_COMMITTEE_ID ||
+						roleInCommittee.committee._id === REACT_APP_ELECTION_COMMITTEE_ID
+				)
+
+				const userIsInMainBoard = response.some(
+					(roleInCommittee) =>
 						roleInCommittee.committee._id === REACT_APP_MAIN_BOARD_ID
 				)
-				const isUserInOneCommittee = userCommitteesRes.length === 1
-				const isCommitteeCached =
-					chosenCommittees.length === 1 &&
-					chosenCommittees[0].toString().length !== 0
+
+				const userIsInSLBoard = response.some(
+					(roleInCommittee) =>
+						roleInCommittee.committee._id === REACT_APP_STUDENTLEKENE_ID
+				)
+
+				/*
+				 * På SL-siden vurderer vi bare brukerens SL-komiteer
+				 * når vi eventuelt forhåndsvelger én komité.
+				 */
+				const relevantUserCommittees = isSL
+					? response.filter(
+							(roleInCommittee) => roleInCommittee.committee.sl === true
+					  )
+					: response
+
+				const hasBroadAccess =
+					userIsInElectionCommittee || userIsInMainBoard || (isSL && userIsInSLBoard)
+
+				const hasCachedCommittee =
+					chosenCommittees.length === 1 && chosenCommittees[0].length > 0
+
 				if (
-					!isUserInElectionCommitteeOrMainBoard &&
-					isUserInOneCommittee &&
-					!isCommitteeCached
+					!hasBroadAccess &&
+					relevantUserCommittees.length === 1 &&
+					!hasCachedCommittee
 				) {
-					setChosenCommittees(
-						userCommitteesRes.map((roleInCommittee) =>
-							roleInCommittee.committee._id.toString()
-						)
-					)
+					setChosenCommittees([relevantUserCommittees[0].committee._id.toString()])
 				}
 			} catch (error: any) {
-				setIsLoading(false)
-				if (error.response.status !== 200) {
-					navigate('/login')
+				if (error.response?.status === 401) {
+					navigate(isSL ? '/studentlekene/login' : '/login')
+					return
 				}
+
+				console.error(
+					'Could not retrieve user committees:',
+					error.response?.data ?? error
+				)
 			}
 		}
-		userCommitteesRes()
-	}, [])
+
+		loadUserCommittees()
+	}, [isSL, navigate])
 
 	useEffect(() => {
-		setIsLoading(true)
-		const getApplicationsAsync = async () => {
+		async function loadApplications() {
+			setIsLoading(true)
+
 			try {
-				const response = await getApplications(`page=${currentPage}&${filters}`)
+				const safePage = Math.max(1, Number(currentPage) || 1)
+
+				const query = [isSL ? 'sl=true' : '', `page=${safePage}`, filters]
+					.filter(Boolean)
+					.join('&')
+
+				const response = await getApplications(query)
+
 				setApplications(response.applications)
-				setCurrentPage(response.pagination.currentPage)
-				setNumberOfPages(response.pagination.numberOfPages)
-				setIsLoading(false)
+
+				setCurrentPage(response.pagination.currentPage || 1)
+
+				setNumberOfPages(Math.max(1, response.pagination.numberOfPages))
 			} catch (error: any) {
-				setIsLoading(false)
-				if (error.response.status !== 200) {
-					navigate('/login')
+				if (error.response?.status === 401) {
+					navigate(isSL ? '/studentlekene/login' : '/login')
+					return
 				}
+
+				console.error(
+					`Could not retrieve ${isSL ? 'SL ' : ''}applications:`,
+					error.response?.data ?? error
+				)
+			} finally {
+				setIsLoading(false)
 			}
 		}
-		getApplicationsAsync()
-	}, [currentPage, navigate, filters])
+
+		loadApplications()
+	}, [currentPage, filters, isSL, navigate, setCurrentPage])
 
 	return (
 		<div className={classes.overview}>
-			<h1>Søknadsoversikt</h1>
+			<h1>{isSL ? 'Søknadsoversikt for Studentlekene' : 'Søknadsoversikt'}</h1>
+
 			<UserContext.Provider
 				value={{
 					userRoleInCommittees,
-					isInElectionCommittee: userRoleInCommittees.some(
-						(roleInCommittee) =>
-							roleInCommittee.committee._id === REACT_APP_ELECTION_COMMITTEE_ID
-					),
-					isInMainBoard: userRoleInCommittees.some(
-						(roleInCommittee) =>
-							roleInCommittee.committee._id === REACT_APP_MAIN_BOARD_ID
-					),
+					isInElectionCommittee,
+					isInMainBoard,
+					isInSLBoard,
 				}}
 			>
 				<Filter
@@ -166,17 +250,20 @@ function ApplicationOverview() {
 					setStatus={setStatus}
 					nameSearch={nameSearch}
 					setNameSearch={setNameSearch}
+					isSL={isSL}
 				/>
+
 				{isLoading ? (
 					<Loader color='yellow' />
-				) : applications.length ? (
+				) : applications.length > 0 ? (
 					<FilterContext.Provider value={{ chosenCommittees }}>
 						<ApplicationList applications={applications} />
 					</FilterContext.Provider>
 				) : (
-					<span>No applications found</span>
+					<span>Ingen søknader funnet</span>
 				)}
 			</UserContext.Provider>
+
 			<Pagination
 				className={classes.pagination}
 				classNames={{

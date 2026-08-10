@@ -155,80 +155,120 @@ const useStyles = createStyles((theme) => ({
 	},
 }))
 
-function FormBox() {
+interface FormBoxProps {
+	isSL?: boolean
+}
+
+function FormBox({ isSL = false }: FormBoxProps) {
 	const { classes } = useStyles()
+	const navigate = useNavigate()
+
 	const [periodStatus, setPeriodStatus] = useState<AdmissionPeriodStatus>(
 		AdmissionPeriodStatus.open
 	)
-	const [isLoading, setIsLoading] = useState<boolean>(false)
-	const [startDate, setStartDate] = useState<string>('')
-	const [endDate, setEndDate] = useState<string>('')
-	let navigate = useNavigate()
 
-	// Retrieve committees
+	const [isLoading, setIsLoading] = useState(false)
+	const [startDate, setStartDate] = useState('')
+	const [endDate, setEndDate] = useState('')
 	const [committees, setCommittees] = useState<ICommittee[]>([])
 
 	useEffect(() => {
-		setIsLoading(true)
-		const getApplicationPeriodActiveAsync = async () => {
-			try {
-				const response = await getAdmissionPeriod()
-				const admissionPeriod = response.admissionPeriod
+		async function getApplicationPeriodActiveAsync() {
+			setIsLoading(true)
+			setStartDate('')
+			setEndDate('')
+			setCommittees([])
 
-				setPeriodStatus(response.admissionStatus)
-				if (response.admissionStatus === AdmissionPeriodStatus.open) {
+			try {
+				const response = await getAdmissionPeriod(isSL)
+				const admissionPeriod = response.admissionPeriod
+				const status = response.admissionStatus
+
+				setPeriodStatus(status)
+
+				if (status === AdmissionPeriodStatus.open) {
 					const parsedEndDate = new Date(admissionPeriod.end_date)
-						.toLocaleDateString('no-No', {
+						.toLocaleDateString('no-NO', {
 							month: 'long',
 							day: 'numeric',
 							year: 'numeric',
 						})
 						.concat(' 23:59')
+
 					setEndDate(parsedEndDate)
-					// Retrieve committees
-					await axios
-						.get('/committees')
-						.then((res) => {
-							setCommittees(res.data)
+
+					try {
+						const committeeResponse = await axios.get('/committees', {
+							params: {
+								sl: isSL,
+							},
 						})
-						.catch((err) => {
-							showNotification({
-								id: 'committees-failed',
-								title: 'Kunne ikke laste inn kommitteer!',
-								message:
-									'Last inn siden på nytt og prøv igjen. Ta kontakt med sprint@ntnui.no dersom problemet vedvarer',
-								color: 'red',
-								autoClose: false,
-								icon: <X size={18} />,
-							})
+
+						setCommittees(committeeResponse.data)
+					} catch (error) {
+						showNotification({
+							id: 'committees-failed',
+							title: 'Kunne ikke laste inn komiteer!',
+							message:
+								'Last inn siden på nytt og prøv igjen. Ta kontakt med sprint@ntnui.no dersom problemet vedvarer',
+							color: 'red',
+							autoClose: false,
+							icon: <X size={18} />,
 						})
-				} else if (response.admissionStatus === AdmissionPeriodStatus.upcoming) {
+
+						console.error('Could not retrieve committees:', error)
+					}
+				} else if (status === AdmissionPeriodStatus.upcoming) {
 					const parsedStartDate = new Date(
 						admissionPeriod.start_date
-					).toLocaleDateString('no-No', {
+					).toLocaleDateString('no-NO', {
 						month: 'long',
 						day: 'numeric',
 						year: 'numeric',
 					})
+
 					setStartDate(parsedStartDate)
 				}
-			} catch (err) {
+			} catch (error) {
+				console.error('Could not retrieve admission period:', error)
 			} finally {
 				setIsLoading(false)
 			}
 		}
+
 		getApplicationPeriodActiveAsync()
-	}, [])
+	}, [isSL])
+
+	const loginPath = isSL ? '/studentlekene/login' : '/login'
+
+	const applicationTitle = isSL
+		? 'Søknad til Studentlekene'
+		: 'Søknad til NTNUI Admin'
+
+	const upcomingTitle = isSL
+		? `Opptaket til Studentlekene starter ${startDate}!`
+		: `Opptaket til NTNUI Admin starter ${startDate}!`
+
+	const closedTitle = isSL
+		? 'Studentlekene har for tiden ingen opptak'
+		: 'NTNUI Admin har for tiden ingen opptak'
 
 	return (
 		<>
 			<Box className={classes.header}>
 				<Box className={classes.logo}>
-					<img alt='NTNUI logo' src='/images/ntnui.svg' />
-					<h1>OPPTAK</h1>
+					{isSL ? (
+						<img alt='Studentlekene logo' src='/images/sl.png' />
+					) : (
+						<>
+							<img alt='NTNUI logo' src='/images/ntnui.svg' />
+							<h1>OPPTAK</h1>
+						</>
+					)}
 				</Box>
+
 				<Button
-					onClick={() => navigate('/login')}
+					onClick={() => navigate(loginPath)}
 					uppercase
 					className={classes.internButton}
 				>
@@ -236,43 +276,54 @@ function FormBox() {
 					Intern
 				</Button>
 			</Box>
+
 			{isLoading ? (
 				<Loader size='xl' color='yellow' className={classes.loading} />
 			) : periodStatus === AdmissionPeriodStatus.open ? (
 				<Box className={classes.formTitleAndBodyWrapper}>
 					<h1 className={classes.formTitle}>
 						<FileText />
-						Søknad til NTNUI Admin
+						{applicationTitle}
 					</h1>
+
 					{endDate && (
 						<p className={classes.endOfSearchPeriodText}>Søknadsfrist: {endDate}</p>
 					)}
-					<Form committees={committees} />
+
+					<Form committees={committees} sl={isSL} />
 				</Box>
 			) : periodStatus === AdmissionPeriodStatus.upcoming ? (
 				<Box className={classes.closedPeriod}>
-					<h1 className={classes.formTitle}>
-						Opptaket til NTNUI Admin starter {startDate}!
-					</h1>
-					<p className={classes.closedText}>
-						<div className=''>
-							Les mer om våre utvalg på <a href='https://ntnui.no/opptak/'>ntnui.no</a>
-							!
-						</div>
-					</p>
+					<h1 className={classes.formTitle}>{upcomingTitle}</h1>
+
+					<div className={classes.closedText}>
+						Les mer om våre utvalg på <a href='https://ntnui.no/opptak/'>ntnui.no</a>!
+					</div>
 				</Box>
 			) : (
 				<Box className={classes.closedPeriod}>
-					<h1 className={classes.formTitle}>
-						NTNUI Admin har for tiden ingen opptak
-					</h1>
+					<h1 className={classes.formTitle}>{closedTitle}</h1>
+
 					<p className={classes.closedText}>
-						Leter du etter opptak til en NTNUI gruppe eller et lag? Finn gruppens egen
-						nettside på <a href='https://medlem.ntnui.no/groups'>medlem.ntnui.no</a>!
+						{isSL ? (
+							<>
+								Mer informasjon om SL finner du{' '}
+								<a href='https://www.sltrondheim.no/'>her</a>. Leter du etter opptak til
+								en NTNUI-gruppe eller Admin? Finn gruppens egen nettside på{' '}
+								<a href='https://medlem.ntnui.no/groups'>medlem.ntnui.no</a>!
+							</>
+						) : (
+							<>
+								Leter du etter opptak til en NTNUI-gruppe eller et lag? Finn gruppens
+								egen nettside på{' '}
+								<a href='https://medlem.ntnui.no/groups'>medlem.ntnui.no</a>!
+							</>
+						)}
 					</p>
 				</Box>
 			)}
 		</>
 	)
 }
+
 export default FormBox

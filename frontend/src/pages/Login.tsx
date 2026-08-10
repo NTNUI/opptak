@@ -46,24 +46,34 @@ const useStyles = createStyles((theme) => ({
 	},
 }))
 
-function Login() {
+interface LoginProps {
+	isSL?: boolean
+}
+
+function Login({ isSL = false }: LoginProps) {
 	const { classes } = useStyles()
 	const navigate = useNavigate()
+
+	const applicationPage = isSL ? '/studentlekene' : '/'
+	const dashboardPage = isSL ? '/studentlekene/dashboard' : '/dashboard'
 
 	useEffect(() => {
 		const verifyTokenAsync = async () => {
 			try {
 				await verifyToken()
-				navigate('/dashboard')
-			} catch (error) {}
+				navigate(dashboardPage)
+			} catch (error) {
+				// The user is not logged in, so stay on the login page
+			}
 		}
+
 		verifyTokenAsync()
-	}, [navigate])
+	}, [dashboardPage, navigate])
 
 	return (
 		<div className={classes.pageWrapper}>
 			<Button
-				onClick={() => navigate('/')}
+				onClick={() => navigate(applicationPage)}
 				size='lg'
 				variant='subtle'
 				className={classes.backButton}
@@ -71,12 +81,25 @@ function Login() {
 			>
 				Tilbake til søknadssiden
 			</Button>
+
 			<div className={classes.opptakHeader}>
-				<img className={classes.logo} alt='ntnui logo' src='/images/ntnui.svg' />
-				<h3>OPPTAK</h3>
+				{isSL ? (
+					<img
+						className={classes.logo}
+						alt='Studentlekene logo'
+						src='/images/sl.png'
+					/>
+				) : (
+					<>
+						<img className={classes.logo} alt='NTNUI logo' src='/images/ntnui.svg' />
+						<h3>OPPTAK</h3>
+					</>
+				)}
+
 				<p>Internt system for styremedlemmer</p>
 			</div>
-			<LoginForm />
+
+			<LoginForm isSL={isSL} />
 		</div>
 	)
 }

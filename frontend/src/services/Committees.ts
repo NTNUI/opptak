@@ -6,8 +6,8 @@ export interface IRoleInCommittee {
 	role: string
 }
 
-export const getAllCommittees = async (): Promise<ICommittee[]> => {
-	const response = await axios.get('/committees')
+export const getAllCommittees = async (sl?: boolean): Promise<ICommittee[]> => {
+	const response = await axios.get(`/committees?sl=${sl}`)
 	return response.data
 }
 
@@ -16,9 +16,11 @@ export const getUserCommittees = async (): Promise<IRoleInCommittee[]> => {
 	return response.data.committees
 }
 
-export const toggleAcceptsAdmissions = async (slug: string) => {
+export const toggleAcceptsAdmissions = async (slug: string, sl?: boolean) => {
 	const response = axios
-		.put(`/committees/${slug}/accept-admissions`)
+		.put(`/committees/${slug}/accept-admissions`, {
+			params: { sl: sl },
+		})
 		.then((response) => {
 			return response.data.accepts_admissions
 		})
