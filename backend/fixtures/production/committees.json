@@ -110,6 +110,14 @@
 		"sl": false
 	},
 	{
+		"_id": 105,
+		"name": "Introstyret",
+		"slug": "introstyret",
+		"access_roles": [],
+		"accepts_admissions": true,
+		"sl": false
+	},
+	{
 		"_id": 67,
 		"name": "Bumerang",
 		"slug": "bumerang",
