@@ -135,7 +135,7 @@
 	},
 	{
 		"_id": 1000,
-		"name": "Logistikk",
+		"name": "Logistikk (komité)",
 		"slug": "logistikk",
 		"access_roles": [],
 		"accepts_admissions": true,
@@ -143,7 +143,7 @@
 	},
 	{
 		"_id": 1001,
-		"name": "Økonomi",
+		"name": "Økonomi (komité)",
 		"slug": "okonomi",
 		"access_roles": [],
 		"accepts_admissions": true,
@@ -151,7 +151,7 @@
 	},
 	{
 		"_id": 1002,
-		"name": "Marked",
+		"name": "Marked (komité)",
 		"slug": "marked",
 		"access_roles": [],
 		"accepts_admissions": true,
@@ -159,7 +159,7 @@
 	},
 	{
 		"_id": 1003,
-		"name": "Frivillig",
+		"name": "Frivillig (under arrangement)",
 		"slug": "frivillig",
 		"access_roles": [],
 		"accepts_admissions": true,
@@ -167,7 +167,7 @@
 	},
 	{
 		"_id": 1004,
-		"name": "Sport",
+		"name": "Sport (komité)",
 		"slug": "sport",
 		"access_roles": [],
 		"accepts_admissions": true,
@@ -175,7 +175,7 @@
 	},
 	{
 		"_id": 1005,
-		"name": "Informasjon",
+		"name": "Informasjon (komité)",
 		"slug": "informasjon",
 		"access_roles": [],
 		"accepts_admissions": true,
@@ -183,7 +183,7 @@
 	},
 	{
 		"_id": 1006,
-		"name": "Arrangement",
+		"name": "Arrangement (komité)",
 		"slug": "arrangement",
 		"access_roles": [],
 		"accepts_admissions": true,
