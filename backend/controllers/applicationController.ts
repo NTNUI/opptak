@@ -166,6 +166,7 @@ const getApplications = async (
 			// Main board see all applications except ones only to the main board
 			const userAuthorizedCommittees = {
 				$match: {
+					sl: isSL,
 					committees: {
 						$ne: [MAIN_BOARD_ID],
 					},
